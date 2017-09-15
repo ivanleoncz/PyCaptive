@@ -26,31 +26,46 @@ def read_acl(acl_file):
 
 while True:
     print("\n\n-------------------------------")
-    print("1. Add IP")
-    print("2. Del IP")
-    print("3. List IPs")
+#    print("1. Add IP")
+#    print("2. Del IP")
+    print("1. Modify ACL")
+    print("2. Read ACL")
+    print("3. Show ACLs")
     print("4. Exit")
-    opt = input("\nSelect an option: ")
+    opt = input("\n>_ ")
     if opt == "1":
-        acl = input("File Name: ")
-        print("File:",acl)
-        ip = input("IP Address: ")
-        if os.path.isfile(acl):
-            add_ip(f,acl)
-            print("DONE!")
+        print("1. Add IP")
+        print("2. Del IP")
+        oper = input("\n>_ ")
+        if oper == "1":
+            acl = input("File Name: ")
+            ip = input("IP Address: ")
+            if os.path.isfile(acl):
+                add_ip(f,acl)
+                print("DONE!")
+        elif oper == "2":
+            acl = input("\nFile Name: ")
+            ip = input("\nIP Address: ")
+            if os.path.isfile(acl):
+                del_ip(acl,ip)
+                print("DONE!")
         else:
-            print("ACL does not exist...")
+            print("Wrong Option!...")
     elif opt == "2":
         acl = input("\nFile Name: ")
         ip = input("\nIP Address: ")
         if os.path.isfile(acl):
             del_ip(acl,ip)
-        print("DONE!")
+            print("DONE!")
+        else:
+            print("ACL does not exist...")
     elif opt == "3":
         acl = input("\nFile Name: ")
         if os.path.isfile(acl):
             read_acl(acl)
-        print("DONE!")
+            print("DONE!")
+        else:
+            print("ACL does not exist...")
     elif opt == "4":
         print("Bye!")
         sys.exit(0)
