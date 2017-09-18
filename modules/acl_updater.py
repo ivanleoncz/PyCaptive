@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
-import sys
+from glob import glob
 import os
+from subprocess import call
+import sys
 
 def add_ip(acl_file, ip):
     print("Adding IP!")
@@ -25,50 +27,70 @@ def read_acl(acl_file):
     return "DONE!"
 
 while True:
+    call(['clear'])
     print("\n\n-------------------------------")
-#    print("1. Add IP")
-#    print("2. Del IP")
+    print("--------- ACL UPDATER ---------")
+    print("-------------------------------")
     print("1. Modify ACL")
     print("2. Read ACL")
-    print("3. Show ACLs")
+    print("3. List ACLs")
     print("4. Exit")
-    opt = input("\n>_ ")
+    opt = input("\n> ")
+    # modify ACL
     if opt == "1":
-        print("1. Add IP")
-        print("2. Del IP")
-        oper = input("\n>_ ")
-        if oper == "1":
-            acl = input("File Name: ")
-            ip = input("IP Address: ")
-            if os.path.isfile(acl):
-                add_ip(f,acl)
-                print("DONE!")
-        elif oper == "2":
-            acl = input("\nFile Name: ")
-            ip = input("\nIP Address: ")
-            if os.path.isfile(acl):
-                del_ip(acl,ip)
-                print("DONE!")
-        else:
-            print("Wrong Option!...")
+        flag = "0"
+        while flag == "0":
+            print("\n\n---------- MODIFY ---------")
+            print("1. Add IP")
+            print("2. Del IP")
+            print("3. Exit")
+            oper = input("\n> ")
+            if oper == "1":
+                acl = input("ACL Name: ")
+                if os.path.isfile(acl):
+                    ip = input("IP Address: ")
+                    add_ip(f,acl)
+                    print("\nDone!")
+                else:
+                    print("\nACL NOT FOUND!")
+                    input("Press any key to continue...")
+            elif oper == "2":
+                acl = input("\nFile Name: ")
+                if os.path.isfile(acl):
+                    ip = input("\nIP Address: ")
+                    del_ip(acl,ip)
+                    print("\nDone!")
+                else:
+                    print("\nACL NOT FOUND!")
+                    input("Press any key to continue...")
+            elif oper == "3":
+                flag = "1"
+            else:
+                print("\nWRONG OPTION!")
+    # read ACL
     elif opt == "2":
-        acl = input("\nFile Name: ")
-        ip = input("\nIP Address: ")
-        if os.path.isfile(acl):
-            del_ip(acl,ip)
-            print("DONE!")
-        else:
-            print("ACL does not exist...")
-    elif opt == "3":
+        print("\n\n---------- READ -----------")
         acl = input("\nFile Name: ")
         if os.path.isfile(acl):
             read_acl(acl)
-            print("DONE!")
+            print("\nDone!")
         else:
-            print("ACL does not exist...")
+            print("\nACL NOT FOUND!")
+            input("Press any key to continue...")
+    # list ACLs
+    elif opt == "3":
+        print("\n\n---------- LIST -----------")
+        acls = glob("*.acl")
+        if len(acls) != 0:
+            for acl in acls:
+                print("\n> ",acl)
+        else:
+            print("\nNO ACLs WERE FOUND!")
+            input("Press any key to continue...")
+    # wrong option
     elif opt == "4":
         print("Bye!")
         sys.exit(0)
     else:
-        print("Wrong option! (@#$&!)")
+        print("\nWRONG OPTION!")
 
