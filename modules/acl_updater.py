@@ -35,11 +35,8 @@ while True:
     print("1. Modify ACL")
     print("2. Read ACL")
     print("3. List ACLs")
-    print("4. Exit")
-    opt = input("\n> ")
-
-
-
+    print("4. Exit\n")
+    opt = input("> ")
     # modify ACL
     if opt == "1":
         call(['clear'])
@@ -107,6 +104,7 @@ while True:
         else:
             for acl in acls:
                 print("> ",acl)
+                input("\nPress any key to continue...\n")
     # exit...
     if opt == "4":
         print("\nBye!\n")
