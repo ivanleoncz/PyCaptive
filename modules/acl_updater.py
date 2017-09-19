@@ -90,6 +90,7 @@ while True:
             acl = input("File Name: ")
             if os.path.isfile(acl):
                 read_acl(acl)
+                input("Press any key to continue...")
             else:
                 print("ACL NOT FOUND!")
                 input("Press any key to continue...")
