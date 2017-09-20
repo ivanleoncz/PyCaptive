@@ -23,7 +23,7 @@ def del_ip(acl_file, ip):
 def read_acl(acl_file):
     with open(acl_file,"r") as f:
         for line in f.readlines():
-            print("Line: ",line)
+            print(line, end="")
     return "DONE!"
 
 
@@ -58,7 +58,7 @@ while True:
                     acl = input("\nACL Name: ")
                     if os.path.isfile(acl):
                         ip = input("IP Address: ")
-                        add_ip(f,acl)
+                        add_ip(acl,ip)
                         input("\nPress any key to continue...\n")
                     else:
                         print("ACL NOT FOUND!")
@@ -87,13 +87,15 @@ while True:
             print("NO ACLs WERE FOUND!")
             input("\nPress any key to continue...\n")
         else:
-            acl = input("File Name: ")
+            for f in acls:
+                print(f, end="")
+            acl = input("\n\nACL Name: ")
             if os.path.isfile(acl):
                 read_acl(acl)
-                input("Press any key to continue...")
+                input("\nPress any key to continue...\n")
             else:
                 print("ACL NOT FOUND!")
-                input("Press any key to continue...")
+                input("\nPress any key to continue...\n")
     # list ACLs
     elif opt == "3":
         call(['clear'])
@@ -107,9 +109,10 @@ while True:
                 print("> ",acl)
                 input("\nPress any key to continue...\n")
     # exit...
-    if opt == "4":
+    elif opt == "4":
         print("\nBye!\n")
         sys.exit(0)
     else:
         print("Wrong Option!")
+        input("\nPress any key to continue...\n")
 
