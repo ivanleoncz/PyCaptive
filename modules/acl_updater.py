@@ -8,22 +8,25 @@ import sys
 def add_ip(acl_file, ip):
     with open(acl_file, "r+") as f:
         f.seek(0,2)
-        f.write("\n" + ip)
+        f.write(ip + "\n")
     return "Done!"
 
 def del_ip(acl_file, ip):
     with open(acl_file,"r+") as f:
-        for line in f.readlines():
+        new_f = f.readlines()
+        f.seek(0)
+        f.truncate()
+        for line in new_f:
             if ip not in line:
                 f.write(line)
     return "Done!"
 
 def read_acl(acl_file):
     with open(acl_file,"r") as f:
-        print("\n----- IPs ------")
+        print("----------------")
         for line in f.readlines():
             print(line,end="")
-        print("\n----------------\n")
+        print("\n----------------")
     return "Done!"
 
 def list_acls():
@@ -31,10 +34,9 @@ def list_acls():
     if len(acls) == 0:
         print("NO ACLs WERE FOUND!")
     else:
-        print("\n----- ACLs -----")
+        print("\n[ACLs]")
         for acl in acls:
-            print(acl,end="")
-        print("\n----------------\n")
+            print("-",acl,end="")
     return "Done!"
 
 try:
@@ -43,17 +45,17 @@ try:
         print("\n=================================")
         print("========== ACL UPDATER ==========")
         print("=================================\n")
-        print("1. Modify ACL")
-        print("2. Read ACL")
-        print("3. List ACLs")
+        print("1. Modify")
+        print("2. Read")
+        print("3. List")
         print("4. Exit\n")
         opt = input("Option: ")
         # modify ACL
         if opt == "1":
-            call(['clear'])
             flag = "0"
             while flag == "0":
-                print("\n\n$ MODIFY\n")
+                call(['clear'])
+                print("\n\n\n$ MODIFY\n")
                 acls = glob("*.acl")
                 if len(acls) == 0:
                     print("NO ACLs WERE FOUND!")
@@ -68,7 +70,7 @@ try:
                     # add IP
                     if oper == "1":
                         list_acls()
-                        acl = input("ACL Name: ")
+                        acl = input("\n\nACL Name: ")
                         if os.path.isfile(acl):
                             read_acl(acl)
                             ip = input("\nAdd IP: ")
@@ -82,7 +84,7 @@ try:
                     # del IP
                     elif oper == "2":
                         list_acls()
-                        acl = input("ACL Name: ")
+                        acl = input("\n\nACL Name: ")
                         if os.path.isfile(acl):
                             read_acl(acl)
                             ip = input("\nDel IP: ")
@@ -101,35 +103,34 @@ try:
         # read ACL
         elif opt == "2":
             call(['clear'])
-            print("\n\n$ READ\n")
+            print("\n\n\n$ READ\n")
             acls = glob("*.acl")
             if len(acls) == 0:
                 print("NO ACLs WERE FOUND!\n")
                 input("Press any key to continue...\n")
             else:
-                for f in acls:
-                    print(f, end="")
+                list_acls()
                 acl = input("\n\nACL Name: ")
                 if os.path.isfile(acl):
                     read_acl(acl)
-                    input("Press any key to continue...\n")
+                    input("\n\nPress any key to continue...\n")
                 else:
                     print("ACL NOT FOUND!")
-                    input("Press any key to continue...\n")
+                    input("\nPress any key to continue...\n")
 
         # list ACLs
         elif opt == "3":
             call(['clear'])
-            print("\n\n$ LIST\n")
-            input("Press any key to continue...\n")
+            print("\n\n\n$ LIST\n")
             list_acls()
+            input("\n\nPress any key to continue...\n")
 
         # exit...
         elif opt == "4":
             print("\nBye!\n")
             sys.exit(0)
         else:
-            print("Wrong Option!")
+            print("Wrong Option!\n")
             input("Press any key to continue...\n")
 
 except KeyboardInterrupt:
