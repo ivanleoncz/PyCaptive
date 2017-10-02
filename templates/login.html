@@ -8,7 +8,25 @@
 	<style type="text/css">
 
       *    { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
-	  h1   { text-align: center; margin-top: 150px; }
+	  body { background-image: url("/static/login_background.jpg");}
+	  h1   { text-align: center; margin-top: 180px; color: #ffffff; font-size: 34px; }
+	  fieldset { 
+		  height: 175px; 
+		  width: 280px; 
+		  margin-left: auto; 
+		  margin-right: auto; 
+		  border-radius: 10px; 
+	  }
+	  #credentials { text-align: center; padding-top: 20px; }
+	  input { 
+		  height: 35px; 
+		  width: 230px; 
+		  border: 1px solid grey; 
+		  border-radius: 3px;
+		  padding-left: 10px; 
+		  margin: 10px 0px 0px 10px;
+	 	  font-size: 14px ; 
+	  }
 
     </style>
 
@@ -17,7 +35,16 @@
 
   <body>
 
-  	<h1> login </h1>
+  	<h1> Captive Portal </h1>
+	<form action="/login" method="post">
+	  <fieldset>
+		<div id="credentials">
+		  <input type="text" name="username" placeholder="User"><br>
+		  <input type="password" name="password" placeholder="Password"><br>
+		  <input type="submit" name="login" value="Login">
+		</div>
+	  </fieldset>
+	</form>
 
   </body>
 
