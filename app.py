@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 
+import bcrypt
+from getpass import getpass
 from flask import abort, Flask, render_template, request
 
 app = Flask(__name__)
+
+def password_check(passwd):
+    salt = bcrypt.gensalt()
+    password = "Yougotit*88".encode('utf-8')
+    hashed = bcrypt.hashpw(password,salt)
+    new_hashed = bcrypt.hashpw(passwd.encode('utf-8'),hashed)
+    if new_hashed == hashed:
+        return "ok"
 
 @app.route("/")
 def f_index():
@@ -17,7 +27,11 @@ def f_login():
     elif request.method == 'POST':
         name = request.form['username']
         passwd = request.form['password']
-        return "Processing login!"
+        check = password_check(passwd)
+        if check == "ok":
+            return "Login Successful!!!"
+        else:
+            return "Wrong Password..."
     else:
         # 405: Method Not Allowed
         abort(405)
