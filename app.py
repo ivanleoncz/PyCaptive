@@ -3,6 +3,7 @@
 import bcrypt
 from getpass import getpass
 from flask import abort, Flask, render_template, request
+from app_modules import mongodb
 
 app = Flask(__name__)
 
@@ -25,13 +26,18 @@ def f_login():
     if request.method == 'GET':
         return render_template("login.html")
     elif request.method == 'POST':
-        name = request.form['username']
-        passwd = request.form['password']
-        check = password_check(passwd)
-        if check == "ok":
-            return "Login Successful!!!"
+        username = request.form['username']
+        password = request.form['password']
+        print("POST Username:",username)
+        print("POST Password:",password)
+        mc = mongodb.Connector(username,password)
+        login = mc.login()
+        if login == "ok":
+            return "<h1> Login Successful!!! </h1>"
+        elif login == "nok":
+            return "<h1> Wrong Password... </h1>"
         else:
-            return "Wrong Password..."
+            return "<h1> Database Timeout! </h1>"
     else:
         # 405: Method Not Allowed
         abort(405)
