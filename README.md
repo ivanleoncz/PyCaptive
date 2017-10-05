@@ -1,4 +1,4 @@
-# PyCaptive
+# PyCaptive (under development...)
 
 ### A Captive Portal written in Python (and Flask).
 
