@@ -1,9 +1,11 @@
 #!/usr/bin/python3
+"""  MongoDB utilities for PyCaptive."""
 
+import bcrypt
 from pymongo import MongoClient
-""" MongoDB connector and tools for PyCaptive.  """
 
 class Connector:
+    """ MongoDB connector.  """
 
     db_user = "mongo"
     db_pass = "mongo"
@@ -23,18 +25,27 @@ class Connector:
         self.client = MongoClient(uri,serverSelectionTimeoutMS=6000)
 
     def login(self):
-        """ Connecting and looking for username/password"""
+        """ Connecting and searching for correct username and password.
+
+        0 - Login Ok!
+        1 - Wrong Password!
+        2 - User Not Found!
+        """
         self.connect()
         try:
             db = self.client["tjs"]
             col = db["Authentication"]
-            doc = col.find_one({"Username":self.username,"Password":self.password})
-            if doc:
-                return "ok"
+            hash_pass = col.find_one({"Username":self.username},{"Password":1,"_id":0})
+            if hash_pass:
+                hash_pass = hash_pass["Password"].encode("utf-8")
+                unhashed_pass = bcrypt.hashpw(self.password.encode('utf-8'),hash_pass)
+                if hash_pass == unhashed_pass:
+                    return 0
+                else:
+                    return 1
             else:
-                return "nok"
+                return 2
         except Exception as e:
             print("Exception:",e)
             return "db timeout"
 
- 
