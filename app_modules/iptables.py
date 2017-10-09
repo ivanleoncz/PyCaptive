@@ -1,31 +1,27 @@
 
 import iptc
 
-class PyTables:
+class Ruler:
 
     ip = None
+    oper = None
 
-    def __init__(self):
+    def __init__(self,ip,oper):
+        self.ip = ip
+        self.oper = oper
 
-    def add_rule(ip,op):
-        rule = iptc.Rule()
-        rule.src = ip
-        rule.protocol = "tcp"
-        rule.target = iptc.Target(rule, "DNAT")
-        chain = iptc.Chain(iptc.Table(iptc.Table.NAT), "INPUT")
-        if op == "add":
-            try:
-                chain.insert_rule(rule)
-                return "{"add_ip":"ok"}"
-            except:
-                return "{"add_ip":"nok"}"
-        elif op == "del":
-            try:
-                chain.delete_rule(rule)
-                return "{"del_ip":"ok"}"
-            except:
-                return "{"del_ip":"nok"}"
-        else:
-            return "Wrong option!"
-
-
+    def add_rule(self):
+        try:
+            table = iptc.Table(iptc.Table.NAT)
+            chain = iptc.Chain(table, "PREROUTING")
+            rule = iptc.Rule()
+            rule.src = self.ip
+            rule.protocol = "tcp"
+            rule.in_interface = "eth2"
+            match = rule.create_match('tcp')
+            match.dport = "80"
+            rule.target = rule.create_target("DROP")
+            rule.target.to_destination = "192.168.0.1:3128"
+            chain.insert_rule(rule)
+        except Exception as e:
+            print("Exception:", e)
