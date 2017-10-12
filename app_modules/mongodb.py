@@ -28,25 +28,28 @@ class Connector:
     def login_record(self,db):
         """ Recording successful login attempts. """
         col = db["AuthenticationTempRecords"]
-        login = datetime.now()
-        expire_time = login + timedelta(hours=3)
-        login = str(login).split(".")[0]
+        login_time = datetime.now()
+        expire_time = login_time + timedelta(hours=3)
+        login_time = str(login).split(".")[0]
         expire_time = str(expire_time).split(".")[0]
-        insert_record = col.insert_one({"Username":self.username,"IpAddress":self.ip,"LoginTime":login,"ExpireTime":expiretime})
+        insert_record = col.insert_one({"Username":self.username,"IpAddress":self.ip,"LoginTime":login_time,"ExpireTime":expire_time})
         if insert_record:
             return "ok"
         else:
             return "nok"
 
     def login(self):
-        """ Connecting and searching for correct username and password.
+        """ Connecting to MongoDB, validating username/password + other functions.
 
-        0 - Login Ok!
-        1 - Wrong Password!
-        2 - User Not Found!
+        0 - Login Process (Validation/Record/Firewall) Ok!
+        1 - User Not Found!
+        2 - Wrong Password!
+        3 - Login Record Failed!
+        4 - Firewall Rule Failed!
+        5 - Exception!
         """
-        self.connect()
         try:
+            self.connect()
             db = self.client["tjs"]
             col = db["Authentication"]
             hash_pass = col.find_one({"Username":self.username},{"Password":1,"_id":0})
@@ -54,17 +57,20 @@ class Connector:
                 hash_pass = hash_pass["Password"].encode("utf-8")
                 unhashed_pass = bcrypt.hashpw(self.password.encode('utf-8'),hash_pass)
                 if hash_pass == unhashed_pass:
-                    # firewall rule must apply here (or not ???...)
                     record = login_record()
                     if record == "ok":
-                        return 0
+                        firewall = test_rule()
+                        if firewall == "ok":
+                            return 0
+                        else:
+                            return 4
                     else:
-                        return 200
+                        return 3
                 else:
-                    return 1
+                    return 2
             else:
-                return 2
+                return 1
         except Exception as e:
-            print("Exception:",e)
-            return "db timeout"
+            # print("Exception:",e)
+            return 5
 
