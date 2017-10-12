@@ -2,6 +2,7 @@
 
 from flask import abort, Flask, render_template, request
 from app_modules import mongodb
+from app_modules import iptables
 
 app = Flask(__name__)
 
@@ -14,11 +15,7 @@ def f_index():
 
 @app.route("/login", methods=['GET','POST'])
 def f_login():
-    """ Processing request. 
-        
-        GET: loading login interface
-        POST: processing login request (form data)
-    """
+    """ Processing request. """
     if request.method == 'GET':
         return render_template("login.html")
     elif request.method == 'POST':
@@ -26,14 +23,17 @@ def f_login():
         password = request.form['password']
         mc = mongodb.Connector(username,password)
         login = mc.login()
-        if login == 0:
-            return "<h1> Login Successful! </h1>"
-        elif login == 1 or login == 2:
+        if login == "0x0000":
+            firewall = iptables.Ruler(self.ipaddr)
+            allow = firewall.test_rule()
+            if allow == "0x0000":
+                return "<h1> Login Successful! </h1>"
+            else:
+                return "Error: %s" % allow 
+        elif login == "0x0db2" or login == "0x0db3":
             return render_template("login.html",login_failed="Check Your Credentials...")
-        elif login == 2:
-            return "<h1> Database Error... </h1>"
         else:
-            return "<h1> Database Module Error... </h1>"
+            return "<h1> Return Code: %s </h1>" % login
     else:
         # 405: Method Not Allowed
         abort(405)
