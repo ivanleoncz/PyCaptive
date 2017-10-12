@@ -14,12 +14,12 @@
 
 ## Error Code Definition
 
-##### Database/Login
+##### IPTABLES/Netfilter
 - 0x0000 - Successful
 - 0x0fw1 - Exception
 - 0x0fw2 - Not Found
 
-##### IPTABLES/Netfilter
+##### Database/Login
 - 0x0000 - Successful
 - 0x0db1 - Exception
 - 0x0db2 - User Not Found
@@ -28,4 +28,5 @@
 
 
 For any questions,
+
 @ivanleoncz
