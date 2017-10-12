@@ -1,16 +1,31 @@
-# PyCaptive (under development...)
+# PyCaptive
 
 ### A Captive Portal written in Python (and Flask).
 
-The purposes of this application are:
+## Purposes
 
 - to provide a system for authentication of users who want to obtain access to the Internet (Wired or WI-FI) on a Transparent Proxy 
 - to maintain a database and history of authenticated "Users" VS "IP addresses"
 - to update ACL file used for IPTABLES/Netfilter rules
 
-Although this application could not be a hundred percent scalable, when it comes to adapt to other solutions, the idea and the workflow could be adapted. So, feel free to fork and make your own customizations, respecting the license which rules on this project.
+## Status
+
+- Under Development
+
+## Error Code Definition
+
+##### Database/Login
+- 0x0000 - Successful
+- 0x0fw1 - Exception
+- 0x0fw2 - Not Found
+
+##### IPTABLES/Netfilter
+- 0x0000 - Successful
+- 0x0db1 - Exception
+- 0x0db2 - User Not Found
+- 0x0db3 - Wrong Password
+- 0x0db4 - Login Record Failed
 
 
-Thank you,
-
+For any questions,
 @ivanleoncz
