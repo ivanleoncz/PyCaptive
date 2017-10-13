@@ -1,6 +1,6 @@
 # PyCaptive
 
-#### A Captive Portal written in Python (and Flask).
+A Captive Portal written in Python (and Flask).
 
 
 ## Purpose
