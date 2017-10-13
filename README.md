@@ -1,16 +1,16 @@
 # PyCaptive
 
-### A Captive Portal written in Python (and Flask).
+#### A Captive Portal written in Python (and Flask).
 
 
 ## Purpose
 
-- to provide authentication system for Tranparent Proxy environments composed of Wired and Wireless devices
+To provide authentication system for Tranparent Proxy environments composed of Wired and Wireless devices
 
 
 ## Status
 
-- Under Development
+Under Development
 
 
 ## Main Technologies
