@@ -2,24 +2,32 @@
 
 ### A Captive Portal written in Python (and Flask).
 
-## Purposes
 
-- to provide a system for authentication of users who want to obtain access to the Internet (Wired or WI-FI) on a Transparent Proxy 
-- to maintain a database and history of authenticated "Users" VS "IP addresses"
-- to update ACL file used for IPTABLES/Netfilter rules
+## Purpose
+
+- to provide authentication system for Tranparent Proxy environments composed of Wired and Wireless devices
+
 
 ## Status
 
 - Under Development
 
+
+## Main Technologies
+
+- Flask v0.12.2
+- PyMongo v3.5.1
+- python-iptables 0.12.0
+
+
 ## Error Code Definition
 
-##### IPTABLES/Netfilter
+##### Netfilter
 - 0x0000 - Successful
 - 0x0fw1 - Exception
 - 0x0fw2 - Not Found
 
-##### Database/Login
+##### Login/Database
 - 0x0000 - Successful
 - 0x0db1 - Exception
 - 0x0db2 - User Not Found
