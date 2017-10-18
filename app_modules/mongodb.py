@@ -5,10 +5,11 @@
      Return Codes:
 
      0x0000 - Successful
-     0x0db1 - Exception
+     0x0db1 - Fail To Execute Query
      0x0db2 - User Not Found
      0x0db3 - Wrong Password
-     0x0db4 - Login Record Failed
+     0x0db4 - Fail To Add Record
+     0x0db5 - Fail To Del Record
 """
 
 import bcrypt
@@ -16,52 +17,58 @@ from datetime import datetime,timedelta
 from pymongo import MongoClient
 
 class Connector:
-    """ MongoDB connector.  """
-
-    db_user = "mongo"
-    db_pass = "mongo"
-
+    """ MongoDB connector. """
+    db = None
     client = None
     username = None
-    password = None
-    ip = None
-
-    def __init__(self,username,password,ip):
-        """ Storing username and password from Flask (POST)."""
-        self.username = username
-        self.password = password
+    ipaddress = None
 
     def connect(self):
-        """ Preparing MongoDB connector. """
-        uri = "mongodb://{0}:{1}@127.0.0.1:27017".format(self.db_user,self.db_pass)
+        """ Preparing Client. """
+        db_user = "mongo"
+        db_pass = "mongo"
+        uri = "mongodb://{0}:{1}@127.0.0.1:27017".format(db_user,db_pass)
         self.client = MongoClient(uri,serverSelectionTimeoutMS=6000)
 
-    def login_record(self,db):
-        """ Recording successful login attempts. """
-        try:
-            col = db["AuthenticationTempRecords"]
-            login_time = datetime.now()
-            expire_time = login_time + timedelta(hours=3)
-            login_time = str(login).split(".")[0]
-            expire_time = str(expire_time).split(".")[0]
-            insert_record = col.insert_one({"Username":self.username,"IpAddress":self.ip,"LoginTime":login_time,"ExpireTime":expire_time})
-            if insert_record:
+    def login_record(self,oper):
+        """ Login Record Tasks. """
+        collection = self.db.AuthenticationTempRecords
+        if oper == "add":
+            try:
+                login_time = datetime.now()
+                expire_time = login_time + timedelta(hours=3)
+                collection.insert_one({"Username":self.username,"IpAddress":self.ipaddress"LoginTime":login_time,"ExpireTime":expire_time})
                 return "0x0000"
-        except Exception:
-            return "0x0db1"
-
-    def login(self):
+            except Exception as e:
+                return "0x0db4"
+        elif oper == "del":
+            try:
+                time_now = datetime.now()
+                time_now = str(time_now).split(".")[0]
+                expired_sessions = collection.find().distinct("ExpireTime")
+                for session in expired_sessions:
+                    if session < time_now:
+                        collection.delete_one({"Username":self.username})    
+                return "0x0000"
+            except Exception as e:
+                return "0x0db5"
+        else:
+            return "Wrong Option!"
+            
+    def login(self,username,password,ipaddress):   
         """ Connecting to MongoDB, validating username/password + other functions. """
+        self.username = username
+        self.ipaddress = ipaddress
         try:
             self.connect()
-            db = self.client["tjs"]
-            col = db["Authentication"]
-            hash_pass = col.find_one({"Username":self.username},{"Password":1,"_id":0})
+            self.db = self.client.tjs
+            collection = self.db.Authentication
+            hash_pass = collection.find_one({"Username":self.username},{"Password":1,"_id":0})
             if hash_pass:
                 hash_pass = hash_pass["Password"].encode("utf-8")
-                unhashed_pass = bcrypt.hashpw(self.password.encode('utf-8'),hash_pass)
+                unhashed_pass = bcrypt.hashpw(password.encode('utf-8'),hash_pass)
                 if hash_pass == unhashed_pass:
-                    record = login_record()
+                    record = self.login_record("add")
                     if record == "0x0000":
                         return "0x0000"
                     else:
@@ -70,6 +77,6 @@ class Connector:
                     return "0x0db3"
             else:
                 return "0x0db2"
-        except Exception:
+        except Exception as e:
             return "0x0db1"
 
