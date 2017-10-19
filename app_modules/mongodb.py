@@ -35,7 +35,7 @@ class Connector:
         collection = db.AuthenticationTempRecords
         try:
             login_time = datetime.now()
-            expire_time = login_time + timedelta(hours=3)
+            expire_time = login_time + timedelta(minutes=5)
             collection.insert_one({"Username":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
             return "0x0000"
         except Exception:
