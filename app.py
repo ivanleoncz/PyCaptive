@@ -6,10 +6,14 @@ from app_modules import mongodb
 from app_modules import iptables
 
 # this job could be the worker which will evaluate the expired sessions at MongoDB
-def sensor():
-    """ Function for test purposes. """
+def session_verifier():
     print("Scheduler is alive!")
-
+    """ Verifies expired sessions. """
+    mc = mongodb.Connector()
+    expire_sessions = mc.del_record()
+    if expire_sessions == "0x0000":
+        print("Sessions were deleted!")
+        
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(sensor,'interval',seconds=60)
 sched.start()
@@ -32,21 +36,28 @@ def f_login():
     elif request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        client_ip = request.remote_addr
-        mc = mongodb.Connector(username,password,client_ip)
-        login = mc.login()
+        ipaddress = request.remote_addr
+        # process login
+        mc = mongodb.Connector()
+        login = mc.login(username,password)
         if login == "0x0000":
-            firewall = iptables.Ruler(client_ip)
-            allow = firewall.test_add_rule()
-            if allow == "0x0000":
-                return "<h1> Login Successful! </h1>"
+            # process login record
+            login_record = mc.add_record(username,ipaddress)
+            if login_record == "0x0000":
+                # process firewall rule
+                firewall = iptables.Ruler(ipaddress)
+                allow = firewall.test_add_rule()
+                if allow == "0x0000":
+                    return "<h1> Login Successful! </h1>"
+                else:
+                    return allow
             else:
-                return "Error: %s" % allow 
+                return login_record
         elif login == "0x0db2" or login == "0x0db3":
             message = "Check Your Credentials..."
             return render_template("login.html",login_failed=message)
         else:
-            return "<h1> Return Code: %s </h1>" % login
+            return login
     else:
         # 405: Method Not Allowed
         abort(405)
