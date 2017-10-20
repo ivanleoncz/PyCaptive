@@ -5,17 +5,17 @@ from flask import abort, Flask, render_template, request
 from app_modules import mongodb
 from app_modules import iptables
 
-# this job could be the worker which will evaluate the expired sessions at MongoDB
-def session_verifier():
+# SES (Session Expiration Scheduler)
+def se_scheduler():
     print("Scheduler is alive!")
     """ Verifies expired sessions. """
     mc = mongodb.Connector()
-    expire_sessions = mc.del_record()
-    if expire_sessions == "0x0000":
-        print("Sessions were deleted!")
+    expired_sessions = mc.del_record()
+    if expired_sessions != 0:
+        print("Expired Sessions:",expired_sessions)
         
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(sensor,'interval',seconds=60)
+sched.add_job(se_scheduler,'interval',seconds=60)
 sched.start()
 
 
