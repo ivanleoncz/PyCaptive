@@ -42,21 +42,21 @@ class Connector:
             print("ERROR: fail TO ADD login record...")
             return "0x0db4"
 
-    def del_record(self):
+    def del_records(self):
         """  Deleting Login Record """
         self.connect()
         db = self.client.tjs
         collection = db.AuthenticationTempRecords
         try:
-            time_now = datetime.now()
-            time_now = str(time_now).split(".")[0]
             expired_sessions = collection.find().distinct("ExpireTime")
+            deleted_sessions = 0
             for session in expired_sessions:
-                if session < time_now:
-                    collection.delete_one({"ExpireTime":session})    
-            return "0x0000"
-        except Exception:
-            print("ERROR: fail TO DEL login record...")
+                if session < datetime.now():
+                    collection.delete_one({"ExpireTime":session})
+                    deleted_sessions += 1
+            return deleted_sessions
+        except Exception as e:
+            print("ERROR: fail TO DEL login record...:",e)
             return "0x0db5"
             
     def login(self,username,password):   
