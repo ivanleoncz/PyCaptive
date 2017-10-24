@@ -10,9 +10,14 @@ def se_scheduler():
     print("Scheduler is alive!")
     """ Verifies expired sessions. """
     mc = mongodb.Connector()
-    expired_sessions = mc.del_record()
-    if expired_sessions != 0:
+    expired_sessions = mc.del_records()
+    expired_len = len(expired_sessions)
+    if expired_len > 0:
         print("Expired Sessions:",expired_sessions)
+        fw = iptables.Worker()
+        counter = fw.test_del_rule(expired_sessions)
+        if counter > 0:
+            print("Removed Rules:", counter)
         
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(se_scheduler,'interval',seconds=60)
@@ -45,8 +50,8 @@ def f_login():
             login_record = mc.add_record(username,ipaddress)
             if login_record == "0x0000":
                 # process firewall rule
-                firewall = iptables.Ruler(ipaddress)
-                allow = firewall.test_add_rule()
+                firewall = iptables.Worker()
+                allow = firewall.test_add_rule(ipaddress)
                 if allow == "0x0000":
                     return "<h1> Login Successful! </h1>"
                 else:
