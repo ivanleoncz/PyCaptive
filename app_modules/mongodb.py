@@ -35,7 +35,7 @@ class Connector:
         collection = db.AuthenticationTempRecords
         try:
             login_time = datetime.now()
-            expire_time = login_time + timedelta(minutes=5)
+            expire_time = login_time + timedelta(minutes=2)
             collection.insert_one({"Username":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
             return "0x0000"
         except Exception:
@@ -48,12 +48,13 @@ class Connector:
         db = self.client.tjs
         collection = db.AuthenticationTempRecords
         try:
-            expired_sessions = collection.find().distinct("ExpireTime")
-            deleted_sessions = 0
-            for session in expired_sessions:
+            sessions = collection.find().distinct("ExpireTime")
+            deleted_sessions = []
+            for session in sessions:
+                ip = collection.find_one({"ExpireTime":session},{"IpAddress":1,"_id":0})
                 if session < datetime.now():
                     collection.delete_one({"ExpireTime":session})
-                    deleted_sessions += 1
+                    deleted_sessions.append(ip["IpAddress"])
             return deleted_sessions
         except Exception as e:
             print("ERROR: fail TO DEL login record...:",e)
