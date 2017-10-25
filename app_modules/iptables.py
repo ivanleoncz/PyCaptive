@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 
-""" Interface for IPTABLES/Netfilter. 
-    
-    Return Codes:
-
-    0x0000 - Successful
-    0x0fw1 - fail to add firewall rule
-"""
+""" Interface for IPTABLES/Netfilter. """
 
 import iptc
 
@@ -26,10 +20,9 @@ class Worker:
             match = rule.create_match("tcp")
             match.dport = "9999"
             chain.insert_rule(rule)
-            return "0x0000"
+            return 0
         except Exception as e:
-            print("ERROR: fail TO ADD firewall rule:", e)
-            return "0x0fw1"
+            return "ERROR: %s" % e
 
     def test_del_rule(self,ips):
         """ Test Rule (del). """
@@ -53,10 +46,9 @@ class Worker:
             table.autocommit = True
             return deleted_rules
         except Exception as e:
-            print("ERROR: fail TO DEL firewall rule:",e)
-            return "0x0fw1"
+            return "ERROR: %s" % e
 
-    # ---> need review
+    # ---> needs review...
     def add_rule(self,ip):
         """ Adding rule. """
         try:
@@ -71,13 +63,12 @@ class Worker:
             match = rule.create_match('tcp')
             match.dport = "80"
             chain.insert_rule(rule)
-            return "0x0000"
-        except Exception:
-            print("ERROR: fail TO ADD firewall rule...")
-            return "0x0fw1"
+            return 0
+        except Exception as e:
+            return "ERROR: %s" % e
 
-    # ---> need review
-    def del_rule(self,ip):
+    # ---> needs review...
+    def del_rule(self,ips):
         """ Deleting rule. """
         try:
             table = iptc.Table(iptc.Table.NAT)
@@ -86,7 +77,6 @@ class Worker:
                 if rule.src == ip:
                     chain.delete_rule(rule)
                     break
-            return "0x0000"
-        except Exception:
-            print("ERROR: fail TO DEL firewall rule...")
-            return "0x0fw1"
+            return 0
+        except Exception as e:
+            return "ERROR: %s" % e
