@@ -2,22 +2,30 @@
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import abort, Flask, render_template, request
+import logging
+from logging.handlers import RotatingFileHandler
 from app_modules import mongodb
 from app_modules import iptables
 
 # SES (Session Expiration Scheduler)
 def se_scheduler():
-    print("Scheduler is alive!")
     """ Verifies expired sessions. """
+    logger.error('%s',"Scheduler is alive!")
     mc = mongodb.Connector()
     expired_sessions = mc.del_records()
-    expired_len = len(expired_sessions)
-    if expired_len > 0:
-        print("Expired Sessions:",expired_sessions)
-        fw = iptables.Worker()
-        counter = fw.test_del_rule(expired_sessions)
-        if counter > 0:
-            print("Removed Rules:", counter)
+    if type(expired_sessions) == list:
+        expired_len = len(expired_sessions)
+        if expired_len > 0:
+            logger.error('%s:%s',"Expired Sessions",expired_sessions)
+            fw = iptables.Worker()
+            counter = fw.test_del_rule(expired_sessions)
+            if type(counter) == int:
+                if counter > 0:
+                    logger.error('%s:%s',"Removed Rules",counter)
+            else:
+                logger.error('%s:%s',"Exception",counter)
+    else:
+        logger.error('%s:%s',"Exception",expired_sessions)
         
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(se_scheduler,'interval',seconds=60)
@@ -45,28 +53,34 @@ def f_login():
         # process login
         mc = mongodb.Connector()
         login = mc.login(username,password)
-        if login == "0x0000":
+        if login == 0:
             # process login record
             login_record = mc.add_record(username,ipaddress)
-            if login_record == "0x0000":
+            if login_record == 0:
                 # process firewall rule
                 firewall = iptables.Worker()
                 allow = firewall.test_add_rule(ipaddress)
-                if allow == "0x0000":
+                if allow == 0:
                     return "<h1> Login Successful! </h1>"
                 else:
-                    return allow
+                    logger.error('%s:%s',"Exception",allow)
+                    return "fail..."
             else:
-                return login_record
-        elif login == "0x0db2" or login == "0x0db3":
+                logger.error('%s:%s',"Exception",login_record)
+                return "fail..."
+        elif login == 1 or login == 2:
             message = "Check Your Credentials..."
             return render_template("login.html",login_failed=message)
         else:
-            return login
+            logger.error('%s:%s',"Exception",login)
+            return "fail..."
     else:
         # 405: Method Not Allowed
         abort(405)
 
 if __name__ == "__main__":
+    handler = RotatingFileHandler('captive_portal.log',maxBytes=50000000, backupCount=5)
+    logger = logging.getLogger('__name__')
+    logger.setLevel(logging.ERROR)
+    logger.addHandler(handler)
     app.run(host="127.0.0.1",port=14900)
-
