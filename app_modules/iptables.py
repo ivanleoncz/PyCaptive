@@ -27,17 +27,14 @@ class Worker:
     def test_del_rule(self,ips):
         """ Test Rule (del). """
         try:
-            print("IPs:",ips)
             table = iptc.Table(iptc.Table.FILTER)
             chain = iptc.Chain(table, "INPUT")
             table.autocommit = False
             deleted_rules = 0
             for ip in ips:
-                print("Processing IP:",ip)
                 for rule in chain.rules:
                     ip_rule = rule.src.split('/')[0]
                     if ip_rule == ip and rule.in_interface is not None and rule.in_interface == "lo":
-                        print("Rule Found!")
                         for match in rule.matches:
                             if match.dport == "9999":
                                 chain.delete_rule(rule)
