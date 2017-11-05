@@ -26,6 +26,7 @@ class Connector:
             login_time = datetime.now()
             expire_time = login_time + timedelta(minutes=2)
             collection.insert_one({"Username":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
+            print("MONGODB: add_record() has been called.")
             return 0
         except Exception as e:
             return "ERROR: %s" % e
@@ -43,6 +44,7 @@ class Connector:
                 if session < datetime.now():
                     collection.delete_one({"ExpireTime":session})
                     deleted_sessions.append(ip["IpAddress"])
+            print("MONGODB: del_records() has been called.")
             return deleted_sessions
         except Exception as e:
             return "ERROR: %s" % e
@@ -58,6 +60,7 @@ class Connector:
                 hash_pass = hash_pass["Password"].encode("utf-8")
                 unhashed_pass = bcrypt.hashpw(password.encode('utf-8'),hash_pass)
                 if hash_pass == unhashed_pass:
+                    print("MONGODB: login() has been called.")
                     return 0
                 else:
                     return 2
