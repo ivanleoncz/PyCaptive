@@ -16,13 +16,22 @@ class Worker:
             rule.src = ip
             rule.protocol = "tcp"
             rule.in_interface =  "lo"
-            rule.target = rule.create_target("DROP")
-            match = rule.create_match("tcp")
+            match = iptc.Match(rule, "tcp")
             match.dport = "9999"
+            rule.add_match(match)
+            target = iptc.Target(rule, "DROP")
+            rule.target = target
             chain.insert_rule(rule)
+            print("Table:",table)
+            print("Chain:",chain)
+            print("Rule:",rule)
+            print("Match:",match)
+            print("Target:",target)
+            print("IPTABLES: test_add_rule() has been called.")
             return 0
         except Exception as e:
             return "ERROR: %s" % e
+
 
     def test_del_rule(self,ips):
         """ Test Rule (del). """
@@ -45,8 +54,8 @@ class Worker:
         except Exception as e:
             return "ERROR: %s" % e
 
-    # ---> needs review...
-    def add_rule(self,ip):
+
+    def add_rule(self,ip): # ---> needs review...
         """ Adding rule. """
         try:
             table = iptc.Table(iptc.Table.NAT)
@@ -64,8 +73,8 @@ class Worker:
         except Exception as e:
             return "ERROR: %s" % e
 
-    # ---> needs review...
-    def del_rule(self,ips):
+
+    def del_rule(self,ips): # ---> needs review...
         """ Deleting rule. """
         try:
             table = iptc.Table(iptc.Table.NAT)
