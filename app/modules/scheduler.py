@@ -10,6 +10,7 @@ def ses(): # Session Expiration Scheduler
     logs = logger.Logger()
     log = logs.config()
     log.error("Running Scheduler!!!")
+    print("SCHEDULER: running!")
     mc = mongodb.Connector()
     expired_sessions = mc.del_records()
     if type(expired_sessions) == list:
