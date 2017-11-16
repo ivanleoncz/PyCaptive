@@ -2,87 +2,76 @@
 
 """ Interface for IPTABLES/Netfilter. """
 
-import iptc
+import subprocess as sp
 
 class Worker:
     """ IPTABLES/Netfilter jobs."""
 
     def test_add_rule(self,ip):
-        """ Test Rule (add). """
+        """ Test Purposes: Add Rule """
         try:
-            table = iptc.Table(iptc.Table.FILTER)
-            chain = iptc.Chain(table, "INPUT")
-            rule = iptc.Rule()
-            rule.src = ip
-            rule.protocol = "tcp"
-            rule.in_interface =  "lo"
-            match = iptc.Match(rule, "tcp")
-            match.dport = "9999"
-            rule.add_match(match)
-            target = iptc.Target(rule, "DROP")
-            rule.target = target
-            chain.insert_rule(rule)
-            print("Table:",table)
-            print("Chain:",chain)
-            print("Rule:",rule)
-            print("Match:",match)
-            print("Target:",target)
             print("IPTABLES: test_add_rule() has been called.")
-            return 0
+            r = sp.call(['/sbin/iptables', '-A', 'INPUT', '-i', 'lo', 
+                                                '-s', ip, '-p', 'tcp', '--dport', '10800', '-j', 'DROP'])
+            if r == 0:
+                print("IPTABLES: firewall rule has been ADDED.")
+                return 0
+            else:
+                print("IPTABLES: fail to ADD firewall rule.")
+                return 1
         except Exception as e:
             return "ERROR: %s" % e
 
 
     def test_del_rule(self,ips):
-        """ Test Rule (del). """
+        """ Test Purposes; Delete Rules """
         try:
-            table = iptc.Table(iptc.Table.FILTER)
-            chain = iptc.Chain(table, "INPUT")
-            table.autocommit = False
-            deleted_rules = 0
+            print("IPTABLES: test_add_rule() has been called.")
+            rules = 0
             for ip in ips:
-                for rule in chain.rules:
-                    ip_rule = rule.src.split('/')[0]
-                    if ip_rule == ip and rule.in_interface is not None and rule.in_interface == "lo":
-                        for match in rule.matches:
-                            if match.dport == "9999":
-                                chain.delete_rule(rule)
-                                deleted_rules += 1
-            table.commit()
-            table.autocommit = True
-            return deleted_rules
+                r = sp.call(['/sbin/iptables', '-D', 'INPUT', '-i', 'lo', 
+                                                    '-s', ip, '-p', 'tcp', '--dport', '10800', '-j', 'DROP'])
+                if r == 0:
+                    print("IPTABLES: firewall rule has been DELETED.")
+                    rules += 1
+                else:
+                    print("IPTABLES: fail to DELETE firewall rule.")
+            return rules
         except Exception as e:
             return "ERROR: %s" % e
 
 
-    def add_rule(self,ip): # ---> needs review...
+    def add_rule(self,ip):
         """ Adding rule. """
         try:
-            table = iptc.Table(iptc.Table.NAT)
-            chain = iptc.Chain(table, "PREROUTING")
-            rule = iptc.Rule()
-            rule.src = ip
-            rule.protocol = "tcp"
-            rule.in_interface = "eth2"
-            rule.target = rule.create_target("DROP")
-            rule.target.to_destination = "192.168.0.1:3128"
-            match = rule.create_match('tcp')
-            match.dport = "80"
-            chain.insert_rule(rule)
-            return 0
+            print("IPTABLES: test_add_rule() has been called.")
+            r = sp.call(['/sbin/iptables', '-I', 'PREROUTING', '1', '-i', 'eth2', 
+                                                          '-s', ip, '-p', 'tcp', '--dport', '80', 
+                                                          '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
+            if r == 0:
+                print("IPTABLES: firewall rule has been ADDED.")
+                return 0
+            else:
+                print("IPTABLES: fail to ADD firewall rule.")
+                return 1
         except Exception as e:
             return "ERROR: %s" % e
 
 
-    def del_rule(self,ips): # ---> needs review...
+    def del_rule(self,ips):
         """ Deleting rule. """
         try:
-            table = iptc.Table(iptc.Table.NAT)
-            chain = iptc.Chain(table, "PREROUTING")
-            for rule in chain.rules:
-                if rule.src == ip:
-                    chain.delete_rule(rule)
-                    break
-            return 0
+            print("IPTABLES: test_add_rule() has been called.")
+            rules = 0
+            for ip in ips:
+                r = sp.call(['/sbin/iptables', '-I', 'PREROUTING', '-i', 'eth2', 
+                                                         '-s', ip, '-p', 'tcp', '--dport', '80', 
+                                                         '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
+                if r == 0:
+                    print("IPTABLES: firewall rule has been DELETED.")
+                    rules += 1
+                else:
+                    print("IPTABLES: fail to DELETE firewall rule.")
+            return rules
         except Exception as e:
             return "ERROR: %s" % e
