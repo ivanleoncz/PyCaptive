@@ -1,33 +1,30 @@
+<!DOCTYPE html>
 <html>
-
 
   <head>
 
   	<title> Captive Portal </title>
 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	<style type="text/css">
 
-      *    { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
-	  body { background-image: url("/static/login_background.jpg");}
-	  h1   { text-align: center; margin-top: 180px; color: #ffffff; font-size: 34px; }
-	  h3   { text-align: center; color: #ffffff; font-size: 24}
-	  fieldset { 
-		  height: 175px; 
-		  width: 280px; 
-		  margin-left: auto; 
-		  margin-right: auto; 
-		  border-radius: 10px; 
-	  }
-	  #credentials { text-align: center; padding-top: 20px; }
+      *     { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+	  body  { background-image: url("/static/login_background.jpg");}
+	  h1    { text-align: center; margin-top: 200px; color: #ffffff; font-size: 34px; }
+	  #post { text-align: center; margin-top: 10px; }
 	  input { 
-		  height: 35px; 
-		  width: 230px; 
-		  border: 1px solid grey; 
+		  height: 35px; width: 220px; 
+		  border: 1px solid grey;  
 		  border-radius: 3px;
-		  padding-left: 10px; 
-		  margin: 10px 0px 0px 10px;
-	 	  font-size: 14px ; 
+		  margin-top: 10px;
+	 	  font-size: 14px ;
 	  }
+	  input[type="text"],
+	  input[type="password"] { 
+		  text-indent: 15px; 
+	  }
+	  h3    { text-align: center; color: #ffffff; font-size: 24}
 
     </style>
 
@@ -38,16 +35,13 @@
 
   	<h1> Captive Portal </h1>
 	<form action="/login" method="post">
-	  <fieldset>
-		<div id="credentials">
+		<div id="post">
 		  <input type="text" name="username" placeholder="User"><br>
 		  <input type="password" name="password" placeholder="Password"><br>
 		  <input type="submit" name="login" value="Login">
 		</div>
-	  </fieldset>
 	</form>
 	<h3> {{ login_failed }} </h3>
-
 
   </body>
 
