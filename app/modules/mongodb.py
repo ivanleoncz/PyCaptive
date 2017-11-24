@@ -3,22 +3,24 @@
 """  MongoDB utilities for PyCaptive. """
 
 import bcrypt
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from pymongo import MongoClient
 
+from app import log
+
 class Connector:
-    """ MongoDB connector. """
+    """ MongoDB connector and jobs: login, add session and delete session. """
     client = None
 
     def connect(self):
-        """ Preparing Client """
+        """ Preparing MongoDB client. """
         db_user = "mongo"
         db_pass = "mongo"
         uri = "mongodb://{0}:{1}@127.0.0.1:27017".format(db_user,db_pass)
         self.client = MongoClient(uri,serverSelectionTimeoutMS=6000)
 
-    def add_record(self,username,ipaddress):
-        """ Adding Login Record """
+    def add_session(self,username,ipaddress):
+        """ Adding login record. """
         self.connect()
         db = self.client.tjs
         collection = db.AuthenticationTempRecords
@@ -26,13 +28,14 @@ class Connector:
             login_time = datetime.now()
             expire_time = login_time + timedelta(minutes=2)
             collection.insert_one({"Username":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
-            print("MONGODB: add_record() has been called.")
+            log.error('%s %s %s %s', datetime.now(), "MONGODB", "EVENT:[Adding Session]", ipaddress)
             return 0
         except Exception as e:
-            return "ERROR: %s" % e
+            log.error('%s %s %s %s', datetime.now(), "MONGODB", "EVENT:[Exception]", e)
+            return e
 
-    def del_records(self):
-        """  Deleting Login Record """
+    def expire_sessions(self):
+        """  Deleting login record. """
         self.connect()
         db = self.client.tjs
         collection = db.AuthenticationTempRecords
@@ -44,13 +47,14 @@ class Connector:
                 if session < datetime.now():
                     collection.delete_one({"ExpireTime":session})
                     deleted_sessions.append(ip["IpAddress"])
-            print("MONGODB: del_records() has been called.")
+                    log.error('%s %s %s %s', datetime.now(), "MONGODB", "EVENT:[Expiring Sessions]", ipaddress)
             return deleted_sessions
         except Exception as e:
-            return "ERROR: %s" % e
+            log.error('%s %s %s %s', datetime.now(), "MONGODB", "EVENT:[Exception]", e)
+            return e
             
     def login(self,username,password):   
-        """ Connecting to MongoDB, validating username/password. """
+        """ Validating username and password. """
         try:
             self.connect()
             db = self.client.tjs
@@ -60,11 +64,14 @@ class Connector:
                 hash_pass = hash_pass["Password"].encode("utf-8")
                 unhashed_pass = bcrypt.hashpw(password.encode('utf-8'),hash_pass)
                 if hash_pass == unhashed_pass:
-                    print("MONGODB: login() has been called.")
+                    log.error('%s %s %s', datetime.now(), "MONGODB ", "EVENT:[Login] OK")
                     return 0
                 else:
+                    log.error('%s %s %s', datetime.now(), "MONGODB ", "EVENT:[Login] NOT_FOUND")
                     return 2
             else:
+                log.error('%s %s %s', datetime.now(), "MONGODB ", "EVENT:[Login] WRONG_CREDENTIALS")
                 return 1
         except Exception as e:
-            return "ERROR: %s" % e
+            log.error('%s %s %s %s', datetime.now(), "MONGODB", "EVENT:[Exception]", e)
+            return e
