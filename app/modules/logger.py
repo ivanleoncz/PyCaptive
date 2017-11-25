@@ -5,7 +5,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-def config(self):
+def config():
     """ Setting up log configuration. """
     conf = logging.getLogger('__name__')
     if not conf.handlers: # this if, avoid multiple execution of log messages
