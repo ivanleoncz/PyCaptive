@@ -38,7 +38,7 @@ class Worker:
                 if r == 0:
                     log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Deleting Rule TEST] OK")
                     rules += 1
-                else:I
+                else:
                     log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Deleting Rule TEST] NOK")
             return rules
         except Exception as e:
