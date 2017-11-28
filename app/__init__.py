@@ -4,8 +4,9 @@ from datetime import datetime
 from flask import Flask, request
 
 from app.modules import logger
-
 log = logger.config()
+
+from app.modules import scheduler
 
 app = Flask(__name__)
 
@@ -14,8 +15,9 @@ app = Flask(__name__)
 def after_request(response):
     if response.status_code != 500:
         timestamp = datetime.now()
-        log.error('%s %s %s %s %s %s',
-                   timestamp, 
+        log.error('[%s] %s %s %s %s %s %s',
+                   timestamp,
+                   "REQUEST",
                    request.remote_addr, 
                    request.method, 
                    request.scheme, 
