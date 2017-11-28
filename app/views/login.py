@@ -4,7 +4,8 @@
 from flask import abort, render_template, request
 
 from app import app, log
-from app.modules import iptables, mongodb
+from app.modules import iptables
+from app.modules import mongodb
 
 print("Module Loaded: views.login")
 
