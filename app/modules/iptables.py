@@ -17,13 +17,14 @@ class Worker:
                                            '-s', ip, '-p', 'tcp', 
                                            '--dport', '10800', '-j', 'DROP'])
             if r == 0:
-                log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Adding Rule TEST] OK")
+                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_add_rule:OK", ip)
                 return 0
             else:
-                log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Adding Rule TEST] NOK")
+                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_add_rule:NOK", ip)
                 return 4
         except Exception as e:
-            log.error('%s %s %s %s', datetime.now(), "IPTABLES", "EVENT:[Exception TEST]", e)
+            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule:EXCEPTION")
+            log.error('%s', e)
             return e
 
 
@@ -36,13 +37,14 @@ class Worker:
                                                '-s', ip, '-p', 'tcp', 
                                                '--dport', '10800', '-j', 'DROP'])
                 if r == 0:
-                    log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Deleting Rule TEST] OK")
+                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_del_rule:OK", ip)
                     rules += 1
                 else:
-                    log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Deleting Rule TEST] NOK")
+                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_del_rule:NOK", ip)
             return rules
         except Exception as e:
-            log.error('%s %s %s %s', datetime.now(), "IPTABLES", "EVENT:[Exception TEST]", e)
+            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule:EXCEPTION")
+            log.error('%s', e)
             return e
 
 
@@ -53,13 +55,14 @@ class Worker:
                                            '-s', ip, '-p', 'tcp', '--dport', '80', 
                                            '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
             if r == 0:
-                log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Adding Rule] OK")
+                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "add_rule:OK", ip)
                 return 0
             else:
-                log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Adding Rule] OK")
-                return "fail to add rule"
+                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "add_rule:NOK", ip)
+                return 4
         except Exception as e:
-            log.error('%s %s %s %s', datetime.now(), "IPTABLES", "EVENT:[Exception]", e)
+            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule:EXCEPTION")
+            log.error('%s', e)
             return e
 
 
@@ -72,11 +75,12 @@ class Worker:
                                                '-s', ip, '-p', 'tcp', '--dport', '80', 
                                                '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
                 if r == 0:
-                    log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Deleting Rule] OK")
+                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "del_rule:OK", ip)
                     rules += 1
                 else:
-                    log.error('%s %s %s', datetime.now(), "IPTABLES", "EVENT:[Deleting Rule] NOK")
+                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "del_rule:NOK", ip)
             return rules
         except Exception as e:
-            log.error('%s %s %s %s', datetime.now(), "IPTABLES", "EVENT:[Exception]", e)
+            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule:EXCEPTION")
+            log.error('%s', e)
             return e
