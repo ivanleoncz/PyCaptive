@@ -10,19 +10,20 @@ from app import log
 
 class Connector:
     """ MongoDB connector and jobs: login, add session and delete session. """
-    client = None
 
     def connect(self):
         """ Preparing MongoDB client. """
         db_user = "mongo"
         db_pass = "mongo"
-        uri = "mongodb://{0}:{1}@127.0.0.1:27017".format(db_user,db_pass)
-        self.client = MongoClient(uri,serverSelectionTimeoutMS=6000)
+        db_addr = "127.0.0.1:27017"
+        uri = "mongodb://{0}:{1}@{2}".format(db_user,db_pass,db_addr)
+        client = MongoClient(uri,serverSelectionTimeoutMS=6000)
+        return client
 
     def add_session(self,username,ipaddress):
         """ Adding login record. """
-        self.connect()
-        db = self.client.tjs
+        client = self.connect()
+        db = client.tjs
         collection = db.AuthenticationTempRecords
         try:
             login_time = datetime.now()
@@ -37,8 +38,8 @@ class Connector:
 
     def expire_sessions(self):
         """  Deleting login record. """
-        self.connect()
-        db = self.client.tjs
+        client = self.connect()
+        db = client.tjs
         collection = db.AuthenticationTempRecords
         try:
             sessions = collection.find().distinct("ExpireTime")
@@ -57,10 +58,10 @@ class Connector:
             
     def login(self,username,password):   
         """ Validating username and password. """
+        client = self.connect()
+        db = client.tjs
+        collection = db.Authentication
         try:
-            self.connect()
-            db = self.client.tjs
-            collection = db.Authentication
             hash_pass = collection.find_one({"Username":username},{"Password":1,"_id":0})
             if hash_pass:
                 hash_pass = hash_pass["Password"].encode("utf-8")
