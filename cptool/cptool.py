@@ -4,7 +4,7 @@ import os
 import sys
 
 import import_export
-import create_remove
+import create_remove_update
 
 imp = "import_users.csv"
 exp = "export_users.csv"
@@ -17,6 +17,7 @@ def helper():
     print("    --export:  export users [database -> .csv]")
     print("    --create:  create user")
     print("    --remove:  remove user")
+    print("    --update:  update user")
     print("\nExample:\n     python3",sys.argv[0],"--create\n")
 
 
@@ -33,11 +34,14 @@ if __name__ == "__main__":
             transfer = import_export.Transfer()
             transfer.export_users(exp)
         elif sys.argv[1] == "--create":
-            user = create_remove.Users()
+            user = create_remove_update.Users()
             user.create()
         elif sys.argv[1] == "--remove":
-            user = create_remove.Users()
+            user = create_remove_update.Users()
             user.remove()
+        elif sys.argv[1] == "--update":
+            user = create_remove_update.Users()
+            user.update()
         else:
             helper()
 
