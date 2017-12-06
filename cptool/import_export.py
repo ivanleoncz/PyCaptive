@@ -20,17 +20,17 @@ class Transfer:
                     user_data = {}
                     timestamp = datetime.now()
                     line_split = line.split(',')
-                    user_data["Nombre"] = line_split[0] 
+                    user_data["FullName"] = line_split[0] 
                     user_data["Area"] = line_split[1]
-                    user_data["Ocupación"] = line_split[2]
-                    user_data["Correo"] = line_split[3]
-                    user_data["Usuario"] = line_split[4]
+                    user_data["Role"] = line_split[2]
+                    user_data["Email"] = line_split[3]
+                    user_data["UserName"] = line_split[4]
                     salt = bcrypt.gensalt()
                     # Exception! Unicode-objects must be encoded before hashing 
                     passhash = bcrypt.hashpw(line_split[5].rstrip('\n'),salt)
-                    user_data["Clave"] = passhash
-                    user_data["Creación"] = timestamp
-                    user_data["Modificación"] = timestamp
+                    user_data["Password"] = passhash
+                    user_data["Creation"] = timestamp
+                    user_data["Modification"] = timestamp
                     insert = db.Authentication.insert_one(user_data)
             except Exception as e:
                 print("Exception!", e) 
