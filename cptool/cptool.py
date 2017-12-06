@@ -4,7 +4,8 @@ import os
 import sys
 
 import import_export
-import create_remove_update
+import usermgmt
+
 
 imp = "import_users.csv"
 exp = "export_users.csv"
@@ -15,6 +16,7 @@ def helper():
     print("\n[Captive Portal Tool]\n\nOptions:")
     print("    --import:  import users [.csv -> database]")
     print("    --export:  export users [database -> .csv]")
+    print("    --search:  search user")
     print("    --create:  create user")
     print("    --remove:  remove user")
     print("    --update:  update user")
@@ -26,21 +28,31 @@ if __name__ == "__main__":
     if args == 1 or args > 2:
         helper()
     else:
+        transfer = import_export.Transfer()
+        user = usermgmt.Users()
         if sys.argv[1] == "--import":
             if os.path.isfile(imp):
-                transfer = import_export.Transfer()
                 transfer.import_users(imp)
         elif sys.argv[1] == "--export":
-            transfer = import_export.Transfer()
+            if os.path.isfile(exp):
+                transfer.export_users(exp)
             transfer.export_users(exp)
+        elif sys.argv[1] == "--search":
+            opt = input("\n1. Full Data\n2. Normal\n\n> (Ex.: 1) ")
+            if opt == "1":
+                user.find_users("full")
+            elif opt == "2":
+                user.find_users("normal")
+            else:
+                print("Wrong Option!")
         elif sys.argv[1] == "--create":
-            user = create_remove_update.Users()
+            user = usermgmt.Users()
             user.create()
         elif sys.argv[1] == "--remove":
-            user = create_remove_update.Users()
+            user = usermgmt.Users()
             user.remove()
         elif sys.argv[1] == "--update":
-            user = create_remove_update.Users()
+            user = usermgmt.Users()
             user.update()
         else:
             helper()
