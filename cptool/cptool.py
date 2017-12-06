@@ -12,8 +12,8 @@ exp = "export_users.csv"
 
 
 def helper():
-    """ TODO: create export and edit functions... """
-    print("\n[Captive Portal Tool]\n\nOptions:")
+    print("\n[Captive Portal Tool]\n")
+    print("Options:")
     print("    --import:  import users [.csv -> database]")
     print("    --export:  export users [database -> .csv]")
     print("    --search:  search user")
@@ -38,11 +38,11 @@ if __name__ == "__main__":
                 transfer.export_users(exp)
             transfer.export_users(exp)
         elif sys.argv[1] == "--search":
-            opt = input("\n1. Full Data\n2. Normal\n\n> (Ex.: 1) ")
+            opt = input("\n1. Full Data\n2. Normal\n\n* (Ex.: 1): ")
             if opt == "1":
-                user.find_users("full")
+                user.search("full")
             elif opt == "2":
-                user.find_users("normal")
+                user.search("normal")
             else:
                 print("Wrong Option!")
         elif sys.argv[1] == "--create":
