@@ -1,14 +1,9 @@
 #!/usr/bin/python3
 
-import os
 import sys
 
-import import_export
+import database
 import usermgmt
-
-
-imp = "import_users.csv"
-exp = "export_users.csv"
 
 
 def helper():
@@ -28,15 +23,12 @@ if __name__ == "__main__":
     if args == 1 or args > 2:
         helper()
     else:
-        transfer = import_export.Transfer()
+        oper = database.MongoDB()
         user = usermgmt.Users()
         if sys.argv[1] == "--import":
-            if os.path.isfile(imp):
-                transfer.import_users(imp)
+            oper.import_users()
         elif sys.argv[1] == "--export":
-            if os.path.isfile(exp):
-                transfer.export_users(exp)
-            transfer.export_users(exp)
+            oper.export_users()
         elif sys.argv[1] == "--search":
             opt = input("\n1. Full Data\n2. Normal\n\n* (Ex.: 1): ")
             if opt == "1":
