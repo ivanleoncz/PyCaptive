@@ -9,59 +9,75 @@ mongo = database.MongoDB()
 db = mongo.connect()
 
 class Users:
-
-    def validate_pass(self,salt):
-        loop = 0
-        while loop == 0:
-            password = getpass(prompt="* Password: ").encode('utf-8')
-            password2 = getpass(prompt="* Retype:   ").encode('utf-8')
-            if password == password2:
-                loop = 1
-                passhash = bcrypt.hashpw(password, salt)
-                return passhash
-            else:
-                print("\n!!! Passwords are not the same !!! Try again!")
+    
+    def password_hash(self,salt):
+        password  = getpass(prompt="* Password: ").encode('utf-8')
+        password2 = getpass(prompt="* Retype:   ").encode('utf-8')
+        if password == password2:
+            pass_hash = bcrypt.hashpw(password, salt)
+            return pass_hash
+        else:
+            return "NOT_EQUAL"           
 
 
-    def check_credentials(self,username):
-        print("\n\n[Checking Credentials] ->",username,"\n")
+    def check_credentials(self):
         try:
+            print("\n\n[Checking Credentials]\n")
+            username = input("* Username: ")
             query = db.Authentication.find_one({"UserName":username},{"Password":1,"_id":0})
             if query is not None:
-                salt_db = query["Password"]
-                salt_pass = self.validate_pass(salt_db)
-                if salt_pass == salt_db:
-                    print("\nCorrect!\n")
+                pass_db = query["Password"]
+                pass_hash = self.password_hash(pass_db)
+                if pass_db == pass_hash:
+                    print("\nUserName: OK")
+                    print("Password: OK\n")
                 else:
-                    print("\nWrong Password!\n")
+                    print("\nUserName: OK")
+                    print("Password: NOK\n")    
             else:
-                print("UserName/Password Not Found!")
+                print("\nUserName: Not Found\n")
         except (Exception,KeyboardInterrupt) as e:
             print("\nInterrupted! ", e)
 
 
-    def find_users(self,search,opt):
-        if opt == "full":
+    def search(self,data):
+        print("\n\n[Searching Users]\n")
+        search_user = input("* Name or Username: ")
+        if data == "full":
             query = db.Authentication.find(
                 {"$or": 
                     [
-                        {"UserName":{"$regex":search+".*"}},
-                        {"FullName":{"$regex":search+".*"}}
+                        {"UserName":{"$regex":search_user+".*"}},
+                        {"FullName":{"$regex":search_user+".*"}}
                     ]
                     }, {"Password":0,"_id":0}
             )
-            return query
-        elif opt == "username":
+            if query.count() > 0:
+                for usr in query:       # presenting users that were found
+                    print("\n----------------------------------------------\n")
+                    print("- Nombre        : ",usr["FullName"])
+                    print("- Area          : ",usr["Area"])
+                    print("- Ocupación     : ",usr["Role"])
+                    print("- Correo        : ",usr["Email"])
+                    print("- Usuario       : ",usr["UserName"])
+                    print("- Creación      : ",usr["Creation"])
+                    print("- Actualización : ",usr["Modification"])
+                return "OK"
+        elif data == "normal":
             query = db.Authentication.find(
                 {"$or": 
                     [
-                        {"UserName":{"$regex":search+".*"}},
-                        {"FullName":{"$regex":search+".*"}}
+                        {"UserName":{"$regex":search_user+".*"}},
+                        {"FullName":{"$regex":search_user+".*"}}
                     ]
                 }, {"UserName":1,"_id":0}
             )
-            return query
-
+            if query.count() > 0:
+                for usr in query:       # presenting users that were found (just UserName)
+                    print("- ", usr["UserName"])
+                return "OK"
+        else:
+            return "NOT_FOUND"
 
 
     def create(self):
@@ -74,30 +90,25 @@ class Users:
             user_data["Role"]         = input("* Ocupación: ")
             user_data["Email"]        = input("* Correo:    ")
             user_data["UserName"]     = input("* Usuario:   ")
-            user_data["Password"]     = self.validate_pass(salt)
+            user_data["Password"]     = self.password_hash(salt)
             user_data["Creation"]     = datetime.now()
             user_data["Modification"] = datetime.now()
-            print("========================================\n")
-            print("* Nombre:    [",user_data["Name"],"]")
-            print("* Area:      [",user_data["Area"],"]")
-            print("* Ocupación: [",user_data["Role"],"]")
-            print("* Correo:    [",user_data["Email"],"]")
-            print("* Usuario:   [",user_data["UserName"],"]")
-            print("* Clave:     [",user_data["Password"],"]")
+            print("\n----------------------------------------------\n")
+            print("- Nombre:    [",user_data["FullName"],"]")
+            print("- Area:      [",user_data["Area"],"]")
+            print("- Ocupación: [",user_data["Role"],"]")
+            print("- Correo:    [",user_data["Email"],"]")
+            print("- Usuario:   [",user_data["UserName"],"]")
             loop = 0
             while loop == 0:
                 ans = input("\nConfirm (y/n)? ")
                 if ans == "y":
                     loop = 1
-                    insert = db.Authentication.insert_one(user_data)
-                    if insert is not None:
-                        print("Done!")
-                        self.check_credentials(user_data["UserName"])
-                    else:
-                        print("Fail to process query!")
+                    db.Authentication.insert_one(user_data)
+                    print("\nDone!\n")
                 elif ans == "n":
                     loop = 1
-                    print("Aborted!")
+                    print("\nAborted!\n")
                 else:
                     input("Wrong option! Press any key...")
         except (Exception,KeyboardInterrupt) as e:
@@ -106,67 +117,70 @@ class Users:
 
     def remove(self):
         try:
+            self.search("normal")
             print("\n\n[Removing User]\n")
-            user = input("Search: ")
-            query = self.find_users(user,"username")
-            for user in query:
-                print("*", user["UserName"])
-            user = input("\nInsert the username: ")
-            remove = db.Authentication.delete_one({"UserName":user})
-            if remove is not None:
-                print("Done!")
-            else:
-                print("Fail to process query!")
+            user = input("* Username: ")
+            data = db.Authentication.delete_one({"UserName":user})
+            print("Data:",data)
+            print("\nDone!\n")
         except Exception as e:
             print("\nInterrupted! ", e)
 
 
     def update(self):
-        try:
+        try: 
+            users = self.search("full")    # find all users that have FullName or UserName similar
             print("\n\n[Update User]\n")
-            user = input("Search: ")
-            query = self.find_users(user,"full")
-            for usr in query:
-                print("\n----------------------------------------------")
-                print("* Nombre        : ",usr["Name"])
-                print("* Area          : ",usr["Area"])
-                print("* Ocupación     : ",usr["Role"])
-                print("* Correo        : ",usr["Email"])
-                print("* Usuario       : ",usr["UserName"])
-                print("* Creación      : ",usr["Creation"])
-                print("* Actualización : ",usr["Modification"])
-            user = input("Username: ")
-            query = db.Authentication.find_one({"UserName": user})
-            for usr in query:
-                nombre  = usr["Name"]
-                area    = usr["Area"]
-                role    = usr["Role"]
-                correo  = usr["Email"]
-                usuario = usr["UserName"]
-            print("\n1. Nombre\n2. Area\n3. Ocupación\n4. Correo\n5. Usuario ")
-            opt = input("Opción (ex.: 5) ? ")
-            if opt == "1":
-                query = db.Authentication.find_one({"FullName":})
-            elif opt == "2":
-            elif opt == "3":
-            elif opt == "4":
-            elif opt == "5":
-
-
-                query = db.Authentication.update_one({'Usuario':user},{'$set':{'Usuario':user}})
-                if query is not None:
-                    print("")
-                    query = db.Authetication.find_one({'Usuario':user},{"Password":0,"_id":0})
-                    if query is not None:
-                        print("\n----------------------------------------------")
-                        print("* Nombre        : ",usr["Name"])
-                        print("* Area          : ",usr["Area"])
-                        print("* Ocupación     : ",usr["Role"])
-                        print("* Correo        : ",usr["Email"])
-                        print("* Usuario       : ",usr["UserName"])
-                        print("* Creación      : ",usr["Creation"])
-                        print("* Actualización : ",usr["Modification"])
-                    
+            if users == "OK" :
+                user = input("* Username: ")
+                user_data = db.Authentication.find_one({"UserName": user})    # find a specific user from the list above
+                if user_data is not None: 
+                    area      = user_data["Area"]           # extracting values of the query
+                    ocupación = user_data["Role"]           # extracting values of the query
+                    correo    = user_data["Email"]          # extracting values of the query
+                    usuario   = user_data["UserName"]       # extracting values of the query
+                    loop = 0
+                    while loop == 0:
+                        print("\n1. Area\n2. Ocupación\n3. Correo\n4. Usuario\n5. Clave\n\n")
+                        opt = input("* Opción (1-5):  ")
+                        if opt == "1":
+                            loop = 1
+                            up_area = input("* Area: ")
+                            if up_area is not "":
+                                db.Authentication.update_one({"Area":area},{"$set":{"Area":up_area,"Modification":datetime.now()}})
+                                print("\nDone!\n")
+                        elif opt == "2":
+                            loop = 1
+                            up_role = input("* Ocupación: ")
+                            if up_role is not "":
+                                db.Authentication.update_one({"Role":ocupación},{"$set":{"Role":up_role,"Modification":datetime.now()}})
+                                print("\nDone!\n")
+                        elif opt == "3":
+                            loop = 1
+                            up_email = input("* Correo: ")
+                            if up_email is not "":
+                                db.Authentication.update_one({"Email":correo},{"$set":{"Email":up_email,"Modification":datetime.now()}})
+                                print("\nDone!\n")
+                        elif opt == "4":
+                            loop = 1
+                            up_username = input("* Usuario: ")
+                            if up_username is not "":
+                                db.Authentication.update_one({"UserName":usuario},{"$set":{"UserName":up_username,"Modification":datetime.now()}})
+                                print("\nDone!\n")
+                        elif opt == "5":
+                            loop = 1
+                            salt = bcrypt.gensalt()
+                            up_password = self.password_hash(salt)
+                            if up_password is not "NOT_EQUAL":
+                                # got to make sure that there isn't two users with the same username
+                                db.Authentication.update_one({"UserName":usuario},{"$set":{"Password":up_password,"Modification":datetime.now()}})
+                                print("\nDone!\n")
+                        else:
+                            print("\nWrong Option!\n")
+                else:
+                    print("\nUser Not Found!\n")
+            else:
+                print("\nUser/Users Not Found!\n")
         except (Exception,KeyboardInterrupt) as e:
             print("\nInterrupted! ", e)
 
