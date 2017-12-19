@@ -20,6 +20,7 @@ class Connector:
         client = MongoClient(uri,serverSelectionTimeoutMS=6000)
         return client
 
+
     def add_session(self,username,ipaddress):
         """ Adding login record. """
         client = self.connect()
@@ -28,13 +29,14 @@ class Connector:
         try:
             login_time = datetime.now()
             expire_time = login_time + timedelta(minutes=2)
-            collection.insert_one({"Username":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
+            collection.insert_one({"UserName":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
             log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "add_session:OK", ipaddress)
             return 0
         except Exception as e:
             log.error('[%s] %s %s %s', datetime.now(), "EVENT", "mongodb", "add_session:EXCEPTION")
             log.error('%s', e)
             return e
+
 
     def expire_sessions(self):
         """  Deleting login record. """
@@ -55,17 +57,18 @@ class Connector:
             log.error('[%s] %s %s %s', datetime.now(), "EVENT", "mongodb", "expire_sessions:EXCEPTION")
             log.error('%s', e)
             return e
-            
+
+
     def login(self,username,password):   
         """ Validating username and password. """
         client = self.connect()
         db = client.tjs
         collection = db.Authentication
         try:
-            hash_pass = collection.find_one({"Username":username},{"Password":1,"_id":0})
-            if hash_pass:
-                hash_pass = hash_pass["Password"].encode("utf-8")
-                unhashed_pass = bcrypt.hashpw(password.encode('utf-8'),hash_pass)
+            hash_pass = collection.find_one({"UserName":username},{"Password":1,"_id":0})
+            if hash_pass is not None:
+                hash_pass = hash_pass["Password"]
+                unhashed_pass = bcrypt.hashpw(password.encode("utf-8"),hash_pass)
                 if hash_pass == unhashed_pass:
                     log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "login:OK", username)
                     return 0
