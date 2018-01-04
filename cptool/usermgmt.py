@@ -63,6 +63,8 @@ class Users:
                     print("- Creación      : ",usr["Creation"])
                     print("- Actualización : ",usr["Modification"])
                 return "OK"
+            else:
+                return "NOK"
         elif data == "normal":
             query = db.Authentication.find(
                 {"$or": 
@@ -76,8 +78,10 @@ class Users:
                 for usr in query:       # presenting users that were found (just UserName)
                     print("- ", usr["UserName"])
                 return "OK"
+            else:
+                return "NOK"
         else:
-            return "NOT_FOUND"
+            print("Wrong Option!")
 
 
     def create(self):
@@ -121,7 +125,6 @@ class Users:
             print("\n\n[Removing User]\n")
             user = input("* Username: ")
             data = db.Authentication.delete_one({"UserName":user})
-            print("Data:",data)
             print("\nDone!\n")
         except Exception as e:
             print("\nInterrupted! ", e)
@@ -142,7 +145,7 @@ class Users:
                     loop = 0
                     while loop == 0:
                         print("\n1. Area\n2. Ocupación\n3. Correo\n4. Usuario\n5. Clave\n\n")
-                        opt = input("* Opción (1-5):  ")
+                        opt = input("> ")
                         if opt == "1":
                             loop = 1
                             up_area = input("* Area: ")
