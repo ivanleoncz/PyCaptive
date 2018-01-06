@@ -10,7 +10,7 @@ def config():
     conf = logging.getLogger('__name__')
     if not conf.handlers: # this if, avoid multiple execution of log messages
         conf.setLevel(logging.ERROR)
-        file_path = "/var/log/captive_portal.log"
+        file_path = "/var/log/pycaptive.log"
         handler = RotatingFileHandler(file_path, maxBytes=50000000, backupCount=5)
         conf.addHandler(handler)
     return conf
