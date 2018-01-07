@@ -27,7 +27,9 @@ class MongoDB:
             if os.path.isfile(self.imp):
                 db = self.connect()
                 with open(self.imp,"r") as f:
-                    print("Format expected per line:\n - FullName, Area, Role, Email, Password\n")
+                    print("Format expected:\n")
+                    print("John, Administration, Manager, john@medicalsystems.com, john, p4ssword1")
+                    print("Alan, Maintenance, Supervisor, alan@medicalsystems.com, alan, p4ssword2\n")
                     opt = input("Confirm Import (y/n)? ")
                     if opt == "y":
                         for line in f:
@@ -66,7 +68,7 @@ class MongoDB:
                 with open (self.exp,"w") as f:
                     f.write("\n!!! Do not use this file/format for import operations.\n\n")
                     for user in query:
-                        line = user["FullName"] + "," + user["Area"] + "," + user["Role"] + "," + user["Email"]
+                        line = user["FullName"] + "," + user["Area"] + "," + user["Role"] + "," + user["Email"] + "," + user["UserName"]
                         f.write(line + "\n")
                     print("\nDone!\n")
             else:
