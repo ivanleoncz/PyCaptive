@@ -28,6 +28,7 @@ class Connector:
         collection = db.AuthenticationTempRecords
         try:
             login_time = datetime.now()
+            # defines the amount of time that a sessions lasts
             expire_time = login_time + timedelta(minutes=2)
             collection.insert_one({"UserName":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
             log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "add_session:OK", ipaddress)
@@ -47,11 +48,13 @@ class Connector:
             sessions = collection.find().distinct("ExpireTime")
             deleted_sessions = []
             for session in sessions:
-                ip = collection.find_one({"ExpireTime":session},{"IpAddress":1,"_id":0})
+                data = collection.find_one({"ExpireTime":session},{"IpAddress":1,"UserName":1,"_id":0})
+                ip = data["IpAddress"]
                 if session < datetime.now():
                     collection.delete_one({"ExpireTime":session})
-                    deleted_sessions.append(ip["IpAddress"])
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "expire_sessions:OK", ip["IpAddress"])
+                    #deleted_sessions.append(ip["IpAddress"])
+                    deleted_sessions.append(ip)
+                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "expire_sessions:OK", data)
             return deleted_sessions
         except Exception as e:
             log.error('[%s] %s %s %s', datetime.now(), "EVENT", "mongodb", "expire_sessions:EXCEPTION")
