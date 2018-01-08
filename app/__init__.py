@@ -18,10 +18,10 @@ def after_request(response):
         log.error('[%s] %s %s %s %s %s %s',
                    timestamp,
                    "REQUEST",
-                   request.remote_addr, 
                    request.method, 
                    request.scheme, 
                    request.full_path, 
+                   request.remote_addr, 
                    response.status)
     return response
 
