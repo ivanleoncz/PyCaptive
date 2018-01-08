@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title> Captive Portal </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style type="text/css">
+			*   { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+ 		 	h1  { text-align: center; margin-top: 150px; margin-bottom: 40px; color: #3399ff; font-size: 34px; }
+			img { display: block; margin: 0px auto; width: 135px; height: 150px;  }
+ 		 	h3  { text-align: center; margin-top: 10px; color: #3399ff; font-size: 24px; }
+			p   { text-align: center; text-color: #ffffff; }
+		</style>
+	</head>
+
+	<body bgcolor="#404040">
+		<h1> Welcome, {{ username }}! </h1>
+		<img src="/static/welcome.png">
+		<h3> Session expires at {{ time }}.</h3>
+	</body>
+
+</html>

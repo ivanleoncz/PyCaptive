@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """ Module for /login view/route."""
 
-from flask import abort, render_template, request
+from datetime import datetime, timedelta
+from flask import abort, redirect, render_template, request, url_for
 
-from app import app, log
+from app import app
 from app.modules import iptables
 from app.modules import mongodb
-
-print("Module Loaded: views.login")
 
 @app.route("/login", methods=['GET','POST'])
 def f_login():
@@ -26,17 +25,26 @@ def f_login():
                 fw = iptables.Worker()
                 allow = fw.test_add_rule(ipaddress)
                 if allow == 0:
-                    return "<h1> Login Successful! </h1>"
+                    return redirect(url_for('f_welcome',usr=username))
                 else:
-                    return "fail..."
+                    message = "Server Error (rule)!"
+                    return render_template("login.html",login_failed=message)
             else:
-                return "fail..."
+                message = "Server Error (session)!"
+                return render_template("login.html",login_failed=message)
         elif login == 1 or login == 2:
-            message = "Check Your Credentials..."
+            message = "Wrong Credentials!"
             return render_template("login.html",login_failed=message)
         else:
-            return "fail..."
+            message = "Server Error (login)!"
+            return render_template("login.html",login_failed=message)
     else:
         # 405: Method Not Allowed
         abort(405)
 
+@app.route("/welcome/<usr>")
+def f_welcome(usr):
+    login_time = datetime.now()
+    expire_time = login_time + timedelta(hours=5)
+    expire_time = expire_time.strftime('%H:%M')
+    return render_template("welcome.html",username=usr,time=expire_time)
