@@ -17,7 +17,7 @@ class Worker:
                                            '-s', ip, '-p', 'tcp', 
                                            '--dport', '10800', '-j', 'DROP'])
             if r == 0:
-                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rul", ip, "OK")
+                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule", ip, "OK")
                 return 0
             else:
                 log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule", ip, "NOK")
