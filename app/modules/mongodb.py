@@ -31,7 +31,7 @@ class Connector:
             # defines the amount of time that a sessions lasts
             expire_time = login_time + timedelta(minutes=2)
             collection.insert_one({"UserName":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
-            log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "add_session:OK", ipaddress)
+            log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "add_session", ipaddress, "OK")
             return 0
         except Exception as e:
             log.error('[%s] %s %s %s', datetime.now(), "EVENT", "mongodb", "add_session:EXCEPTION")
@@ -54,10 +54,10 @@ class Connector:
                     collection.delete_one({"ExpireTime":session})
                     #deleted_sessions.append(ip["IpAddress"])
                     deleted_sessions.append(ip)
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "expire_sessions:OK", data)
+                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "expire_sessions", data, "OK")
             return deleted_sessions
         except Exception as e:
-            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "mongodb", "expire_sessions:EXCEPTION")
+            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "mongodb", "expire_sessions", "EXCEPTION")
             log.error('%s', e)
             return e
 
@@ -73,15 +73,15 @@ class Connector:
                 hash_pass = hash_pass["Password"]
                 unhashed_pass = bcrypt.hashpw(password.encode("utf-8"),hash_pass)
                 if hash_pass == unhashed_pass:
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "login:OK", username)
+                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "login", username, "OK")
                     return 0
                 else:
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb", "login:USER_NOT_FOUND", username)
+                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "login", username, "OK")
                     return 2
             else:
-                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "mongodb" ,"login:WRONG_CREDENTIALS", username)
+                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb" ,"login", username, "OK")
                 return 1
         except Exception as e:
-            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "mongodb", "login:EXCEPTION")
+            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "mongodb", "login", "EXCEPTION")
             log.error('%s', e)
             return e

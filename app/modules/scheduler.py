@@ -11,7 +11,7 @@ from app.modules import iptables
 
 def expirer():
     """ Verifies and expires sessions. """
-    log.error('[%s] %s %s', datetime.now(), "EVENT", "scheduler expirer:RUNNING")
+    log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "scheduler", "expirer" , "RUNNING")
     db = mongodb.Connector()
     sessions = db.expire_sessions()
     if type(sessions) == list:
@@ -19,9 +19,9 @@ def expirer():
             fw = iptables.Worker()
             counter = fw.test_del_rule(sessions)
             if type(counter) != int:
-                log.error('[%s] %s %s', datetime.now(), "EVENT", "scheduler expirer:FAIL_IPTABLES")
+                log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "scheduler", "expirer", "FAIL_IPTABLES")
     else:
-        log.error('[%s] %s %s', datetime.now(), "EVENT", "scheduler expirer:FAIL_MONGODB")
+        log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "scheduler", "expirer", "FAIL_MONGODB")
 
 
 sched = BackgroundScheduler(daemon=True)

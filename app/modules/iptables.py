@@ -17,13 +17,13 @@ class Worker:
                                            '-s', ip, '-p', 'tcp', 
                                            '--dport', '10800', '-j', 'DROP'])
             if r == 0:
-                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_add_rule:OK", ip)
+                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rul", ip, "OK")
                 return 0
             else:
-                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_add_rule:NOK", ip)
+                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule", ip, "NOK")
                 return 4
         except Exception as e:
-            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule:EXCEPTION")
+            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule", "EXCEPTION")
             log.error('%s', e)
             return e
 
@@ -37,13 +37,13 @@ class Worker:
                                                '-s', ip, '-p', 'tcp', 
                                                '--dport', '10800', '-j', 'DROP'])
                 if r == 0:
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_del_rule:OK", ip)
+                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule", ip, "OK")
                     rules += 1
                 else:
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "test_del_rule:NOK", ip)
+                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule", ip, "NOK")
             return rules
         except Exception as e:
-            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule:EXCEPTION")
+            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule", "EXCEPTION")
             log.error('%s', e)
             return e
 
@@ -55,13 +55,13 @@ class Worker:
                                            '-s', ip, '-p', 'tcp', '--dport', '80', 
                                            '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
             if r == 0:
-                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "add_rule:OK", ip)
+                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule", ip, "OK")
                 return 0
             else:
-                log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "add_rule:NOK", ip)
+                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule", ip, "NOK")
                 return 4
         except Exception as e:
-            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule:EXCEPTION")
+            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule", "EXCEPTION")
             log.error('%s', e)
             return e
 
@@ -75,12 +75,12 @@ class Worker:
                                                '-s', ip, '-p', 'tcp', '--dport', '80', 
                                                '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
                 if r == 0:
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "del_rule:OK", ip)
+                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule", ip, "OK")
                     rules += 1
                 else:
-                    log.error('[%s] %s %s %s [%s]', datetime.now(), "EVENT", "iptables", "del_rule:NOK", ip)
+                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule", ip, "NOK")
             return rules
         except Exception as e:
-            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule:EXCEPTION")
+            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule", "EXCEPTION")
             log.error('%s', e)
             return e
