@@ -25,6 +25,12 @@ Under Development (almost done...)
 - PyMongo v3.5.1
 
 
+### Issue Tracking (Improvements and Bugs)
+
+[Trello - PyCaptive](https://trello.com/b/u1cGtOD9/pycaptive)
+
+
+
 For any questions,
 
 ivanlmj at gmail dot com
