@@ -31,6 +31,6 @@ Under Development (almost done...)
 
 
 
-For any questions,
+###### For any questions,
 
-ivanlmj at gmail dot com
+- ivanlmj at gmail dot com
