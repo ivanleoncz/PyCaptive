@@ -11,7 +11,13 @@ To provide authentication service for Tranparent Proxies.
 ### Notice
 
 This application requires a server properly configured as router, with a proxy server 
-configured as transparent mode. After having these two configurations, you'll be able to use this solution.
+configured in transparent mode. 
+
+That means, if you don't have these two solutions properly configured, **PyCaptive will not work.**
+
+A document will be provided in order to help with setup of a Firewall + Proxy (Transparent Mode).
+
+See the [Issue Tracking of PyCaptive](https://trello.com/b/u1cGtOD9/pycaptive) for more information about Improvements, Bugs and other topics.
 
 
 ### Status
@@ -19,15 +25,9 @@ configured as transparent mode. After having these two configurations, you'll be
 Under Development (almost done...)
 
 
-### Main Technologies
+### Made of..
 
-- Flask v0.12.2
-- PyMongo v3.5.1
-
-
-### Issue Tracking (Improvements and Bugs)
-
-[Trello - PyCaptive](https://trello.com/b/u1cGtOD9/pycaptive)
+[Flask (Werkzeug + Jinja2), MongoDB..](https://github.com/ivanlmj/PyCaptive/blob/master/requirements.txt)
 
 
 
