@@ -24,7 +24,7 @@ class Users:
         try:
             print("\n\n[Checking Credentials]\n")
             username = input("* Username: ")
-            query = db.Authentication.find_one({"UserName":username},{"Password":1,"_id":0})
+            query = db.Users.find_one({"UserName":username},{"Password":1,"_id":0})
             if query is not None:
                 pass_db = query["Password"]
                 pass_hash = self.password_hash(pass_db)
@@ -44,7 +44,7 @@ class Users:
         print("\n\n[Searching Users]\n")
         search_user = input("* Name or Username: ")
         if data == "full":
-            query = db.Authentication.find(
+            query = db.Users.find(
                 {"$or": 
                     [
                         {"UserName":{"$regex":search_user+".*"}},
@@ -66,7 +66,7 @@ class Users:
             else:
                 return "NOK"
         elif data == "normal":
-            query = db.Authentication.find(
+            query = db.Users.find(
                 {"$or": 
                     [
                         {"UserName":{"$regex":search_user+".*"}},
@@ -108,7 +108,7 @@ class Users:
                 ans = input("\nConfirm (y/n)? ")
                 if ans == "y":
                     loop = 1
-                    db.Authentication.insert_one(user_data)
+                    db.Users.insert_one(user_data)
                     print("\nDone!\n")
                 elif ans == "n":
                     loop = 1
@@ -124,7 +124,7 @@ class Users:
             self.search("normal")
             print("\n\n[Removing User]\n")
             user = input("* Username: ")
-            data = db.Authentication.delete_one({"UserName":user})
+            data = db.Users.delete_one({"UserName":user})
             print("\nDone!\n")
         except Exception as e:
             print("\nInterrupted! ", e)
@@ -136,7 +136,7 @@ class Users:
             print("\n\n[Update User]\n")
             if users == "OK" :
                 user = input("* Username: ")
-                user_data = db.Authentication.find_one({"UserName": user})    # find a specific user from the list above
+                user_data = db.Users.find_one({"UserName": user})    # find a specific user from the list above
                 if user_data is not None: 
                     area      = user_data["Area"]           # extracting values of the query
                     ocupación = user_data["Role"]           # extracting values of the query
@@ -150,25 +150,25 @@ class Users:
                             loop = 1
                             up_area = input("* Area: ")
                             if up_area is not "":
-                                db.Authentication.update_one({"Area":area},{"$set":{"Area":up_area,"Modification":datetime.now()}})
+                                db.Users.update_one({"Area":area},{"$set":{"Area":up_area,"Modification":datetime.now()}})
                                 print("\nDone!\n")
                         elif opt == "2":
                             loop = 1
                             up_role = input("* Ocupación: ")
                             if up_role is not "":
-                                db.Authentication.update_one({"Role":ocupación},{"$set":{"Role":up_role,"Modification":datetime.now()}})
+                                db.Users.update_one({"Role":ocupación},{"$set":{"Role":up_role,"Modification":datetime.now()}})
                                 print("\nDone!\n")
                         elif opt == "3":
                             loop = 1
                             up_email = input("* Correo: ")
                             if up_email is not "":
-                                db.Authentication.update_one({"Email":correo},{"$set":{"Email":up_email,"Modification":datetime.now()}})
+                                db.Users.update_one({"Email":correo},{"$set":{"Email":up_email,"Modification":datetime.now()}})
                                 print("\nDone!\n")
                         elif opt == "4":
                             loop = 1
                             up_username = input("* Usuario: ")
                             if up_username is not "":
-                                db.Authentication.update_one({"UserName":usuario},{"$set":{"UserName":up_username,"Modification":datetime.now()}})
+                                db.Users.update_one({"UserName":usuario},{"$set":{"UserName":up_username,"Modification":datetime.now()}})
                                 print("\nDone!\n")
                         elif opt == "5":
                             loop = 1
@@ -176,7 +176,7 @@ class Users:
                             up_password = self.password_hash(salt)
                             if up_password is not "NOT_EQUAL":
                                 # got to make sure that there isn't two users with the same username
-                                db.Authentication.update_one({"UserName":usuario},{"$set":{"Password":up_password,"Modification":datetime.now()}})
+                                db.Users.update_one({"UserName":usuario},{"$set":{"Password":up_password,"Modification":datetime.now()}})
                                 print("\nDone!\n")
                         else:
                             print("\nWrong Option!\n")

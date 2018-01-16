@@ -46,7 +46,7 @@ class MongoDB:
                             user_data["Password"]     = password_hash
                             user_data["Creation"]     = timestamp
                             user_data["Modification"] = timestamp
-                            insert = db.Authentication.insert_one(user_data)
+                            insert = db.Users.insert_one(user_data)
                         print("\nDone!\n")
                     elif opt == "n":
                         print("\nBye!\n")
@@ -63,7 +63,7 @@ class MongoDB:
         print("\n[Exporting]\n")
         try:
             db = self.connect()
-            query = db.Authentication.find({},{"_id":0})
+            query = db.Users.find({},{"_id":0})
             if query.count() > 0:
                 with open (self.exp,"w") as f:
                     f.write("\n!!! Do not use this file/format for import operations.\n\n")
@@ -81,14 +81,14 @@ class MongoDB:
         print("\n[Expire Session]\n")
         try:
             db = self.connect()
-            sessions = db.AuthenticationTempRecords.find({},{"_id":0})
+            sessions = db.Sessions.find({},{"_id":0})
             print("> Sessions")
             for session in sessions:
                 print(session)
             username = input("\n* Username: ")            
-            query = db.AuthenticationTempRecords.find_one({"UserName":username})
+            query = db.Sessions.find_one({"UserName":username})
             if query is not None:
-                find_session = db.AuthenticationTempRecords.find_one({"UserName":username})
+                find_session = db.Sessions.find_one({"UserName":username})
                 ip = find_session["IpAddress"]
                 if find_session is not None:
                     loop = 0
@@ -96,7 +96,7 @@ class MongoDB:
                         oper = input("* Expire Session (y/n)? ")
                         if oper == "y":
                             loop = 1
-                            expire = db.AuthenticationTempRecords.delete_one({"UserName":username})
+                            expire = db.Sessions.delete_one({"UserName":username})
                             r = sp.call(['/sbin/iptables', '-D', 'INPUT', '-i', 'lo', '-s', ip, '-p', 'tcp', '--dport', '10800', '-j', 'DROP'])
                             print("\nDone!\n")
                         elif oper == "n":

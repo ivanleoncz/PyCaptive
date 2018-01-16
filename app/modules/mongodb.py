@@ -25,7 +25,7 @@ class Connector:
         """ Adding login record. """
         client = self.connect()
         db = client.tjs
-        collection = db.AuthenticationTempRecords
+        collection = db.Sessions
         try:
             login_time = datetime.now()
             # defines the amount of time that a sessions lasts
@@ -43,7 +43,7 @@ class Connector:
         """  Deleting login record. """
         client = self.connect()
         db = client.tjs
-        collection = db.AuthenticationTempRecords
+        collection = db.Sessions
         try:
             sessions = collection.find().distinct("ExpireTime")
             deleted_sessions = []
@@ -66,7 +66,7 @@ class Connector:
         """ Validating username and password. """
         client = self.connect()
         db = client.tjs
-        collection = db.Authentication
+        collection = db.Users
         try:
             hash_pass = collection.find_one({"UserName":username},{"Password":1,"_id":0})
             if hash_pass is not None:
