@@ -1,0 +1,9 @@
+server {
+    listen 14900;
+    server_name 0.0.0.0;
+
+    location / {
+	include proxy_params;
+	proxy_pass http://unix:/opt/PyCaptive/wsgi.sock;
+    }
+}
