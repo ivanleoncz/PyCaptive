@@ -10,7 +10,7 @@ import usermgmt
 
 if __name__ == "__main__":
     if os.getuid() == 0:
-        print("\n[Captive Portal Tool]\n")
+        print("\n[PyCaptive Tool]\n")
         print("1. Create User")
         print("2. Remove User")
         print("3. Update User")
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         else:
             print("\nWrong Option!\n")
     else:
-        print("\nMust have root privileges!\n    Run as.: sudo python3 cptool.py\n")
+        print("\nMust have root privileges!\n\nRun: sudo ./pycaptool.py\n")
 else:
-    print("\nCannot be imported!\n    Run as.: sudo python3 cptool.py\n")
+    print("\nCannot be imported!\n\nRun: sudo ./pycaptool.py\n")
 
