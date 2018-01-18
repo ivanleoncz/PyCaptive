@@ -113,5 +113,5 @@ class MongoDB:
 
 
 if __name__ == "__main__":
-    print("\nCannot be imported!\n\nRun: sudo ./pycaptool.py\n")
+    print("\nCannot be imported!\n\nRun: sudo ./pycap_tool.py\n")
 
