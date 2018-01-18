@@ -6,12 +6,12 @@ import os
 
 if os.getuid() == 0:
     from app import app
-    app.config.from_object('config')
+    app.config['MAX_CONTENT_LENGTH']=128000
     if __name__ == "__main__":
-        print("PyCaptive is running: standalone.")
+        print("\nPyCaptive is running (standalone).\n")
         app.run(host="0.0.0.0",port=14900)
     else:
-        print("\nIt's a script, not a module!\n    Ex.: sudo python3 run.py\n")
+        print("\nCannot be imported!\n\nRun: sudo ./standalone.py\n")
 else:
-    print("\nMust have root privileges!\n    Ex.: sudo python3 run.py\n")
+    print("\nMust have root privileges!\n\nRun: sudo ./standalone.py\n")
     
