@@ -113,5 +113,5 @@ class MongoDB:
 
 
 if __name__ == "__main__":
-    print("\nA module, not a script! \n\nUse cptool.py: python3 cptool.py\n")
+    print("\nCannot be imported!\n\nRun: sudo ./pycaptool.py\n")
 
