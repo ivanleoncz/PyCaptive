@@ -1,11 +1,21 @@
-File: pycaptive
+
+[pycaptive]
 Service: Nginx
 
-- Instruction: depending on the distro, it must resides in /etc/nginx/sites-available and obviously, having a symlink in /etc/nginx/sites-enabled.
-- After the setup, run: nginx -t && nginx -s reload
+Setup:
+Move file to /etc/nginx/sites-available/ (path varies according to the distro). 
+Create a symlink from /etc/nginx/sites-available/pycaptive to /etc/nginx/sites-enabled/pycaptive.
 
-File: pycaptive.conf
+After the setup: 
+$ sudo nginx -t && sudo nginx -s reload
+
+-------------------------------------------------------------------------------------------------
+
+[pycaptive.conf]
 Service: Supervisor
 
-- Instruction: depending on the distro, it must resides in /etc/supervisor/conf.d/.
-- After the setup, run: supervisorctl reread && supervisorctl update && supervisorctl status
+Setup:
+Move file to /etc/supervisor/conf.d/ (path varies according to the distro).
+
+After the setup: 
+$ sudo supervisorctl reread && sudo supervisorctl update && sudo supervisorctl status
