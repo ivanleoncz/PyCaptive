@@ -1,3 +1,5 @@
+# TODO: create automation for deploy
+# https://github.com/ivanlmj/PyCaptive/issues/7
 
 [pycaptive]
 Service: Nginx
