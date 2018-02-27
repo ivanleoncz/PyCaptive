@@ -3,66 +3,44 @@
 """ Interface for IPTABLES/Netfilter. """
 
 from datetime import datetime
+from app import log
+
+__author__ = "@ivanleoncz"
+
 import subprocess as sp
 
-from app import log
 
 class Worker:
     """ Builds and executes IPTABLES/Netfilter rules (add/del)."""
 
-    def test_add_rule(self,ip):
-        """ Add Rule (TEST PURPOSES). """
-        try:
-            r = sp.call(['/sbin/iptables', '-A', 'INPUT', '-i', 'lo', 
-                                           '-s', ip, '-p', 'tcp', 
-                                           '--dport', '10800', '-j', 'DROP'])
-            if r == 0:
-                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule", ip, "OK")
-                return 0
-            else:
-                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule", ip, "NOK")
-                return 4
-        except Exception as e:
-            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_add_rule", "EXCEPTION")
-            log.error('%s', e)
-            return e
-
-
-    def test_del_rule(self,ips):
-        """ Delete rule (TEST PURPOSES). """
-        try:
-            rules = 0
-            for ip in ips:
-                r = sp.call(['/sbin/iptables', '-D', 'INPUT', '-i', 'lo', 
-                                               '-s', ip, '-p', 'tcp', 
-                                               '--dport', '10800', '-j', 'DROP'])
-                if r == 0:
-                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule", ip, "OK")
-                    rules += 1
-                else:
-                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule", ip, "NOK")
-            return rules
-        except Exception as e:
-            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "test_del_rule", "EXCEPTION")
-            log.error('%s', e)
-            return e
-
+    # Depending on the setup of your Firewall/Proxy, 
+    # here you can customize the params for the rules.
+    binnary = "/sbin/iptables"
+    table   = "mangle"
+    chain   = "PREROUTING"
+    nic     = "eth2"
+    jump    = "INTERNET"
 
     def add_rule(self,ip):
         """ Add rule. """
+        rule = [self.binnary, "-t",self.table, "-I", self.chain,
+                              "-i",self.nic, "-s",ip, "-j",self.jump]
         try:
-            r = sp.call(['/sbin/iptables', '-I', 'PREROUTING', '1', '-i', 'eth2', 
-                                           '-s', ip, '-p', 'tcp', '--dport', '80', 
-                                           '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
-            if r == 0:
-                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule", ip, "OK")
+            result = sp.call(rule)
+            ts = datetime.now()
+            if result == 0:
+                log.error('[%s] %s %s %s %s %s', 
+                           ts, "EVENT", "iptables", "add_rule", ip, "OK")
                 return 0
             else:
-                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule", ip, "NOK")
+                log.error('[%s] %s %s %s %s %s', 
+                           ts, "EVENT", "iptables", "add_rule", ip, "NOK")
                 return 4
         except Exception as e:
-            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "add_rule", "EXCEPTION")
-            log.error('%s', e)
+            ts = datetime.now()
+            log.error('[%s] %s %s %s %s', 
+                       ts, "EVENT", "iptables", "add_rule", "EXCEPTION")
+            log.error('[%s]', e)
             return e
 
 
@@ -71,16 +49,21 @@ class Worker:
         try:
             rules = 0
             for ip in ips:
-                r = sp.call(['/sbin/iptables', '-I', 'PREROUTING', '-i', 'eth2', 
-                                               '-s', ip, '-p', 'tcp', '--dport', '80', 
-                                               '-j', 'DNAT', '--to-destination', '192.168.0.1:3128'])
-                if r == 0:
-                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule", ip, "OK")
+                rule = [self.binnary, "-t", self.table, "-D", self.chain, 
+                                      "-i", self.nic, "-s", ip, "-j", self.jump]
+                result = sp.call(rule)
+                ts = datetime.now()
+                if result == 0:
+                    log.error('[%s] %s %s %s %s %s', 
+                               ts, "EVENT", "iptables", "del_rule", ip, "OK")
                     rules += 1
                 else:
-                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule", ip, "NOK")
+                    log.error('[%s] %s %s %s %s %s', 
+                               ts, "EVENT", "iptables", "del_rule", ip, "NOK")
             return rules
         except Exception as e:
-            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "iptables", "del_rule", "EXCEPTION")
-            log.error('%s', e)
+            ts = datetime.now()
+            log.error('[%s] %s %s %s %s', 
+                       ts, "EVENT", "iptables", "del_rule", "EXCEPTION")
+            log.error('[%s]', e)
             return e
