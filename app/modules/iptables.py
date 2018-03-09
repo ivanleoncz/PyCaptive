@@ -60,6 +60,15 @@ class Worker:
                 else:
                     log.error('[%s] %s %s %s %s %s', 
                                ts, "EVENT", "iptables", "del_rule", ip, "NOK")
+
+                result = del_conntrack(ip)
+                if result == 0:
+                    log.error('[%s] %s %s %s %s %s', 
+                               ts, "EVENT", "iptables", "del_conntrack", ip, "OK")
+                else:
+                    log.error('[%s] %s %s %s %s %s', 
+                               ts, "EVENT", "iptables", "del_conntrack", ip, "NOK")
+
             return rules
         except Exception as e:
             ts = datetime.now()
@@ -67,3 +76,9 @@ class Worker:
                        ts, "EVENT", "iptables", "del_rule", "EXCEPTION")
             log.error('[%s]', e)
             return e
+
+    def del_conntrack(self,ip):
+        """ Wipe established connections from conntrack table. """
+        wipe_connection = ["/usr/sbin/conntrack", "-D", "--orig-src", ip] 
+        result = sp.call(wipe_connection)
+        return result
