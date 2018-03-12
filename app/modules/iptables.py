@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
+""" Allowing/prohibiting traffic based on user authentication/session.
 
-""" Interface for IPTABLES/Netfilter. """
+This module is responsible for granting/revoking access to network traffic
+via Firewall rules (IPTABLES/Netfilter), for the IP addresses from
+the devices used on successful authentication process.
+
+NOTICE: use the class variables, in order to customize the paramaters used on
+the Firewall rules, depending on the setup that you have for your
+Firewall/Proxy. For example, the setup considered here is:
+a GNU/Linux Router, with Squid3 Proxy in Transparent Mode.
+
+"""
 
 from datetime import datetime
 from app import log
@@ -11,10 +21,8 @@ import subprocess as sp
 
 
 class Worker:
-    """ Builds and executes IPTABLES/Netfilter rules (add/del)."""
+    """ IPTABLES/Netfilter rules for allowing/prohibiting network traffic. """
 
-    # Depending on the setup of your Firewall/Proxy, 
-    # here you can customize the params for the rules.
     binnary = "/sbin/iptables"
     table   = "mangle"
     chain   = "PREROUTING"
@@ -22,7 +30,7 @@ class Worker:
     jump    = "INTERNET"
 
     def add_rule(self,ip):
-        """ Add rule. """
+        """ Grants access to network traffic. """
         rule = [self.binnary, "-t",self.table, "-I", self.chain,
                               "-i",self.nic, "-s",ip, "-j",self.jump]
         try:
@@ -35,7 +43,7 @@ class Worker:
             else:
                 log.error('[%s] %s %s %s %s %s', 
                            ts, "EVENT", "iptables", "add_rule", ip, "NOK")
-                return 4
+                return 1
         except Exception as e:
             ts = datetime.now()
             log.error('[%s] %s %s %s %s', 
@@ -45,7 +53,7 @@ class Worker:
 
 
     def del_rule(self,ips):
-        """ Delete rule. """
+        """ Revokes access to network traffic. """
         try:
             rules = 0
             for ip in ips:
@@ -68,7 +76,6 @@ class Worker:
                 else:
                     log.error('[%s] %s %s %s %s %s', 
                                ts, "EVENT", "iptables", "del_conntrack", ip, "NOK")
-
             return rules
         except Exception as e:
             ts = datetime.now()
@@ -77,8 +84,9 @@ class Worker:
             log.error('[%s]', e)
             return e
 
+
     def del_conntrack(self,ip):
-        """ Wipe established connections from conntrack table. """
-        wipe_connection = ["/usr/sbin/conntrack", "-D", "--orig-src", ip] 
-        result = sp.call(wipe_connection)
+        """ Destroys established connections from conntrack table. """
+        destroy_connection = ["/usr/sbin/conntrack", "-D", "--orig-src", ip] 
+        result = sp.call(destroy_connection)
         return result
