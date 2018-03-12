@@ -1,17 +1,28 @@
 #!/usr/bin/python3
 
-""" Application main module. """
+""" PyCaptive Standalone (Werkzeug). 
+
+NOTICE: do not use it on production environments.
+"""
+
+__author__ = "@ivanleoncz"
 
 import os
 
+
 if os.getuid() == 0:
-    from app import app
-    app.config['MAX_CONTENT_LENGTH']=128000
     if __name__ == "__main__":
-        print("\nPyCaptive is running (standalone: Werkzeug).\n")
-        app.run(host="0.0.0.0",port=14900)
+        from app import app
+        print("\nPyCaptive is running (Standalone: Werkzeug).\n")
+        try:
+            app.config['MAX_CONTENT_LENGTH']=128000
+            app.run(host="0.0.0.0",port=14900)
+        except KeyboardInterrupt:
+            print("Interrupted!")
+        except Exception as e:
+            print("Exception:", e)
     else:
-        print("\nCannot be imported!\n\nRun: sudo ./standalone.py\n")
+        print("\nCannot be imported!\n\nRun: sudo ./pycaptive_werkzeug.py\n")
 else:
-    print("\nMust have root privileges!\n\nRun: sudo ./standalone.py\n")
+    print("\nMust have root privileges!\n\nRun: sudo ./pycaptive_werkzeug.py\n")
     
