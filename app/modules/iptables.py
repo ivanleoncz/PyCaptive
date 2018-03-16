@@ -3,12 +3,17 @@
 
 This module is responsible for granting/revoking access to network traffic
 via Firewall rules (IPTABLES/Netfilter), for the IP addresses from
-the devices used on successful authentication process.
+the devices used on successful authentication processes.
 
 NOTICE: use the class variables, in order to customize the paramaters used on
 the Firewall rules, depending on the setup that you have for your
-Firewall/Proxy. For example, the setup considered here is:
-a GNU/Linux Router, with Squid3 Proxy in Transparent Mode.
+Firewall/Proxy. 
+
+For example, the setup considered here is:
+a GNU/Linux Router (with Squid3 Proxy in Transparent Mode), with some
+specific chains (IPTABLES), all processed on mangle table.
+
+Feel free to implement this module, according to your needs.
 
 """
 
