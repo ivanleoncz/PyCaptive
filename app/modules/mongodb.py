@@ -1,15 +1,25 @@
 #!/usr/bin/python3
+"""  MongoDB client configuration and actions. 
 
-"""  MongoDB utilities for PyCaptive. """
+After successful login, a session (add_session()) is added to MongoDB,
+with and "expire_time" variable defined for N minutes.
 
-import bcrypt
+The expired sessions are expired via APScheduler, which calculates if
+the "ExpireTime" returned via a query, are lower than the current time.
+
+If they are, the sesssions are expired from MongoDB.
+"""
+
+from app import log
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 
-from app import log
+__author__ = "@ivanleoncz"
+
+import bcrypt
 
 class Connector:
-    """ MongoDB connector and jobs: login, add session and delete session. """
+    """ MongoDB jobs. """
 
     def connect(self):
         """ Preparing MongoDB client. """
@@ -22,42 +32,52 @@ class Connector:
 
 
     def add_session(self,username,ipaddress):
-        """ Adding login record. """
+        """ Adding session record. """
         client = self.connect()
         db = client.tjs
         collection = db.Sessions
+        login_time = datetime.now()
         try:
-            login_time = datetime.now()
             # defines the amount of time that a sessions lasts
             expire_time = login_time + timedelta(minutes=2)
-            collection.insert_one({"UserName":username,"IpAddress":ipaddress,"LoginTime":login_time,"ExpireTime":expire_time})
-            log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "add_session", ipaddress, "OK")
+            collection.insert_one({
+                "UserName":username,
+                "IpAddress":ipaddress,
+                "LoginTime":login_time,
+                "ExpireTime":expire_time})
+            log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
+                    "mongodb", "add_session", ipaddress, "OK")
             return 0
         except Exception as e:
-            log.error('[%s] %s %s %s', datetime.now(), "EVENT", "mongodb", "add_session:EXCEPTION")
+            log.error('[%s] %s %s %s', login_time, "EVENT", 
+                        "mongodb", "add_session:EXCEPTION")
             log.error('%s', e)
             return e
 
 
     def expire_sessions(self):
-        """  Deleting login record. """
+        """  Deleting session record. """
         client = self.connect()
         db = client.tjs
         collection = db.Sessions
+        time_now = datetime.now()
         try:
             sessions = collection.find().distinct("ExpireTime")
             deleted_sessions = []
             for session in sessions:
-                data = collection.find_one({"ExpireTime":session},{"IpAddress":1,"UserName":1,"_id":0})
+                data = collection.find_one(
+                        {"ExpireTime":session},
+                        {"IpAddress":1,"UserName":1,"_id":0})
                 ip = data["IpAddress"]
-                if session < datetime.now():
+                if session < time_now:
                     collection.delete_one({"ExpireTime":session})
-                    #deleted_sessions.append(ip["IpAddress"])
                     deleted_sessions.append(ip)
-                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "expire_sessions", data, "OK")
+                    log.error('[%s] %s %s %s %s %s', time_now, "EVENT", 
+                           "mongodb", "expire_sessions", data, "OK")
             return deleted_sessions
         except Exception as e:
-            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "mongodb", "expire_sessions", "EXCEPTION")
+            log.error('[%s] %s %s %s %s', time_now, "EVENT", 
+                      "mongodb", "expire_sessions", "EXCEPTION")
             log.error('%s', e)
             return e
 
@@ -67,21 +87,28 @@ class Connector:
         client = self.connect()
         db = client.tjs
         collection = db.Users
+        login_time = datetime.now()
         try:
-            hash_pass = collection.find_one({"UserName":username},{"Password":1,"_id":0})
+            hash_pass = collection.find_one(
+                    {"UserName":username},
+                    {"Password":1,"_id":0})
             if hash_pass is not None:
                 hash_pass = hash_pass["Password"]
                 unhashed_pass = bcrypt.hashpw(password.encode("utf-8"),hash_pass)
                 if hash_pass == unhashed_pass:
-                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "login", username, "OK")
+                    log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
+                                   "mongodb", "login", username, "OK")
                     return 0
                 else:
-                    log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb", "login", username, "OK")
+                    log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
+                                   "mongodb", "login", username, "OK")
                     return 2
             else:
-                log.error('[%s] %s %s %s %s %s', datetime.now(), "EVENT", "mongodb" ,"login", username, "OK")
+                log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
+                               "mongodb" ,"login", username, "OK")
                 return 1
         except Exception as e:
-            log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "mongodb", "login", "EXCEPTION")
+            log.error('[%s] %s %s %s %s', login_time, "EVENT", 
+                                  "mongodb", "login", "EXCEPTION")
             log.error('%s', e)
             return e
