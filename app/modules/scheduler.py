@@ -1,27 +1,39 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+""" APScheculer for monitoring expired sessions.  
 
-""" Scheduler for Login Sessions.  """
+According to the time defined at the end of the module,
+the "expirer()" function runs, performing a query on the database,
+which delivers a list of expired sessions (IPs).
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime
+This list of sessions, is passed to iptables module, specifically to
+"del_rules()" method, which eliminates the IPTABLES rules and all
+the connections related with the IP address on conntrack table.
+"""
 
 from app import log
 from app.modules import mongodb
 from app.modules import iptables
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime
+
 
 def expirer():
-    """ Verifies and expires sessions. """
-    log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "scheduler", "expirer" , "RUNNING")
+    """ Cleaning expired sessions """
+    timestamp = datetime.now
+    log.error('[%s] %s %s %s %s', timestamp, "EVENT", 
+                     "scheduler", "expirer", "RUNNING")
     db = mongodb.Connector()
     sessions = db.expire_sessions()
-    if type(sessions) == list:
+    if type(sessions) == list: # querying expired sessions
         if len(sessions) > 0:
             fw = iptables.Worker()
-            counter = fw.test_del_rule(sessions)
+            counter = fw.del_rule(sessions) # deleting rules
             if type(counter) != int:
-                log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "scheduler", "expirer", "FAIL_IPTABLES")
+                log.error('[%s] %s %s %s %s', timestamp, "EVENT", 
+                                 "scheduler", "expirer", "FAIL_IPTABLES")
     else:
-        log.error('[%s] %s %s %s %s', datetime.now(), "EVENT", "scheduler", "expirer", "FAIL_MONGODB")
+        log.error('[%s] %s %s %s %s', timestamp, "EVENT", 
+                         "scheduler", "expirer", "FAIL_MONGODB")
 
 
 sched = BackgroundScheduler(daemon=True)
