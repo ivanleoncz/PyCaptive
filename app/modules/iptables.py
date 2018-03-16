@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """ Allowing/prohibiting traffic based on user authentication/session.
 
 This module is responsible for granting/revoking access to network traffic
@@ -35,7 +35,7 @@ class Worker:
     jump    = "INTERNET"
 
     def add_rule(self,ip):
-        """ Grants access to network traffic. """
+        """ Allowing network traffic. """
         rule = [self.binnary, "-t",self.table, "-I", self.chain,
                               "-i",self.nic, "-s",ip, "-j",self.jump]
         try:
@@ -57,8 +57,8 @@ class Worker:
             return e
 
 
-    def del_rule(self,ips):
-        """ Revokes access to network traffic. """
+    def del_rules(self,ips):
+        """ Revoking rule for network traffic. """
         try:
             rules = 0
             for ip in ips:
