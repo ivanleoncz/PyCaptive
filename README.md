@@ -5,32 +5,28 @@ A Captive Portal written in Python (and Flask).
 
 ### Purpose
 
-To provide authentication service for Tranparent Proxies.
-
-
-### Notice
-
-This application requires a server properly configured as router, with a proxy server 
-configured in transparent mode. 
-
-That means, if you don't have these two solutions properly configured, **PyCaptive will not work.**
-
-A document will be provided in order to help with setup of a Firewall + Proxy (Transparent Mode).
-
-See the [Issue Tracking of PyCaptive](https://trello.com/b/u1cGtOD9/pycaptive) for more information about Improvements, Bugs and other topics.
+To provide an authentication service for Tranparent Proxies on Wired + Wireless networks.
 
 
 ### Status
 
-Under Development (almost done...)
+Under Development.
 
 
-### Made of..
+### Made Of
 
-[Flask (Werkzeug + Jinja2), MongoDB..](https://github.com/ivanlmj/PyCaptive/blob/master/requirements.txt)
+[Here](https://github.com/ivanlmj/PyCaptive/blob/master/requirements.txt)
 
 
+### Notice
 
-###### For any questions,
+PyCaptive requires a server properly configured as Router, with a Proxy Server in Transparent Mode. 
 
-- ivanlmj at gmail dot com
+That means: without these two solutions properly configured, **PyCaptive will not work**.
+
+I'll be providing extra documentation for further orientation on this topic. Have a look on the [issues](https://github.com/ivanlmj/PyCaptive/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aall).
+
+
+###### Contact
+
+For aditional help, support, etc., open up an issue or: **ivanlmj at gmail dot com**
