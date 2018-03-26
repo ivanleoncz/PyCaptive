@@ -8,6 +8,8 @@ which delivers a list of expired sessions (IPs).
 This list of sessions, is passed to iptables module, specifically to
 "del_rules()" method, which eliminates the IPTABLES rules and all
 the connections related with the IP address on conntrack table.
+
+INFO: APScheduler is started when the module is imported.
 """
 
 from app import log
