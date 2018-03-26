@@ -18,7 +18,7 @@ A Captive Portal written in Python (and Flask).
 - Under Development.
 
 
-### Made Of
+### Made of
 
 - Python, Flask, MongoDB, [and...](https://github.com/ivanlmj/PyCaptive/blob/master/requirements.txt)
 
