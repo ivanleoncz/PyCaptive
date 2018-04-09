@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 """ Main application module. """
 
-from app.modules import logger
-from app.modules import scheduler
 from datetime import datetime
 from flask import Flask, request
+from app.modules import logger
 
 log = logger.config()
+
+from app.modules import scheduler
+
 app = Flask(__name__)
+
 
 @app.after_request
 def after_request(response):
@@ -23,5 +26,6 @@ def after_request(response):
                    request.remote_addr, 
                    response.status)
     return response
+
 
 from app.views import login
