@@ -14,7 +14,7 @@ import sys
     
 def password_hash(salt):
     """ Returns password hash. """
-    password  = getpass(prompt="* Password: ").encode('utf-8')
+    password  = getpass(prompt="\n* Password: ").encode('utf-8')
     password2 = getpass(prompt="* Retype:   ").encode('utf-8')
     if password == password2:
         pass_hash = bcrypt.hashpw(password, salt)
@@ -108,8 +108,17 @@ def create(username):
 
 def remove(username):
     """ Removes a user. """
-    data = db.Users.delete_one({"UserName":username})
-    return "Done!"
+    print("\n[Remove]")
+    user = db.Users.find_one({"UserName":username})
+    if user is not None:
+        oper = input("Confirm deletion (y/n)?")
+        if oper == "y":
+            data = db.Users.delete_one({"UserName":username})
+            return "Done!"
+        else:
+            return "Aborted!"
+    else:
+        return "User Not Found!"
 
 
 def update(username):
@@ -197,8 +206,7 @@ if __name__ == "__main__":
                 print("\n[Create]")
                 create(username)
             elif param == "--remove":
-                print("\n[Remove]")
-                remove(username)
+                print(remove(username))
             elif param == "--update":
                 print("\n[Update]")
                 update(username)
