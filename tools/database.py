@@ -3,7 +3,7 @@
 
 from pymongo import MongoClient
 
-__author__ == "@ivanleoncz"
+__author__ = "@ivanleoncz"
 
 import os
 
