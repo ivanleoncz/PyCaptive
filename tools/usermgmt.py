@@ -45,8 +45,8 @@ def search(username,s_type):
         query = db.Users.find(
             {"$or": 
                 [
-                    {"UserName":{"$regex":search_user+".*"}},
-                    {"FullName":{"$regex":search_user+".*"}}
+                    {"UserName":{"$regex":username+".*"}},
+                    {"FullName":{"$regex":username+".*"}}
                 ]
             },  {"Password":0,"_id":0}
         )
@@ -64,8 +64,8 @@ def search(username,s_type):
         query = db.Users.find(
             {"$or": 
                 [
-                    {"UserName":{"$regex":search_user+".*"}},
-                    {"FullName":{"$regex":search_user+".*"}}
+                    {"UserName":{"$regex":username+".*"}},
+                    {"FullName":{"$regex":username+".*"}}
                 ]
             }, {"UserName":1,"_id":0}
         )
