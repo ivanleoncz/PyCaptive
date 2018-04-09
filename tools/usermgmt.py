@@ -25,6 +25,7 @@ def password_hash(salt):
 
 def check_credentials(username):
     """ Verifies if the credentials are valid. """
+    print("\n[Checking Credentials]")
     query = db.Users.find_one({"UserName":username}, {"Password":1, "_id":0})
     if query is not None:
         pass_db = query["Password"]
@@ -80,6 +81,7 @@ def search(username,s_type):
 
 def create(username):
     """ Creates a user. """
+    print("\n[Create]")
     salt = bcrypt.gensalt()
     data = {}
     data["FullName"]     = input("* Nombre:    ")
@@ -123,6 +125,7 @@ def remove(username):
 
 def update(username):
     """ Updates user information. """
+    print("\n[Update]")
     user_data = db.Users.find_one({"UserName":username})
     if user_data is not None: 
         area      = user_data["Area"]
@@ -196,19 +199,16 @@ if __name__ == "__main__":
         username = input("\n* Username: ")
         if username is not None:
             if param == "--credentials":
-                print("\n[Checking Credentials]")
                 check_credentials(username)
             elif param == "--search":
                 print(search(username, "summary"))
             elif param == "--search-full":
                 search(username, "full")
             elif param == "--create":
-                print("\n[Create]")
                 create(username)
             elif param == "--remove":
                 print(remove(username))
             elif param == "--update":
-                print("\n[Update]")
                 update(username)
             else:
                 helper() 
