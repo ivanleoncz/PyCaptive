@@ -41,7 +41,8 @@ def check_credentials(username):
 
 def search(username,s_type):
     """ Searches/presents user info (full or summary). """
-    if s_type == "full":     # presenting users (full info)
+    if s_type == "full":
+        print("\n[Search Full]")
         query = db.Users.find(
             {"$or": 
                 [
@@ -60,7 +61,8 @@ def search(username,s_type):
                 print("- Usuario       : ",usr["UserName"])
                 print("- Creación      : ",usr["Creation"])
                 print("- Actualización : ",usr["Modification"])
-    elif s_type == "summary":    # presenting users (summary info)
+    elif s_type == "summary":
+        print("\n[Search]")
         query = db.Users.find(
             {"$or": 
                 [
@@ -70,8 +72,10 @@ def search(username,s_type):
             }, {"UserName":1,"_id":0}
         )
         if query.count() > 0:
+            users = []
             for usr in query:
-                print("- ", usr["UserName"])
+                users.append(usr["UserName"])
+            return "- %s" % ", ".join(users)
 
 
 def create(username):
@@ -180,25 +184,23 @@ if __name__ == "__main__":
         mongo = database.MongoDB()
         db = mongo.connect()
         param = sys.argv[1]
-        username = input("* Username: ")
+        username = input("\n* Username: ")
         if username is not None:
             if param == "--credentials":
-                print("[Checking Credentials]\n")
+                print("\n[Checking Credentials]")
                 check_credentials(username)
             elif param == "--search":
-                print("[Search]\n")
-                search(username,"summary")
+                print(search(username, "summary"))
             elif param == "--search-full":
-                print("[Search Full]\n")
-                search(username,"full")
+                search(username, "full")
             elif param == "--create":
-                print("[Create]\n")
+                print("\n[Create]")
                 create(username)
             elif param == "--remove":
-                print("[Remove]\n")
+                print("\n[Remove]")
                 remove(username)
             elif param == "--update":
-                print("[Update]\n")
+                print("\n[Update]")
                 update(username)
             else:
                 helper() 
