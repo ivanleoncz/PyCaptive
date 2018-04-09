@@ -25,7 +25,7 @@ def password_hash(salt):
 
 def check_credentials(username):
     """ Verifies if the credentials are valid. """
-    query = db.Users.find_one({"UserName":username},{"Password":1,"_id":0})
+    query = db.Users.find_one({"UserName":username}, {"Password":1, "_id":0})
     if query is not None:
         pass_db = query["Password"]
         pass_hash = self.password_hash(pass_db)
@@ -114,7 +114,7 @@ def remove(username):
 
 def update(username):
     """ Updates user information. """
-    user_data = db.Users.find_one({"UserName": username})
+    user_data = db.Users.find_one({"UserName":username})
     if user_data is not None: 
         area      = user_data["Area"]
         role      = user_data["Role"]
@@ -149,7 +149,7 @@ def update(username):
             if up_username is not None:
                 db.Users.update_one(
                     {"UserName":username},
-                    {"$set":{"UserName":up_username,"Modification":ts}})
+                    {"$set":{"UserName":up_username, "Modification":ts}})
                 print("\nDone!\n")
         elif opt == "5":
             salt = bcrypt.gensalt()
@@ -157,7 +157,7 @@ def update(username):
             if up_password is not "NOT_EQUAL":
                 db.Users.update_one(
                     {"UserName":username},
-                    {"$set":{"Password":up_password,"Modification":ts}})
+                    {"$set":{"Password":up_password, "Modification":ts}})
             print("\nDone!\n")
         else:
             print("\nWrong Option!\n")
