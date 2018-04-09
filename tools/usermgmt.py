@@ -86,7 +86,7 @@ def create(username):
     data["Area"]         = input("* Area:      ")
     data["Role"]         = input("* Ocupación: ")
     data["Email"]        = input("* Correo:    ")
-    data["UserName"]     = input("* Usuario:   ")
+    data["UserName"]     = username
     data["Password"]     = password_hash(salt)
     data["Creation"]     = datetime.now()
     data["Modification"] = datetime.now()
