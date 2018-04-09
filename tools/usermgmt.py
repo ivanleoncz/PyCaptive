@@ -10,7 +10,7 @@ __author__ = "@ivanleoncz"
 
 import bcrypt
 import database
-                                                                              
+import sys                                                                              
     
 def password_hash(salt):
     """ Returns password hash. """
