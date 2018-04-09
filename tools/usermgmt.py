@@ -117,8 +117,7 @@ def update(username):
         email     = user_data["Email"]
         username  = user_data["UserName"]
         ts        = datetime.now()
-        print("\n1. Area\n2. Role\n3. Email\n
-                 4. User\n5. Password\n\n")
+        print("\n1. Area\n2. Role\n3. Email\n4. User\n5. Password\n\n")
         opt = input("> ")
         if opt == "1":
             up_area = input("* Area: ")
