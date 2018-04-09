@@ -28,7 +28,7 @@ def check_credentials(username):
     query = db.Users.find_one({"UserName":username}, {"Password":1, "_id":0})
     if query is not None:
         pass_db = query["Password"]
-        pass_hash = self.password_hash(pass_db)
+        pass_hash = password_hash(pass_db)
         if pass_db == pass_hash:
             print("\nUserName: OK")
             print("Password: OK\n")
@@ -87,7 +87,7 @@ def create(username):
     data["Role"]         = input("* Ocupación: ")
     data["Email"]        = input("* Correo:    ")
     data["UserName"]     = input("* Usuario:   ")
-    data["Password"]     = self.password_hash(salt)
+    data["Password"]     = password_hash(salt)
     data["Creation"]     = datetime.now()
     data["Modification"] = datetime.now()
     print("\n----------------------------------------------\n")
@@ -153,7 +153,7 @@ def update(username):
                 print("\nDone!\n")
         elif opt == "5":
             salt = bcrypt.gensalt()
-            up_password = self.password_hash(salt)
+            up_password = password_hash(salt)
             if up_password is not "NOT_EQUAL":
                 db.Users.update_one(
                     {"UserName":username},
