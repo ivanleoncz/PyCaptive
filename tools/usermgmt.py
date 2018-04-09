@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-""" Create, Delete and Update users. """
-
-# TODO: got to make sure that there isn't two users with the same username
+""" Create, Read, Update and Delete users from PyCaptive database. """
 
 from datetime import datetime
 from getpass import getpass
@@ -24,7 +22,7 @@ def password_hash(salt):
 
 
 def check_credentials(username):
-    """ Verifies if the credentials are valid. """
+    """ Verifies if credentials are valid. """
     print("\n[Checking Credentials]")
     query = db.Users.find_one({"UserName":username}, {"Password":1, "_id":0})
     if query is not None:
@@ -41,7 +39,7 @@ def check_credentials(username):
 
 
 def search(username,s_type):
-    """ Searches/presents user info (full or summary). """
+    """ Presents user info (full or summary). """
     if s_type == "full":
         print("\n[Search Full]")
         query = db.Users.find(
@@ -178,7 +176,7 @@ def update(username):
 
 
 def helper():
-    """ Provides default messages for help purposes. """
+    """ Provides help. """
     print(sys.argv[0],"\n")
     print("    --search:       searches user and returns info (summary)")
     print("    --search-full:  searches user and returns info (full)")
