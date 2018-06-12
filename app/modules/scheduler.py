@@ -29,7 +29,7 @@ def expirer():
     if type(sessions) == list: # querying expired sessions
         if len(sessions) > 0:
             fw = iptables.Worker()
-            counter = fw.del_rule(sessions) # deleting rules
+            counter = fw.del_rules(sessions) # deleting rules
             if type(counter) != int:
                 log.error('[%s] %s %s %s %s', timestamp, "EVENT", 
                                  "scheduler", "expirer", "FAIL_IPTABLES")
