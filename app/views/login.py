@@ -27,7 +27,7 @@ def f_login():
             login_record = db.add_session(username,ipaddress)
             if login_record == 0:
                 fw = iptables.Worker()
-                allow = fw.test_add_rule(ipaddress)
+                allow = fw.add_rule(ipaddress)
                 if allow == 0:
                     return redirect(url_for('f_welcome',usr=username))
                 else:
