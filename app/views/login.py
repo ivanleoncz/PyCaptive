@@ -15,12 +15,12 @@ def f_index():
 @app.route("/login", methods=['GET','POST'])
 def f_login():
     """ Processing request. """
+    ipaddress = request.headers['X-Real-IP']
     if request.method == 'GET':
         return render_template("login.html")
     elif request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        ipaddress = request.remote_addr
         db = mongodb.Connector()
         login = db.login(username,password)
         if login == 0:
