@@ -74,7 +74,7 @@ class Worker:
                     log.error('[%s] %s %s %s %s %s', 
                                ts, "EVENT", "iptables", "del_rule", ip, "NOK")
 
-                result = del_conntrack(ip)
+                result = self.del_conntrack(ip)
                 if result == 0:
                     log.error('[%s] %s %s %s %s %s', 
                                ts, "EVENT", "iptables", "del_conntrack", ip, "OK")
