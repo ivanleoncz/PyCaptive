@@ -37,7 +37,7 @@ class Worker:
     def add_rule(self,ip):
         """ Allowing network traffic. """
         rule = [self.binnary, "-t",self.table, "-I", self.chain,
-                              "-i",self.nic, "-s", self.ip, "-j",self.jump]
+                              "-i",self.nic, "-s", ip, "-j",self.jump]
         try:
             result = sp.call(rule)
             ts = datetime.now()
