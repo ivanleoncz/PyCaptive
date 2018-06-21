@@ -3,7 +3,7 @@
 
 from datetime import datetime
 
-__author__ == "@ivanleoncz"
+__author__ = "@ivanleoncz"
 
 import bcrypt
 import database
@@ -24,6 +24,7 @@ def import_users(file_db):
             opt = input("\nConfirm Import (y/n)? ")
             if opt == "y":
                 for line in f:
+                    print("Processing line:", line)
                     user_data = {}
                     salt = bcrypt.gensalt()
                     timestamp = datetime.now()
@@ -51,7 +52,6 @@ def helper():
     """ Provides default messages for help purposes. """
     print(sys.argv[0],"\n")
     print("    --import: import users from .csv file")
-    print("    --export: export users to .csv file (file cannot be used for import)")
     print("    --help:   this help")
 
 
@@ -62,6 +62,6 @@ if __name__ == "__main__":
         param = sys.argv[1]
         if param == "--import":
             print("[Importing]\n")
-            import_users()
+            import_users("pycaptive_users.csv")
         else:
             helper() 
