@@ -39,7 +39,7 @@ class Connector:
         login_time = datetime.now()
         try:
             # defines the amount of time that a sessions lasts
-            expire_time = login_time + timedelta(minutes=2)
+            expire_time = login_time + timedelta(minutes=43200)
             collection.insert_one({
                 "UserName":username,
                 "IpAddress":ipaddress,
