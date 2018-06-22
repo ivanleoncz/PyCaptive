@@ -12,12 +12,12 @@ import subprocess as sp
 import sys
 
 
-def import_users(file_db): 
+def import_users(csv): 
     """ Importing users from .csv file. """
     mongo = database.MongoDB()
     db = mongo.connect()
     try:
-        with open(file_db,"r") as f:
+        with open(csv, "r") as f:
             print("Format expected:\n")
             print("John, Adm, Analyst, john@foobar.com, john, 5up3r")
             print("Alan, Oper, Analyst, alan@foobar.com, alan, s3cr3t")
