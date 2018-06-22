@@ -48,20 +48,8 @@ def import_users(file_db):
         print(" - line:", line)
 
 
-def helper():
-    """ Provides default messages for help purposes. """
-    print(sys.argv[0],"\n")
-    print("    --import: import users from .csv file")
-    print("    --help:   this help")
-
-
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        helper()
-    else:
-        param = sys.argv[1]
-        if param == "--import":
-            print("[Importing]\n")
-            import_users("pycaptive_users.csv")
-        else:
-            helper() 
+csv = "pycaptive_users.csv"
+if os.path.isfile(csv):
+    import_users(csv)
+else:
+    print("ERROR: file not found -> ", csv)
