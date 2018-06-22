@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Exporting users from MongoDB database. """
 
-__author__ == "@ivanleoncz"
+__author__ = "@ivanleoncz"
 
 import database
 import subprocess as sp
@@ -33,7 +33,6 @@ def export_users():
 def helper():
     """ Provides default messages for help purposes. """
     print(sys.argv[0],"\n")
-    print("    --import: import users from .csv file")
     print("    --export: export users to .csv file (file cannot be used for import)")
     print("    --help:   this help")
 
