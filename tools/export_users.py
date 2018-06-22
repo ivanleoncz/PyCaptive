@@ -18,7 +18,7 @@ def export_users(csv):
             with open (csv, "w") as f:
                 f.write("\nDON'T USE this format for importing users !\n")
                 for user in users:
-                    line = "{0},{1},{2},{3},{5}".format(
+                    line = "{0},{1},{2},{3},{4}".format(
                             user["FullName"],user["Area"],user["Role"],
                             user["Email"],user["UserName"]
                     )
