@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 """ Exporting users from MongoDB database. """
 
+
+from ..app.modules import mongodb
+
 __author__ = "@ivanleoncz"
 
-import database
 import subprocess as sp
 import sys
 
@@ -12,8 +14,9 @@ def export_users(csv):
     """ Export users from .csv file. """
     print("[Exporting]\n")
     print("INFO: do not import this file !!!***")
-    mongo = database.MongoDB()
-    db = mongo.connect()
+    mongo = mongodb.Connector()
+    client = mongo.connect()
+    db = client.tjs
     try:
         users = db.Users.find({},{"_id":0})
         if users.count() > 0:
