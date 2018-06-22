@@ -32,4 +32,4 @@ def export_users(csv):
         print("ERROR:", e)
 
 
-export_users("pycaptive_users_export.out")
+export_users("pycaptive_users.export")
