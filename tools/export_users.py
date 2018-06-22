@@ -8,14 +8,14 @@ import subprocess as sp
 import sys
 
 
-def export_users():
+def export_users(csv):
     """ Export users from .csv file. """
     mongo = database.MongoDB()
     db = mongo.connect()
     try:
         users = db.Users.find({},{"_id":0})
         if users.count() > 0:
-            with open (mongo.exp,"w") as f:
+            with open (csv, "w") as f:
                 f.write("\nDON'T USE this format for importing users !\n")
                 for user in query:
                     line = "{0},{1},{2},{3},{5}".format(
@@ -44,6 +44,6 @@ if __name__ == "__main__":
         param = sys.argv[1]
         if param == "--export":
             print("[Exporting]\n")
-            export_users()
+            export_users("pycaptive_users_export.out")
         else:
             helper() 
