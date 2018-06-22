@@ -24,18 +24,18 @@ def import_users(csv):
             opt = input("\nConfirm Import (y/n)? ")
             if opt == "y":
                 for line in f:
-                    print("Processing line:", line)
+                    line_split = line.split(',')
+                    print("INFO: processing user ->", line_split[4])
                     user_data = {}
                     salt = bcrypt.gensalt()
                     timestamp = datetime.now()
-                    line_split = line.split(',')
                     user_data["FullName"]     = line_split[0]
                     user_data["Area"]         = line_split[1]
                     user_data["Role"]         = line_split[2]
                     user_data["Email"]        = line_split[3]
                     user_data["UserName"]     = line_split[4]
-                    p_text                 = line_split[5].rstrip('\n')
-                    p_hash = bcrypt.hashpw(p_text.encode('utf8'),salt)
+                    p_text                    = line_split[5].rstrip('\n')
+                    p_hash = bcrypt.hashpw(p_text.encode('utf8'), salt)
                     user_data["Password"]     = p_hash
                     user_data["Creation"]     = timestamp
                     user_data["Modification"] = timestamp
@@ -44,7 +44,7 @@ def import_users(csv):
             else:
                 print("Bye!")
     except Exception as e:
-        print("Exception!", e)
+        print("ERROR:", e)
         print(" - line:", line)
 
 
