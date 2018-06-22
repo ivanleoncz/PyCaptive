@@ -10,6 +10,7 @@ import sys
 
 def export_users(csv):
     """ Export users from .csv file. """
+    print("[Exporting]\n")
     print("INFO: do not import this file !!!***")
     mongo = database.MongoDB()
     db = mongo.connect()
@@ -31,20 +32,4 @@ def export_users(csv):
         print("ERROR:", e)
 
 
-def helper():
-    """ Provides default messages for help purposes. """
-    print(sys.argv[0],"\n")
-    print("    --export: export users to .csv file (file cannot be used for import)")
-    print("    --help:   this help")
-
-
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        helper()
-    else:
-        param = sys.argv[1]
-        if param == "--export":
-            print("[Exporting]\n")
-            export_users("pycaptive_users_export.out")
-        else:
-            helper() 
+export_users("pycaptive_users_export.out")
