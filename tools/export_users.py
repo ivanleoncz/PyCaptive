@@ -10,14 +10,15 @@ import sys
 
 def export_users(csv):
     """ Export users from .csv file. """
+    print("INFO: do not import this file !!!***")
     mongo = database.MongoDB()
     db = mongo.connect()
     try:
         users = db.Users.find({},{"_id":0})
         if users.count() > 0:
             with open (csv, "w") as f:
-                f.write("\nDON'T USE this format for importing users !\n")
                 for user in users:
+                    f.write("*** DO NOT IMPORT THIS FILE ***\n")
                     line = "{0},{1},{2},{3},{4}".format(
                             user["FullName"],user["Area"],user["Role"],
                             user["Email"],user["UserName"]
@@ -25,9 +26,9 @@ def export_users(csv):
                     f.write(line + "\n")
                 print("Done!")
         else:
-            print("No users were found!")
+            print("INFO: no users to export")
     except Exception as e:
-        print("Exception!", e)
+        print("ERROR:", e)
 
 
 def helper():
