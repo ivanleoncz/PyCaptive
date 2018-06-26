@@ -13,8 +13,7 @@ def export_users(csv):
     print("[Exporting]\n")
     print("INFO: do not import this file !!!***")
     mongo = database.MongoDB()
-    client = mongo.connect()
-    db = client.tjs
+    db = mongo.connect()
     try:
         users = db.Users.find({},{"_id":0})
         if users.count() > 0:
