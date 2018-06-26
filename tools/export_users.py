@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 """ Exporting users from MongoDB database. """
 
-
-from ..app.modules import mongodb
-
 __author__ = "@ivanleoncz"
 
+import database
 import subprocess as sp
 import sys
 
@@ -14,7 +12,7 @@ def export_users(csv):
     """ Export users from .csv file. """
     print("[Exporting]\n")
     print("INFO: do not import this file !!!***")
-    mongo = mongodb.Connector()
+    mongo = database.MongoDB()
     client = mongo.connect()
     db = client.tjs
     try:
