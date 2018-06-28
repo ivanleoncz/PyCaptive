@@ -25,6 +25,10 @@ def after_request(response):
                    request.full_path, 
                    request.remote_addr, 
                    response.status)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers['Cache-Control'] = 'public, max-age=0'
     return response
 
 
