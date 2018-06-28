@@ -26,12 +26,12 @@ class Connector:
         db_user = "mongo"
         db_pass = "mongo"
         db_addr = "127.0.0.1:27017"
-        uri = "mongodb://{0}:{1}@{2}".format(db_user,db_pass,db_addr)
-        client = MongoClient(uri,serverSelectionTimeoutMS=6000)
+        uri = "mongodb://{0}:{1}@{2}".format(db_user, db_pass, db_addr)
+        client = MongoClient(uri, serverSelectionTimeoutMS=6000)
         return client
 
 
-    def add_session(self,username,ipaddress):
+    def add_session(self, username, ipaddress):
         """ Adding session record. """
         client = self.connect()
         db = client.tjs
@@ -45,11 +45,11 @@ class Connector:
                 "IpAddress":ipaddress,
                 "LoginTime":login_time,
                 "ExpireTime":expire_time})
-            log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
+            log.error('[%s] %s %s %s %s %s', login_time, "EVENT",
                     "mongodb", "add_session", ipaddress, "OK")
             return 0
         except Exception as e:
-            log.error('[%s] %s %s %s', login_time, "EVENT", 
+            log.error('[%s] %s %s %s', login_time, "EVENT",
                         "mongodb", "add_session:EXCEPTION")
             log.error('%s', e)
             return e
@@ -67,48 +67,47 @@ class Connector:
             for session in sessions:
                 data = collection.find_one(
                         {"ExpireTime":session},
-                        {"IpAddress":1,"UserName":1,"_id":0})
+                        {"IpAddress":1, "UserName":1, "_id":0})
                 ip = data["IpAddress"]
                 if session < time_now:
                     collection.delete_one({"ExpireTime":session})
                     deleted_sessions.append(ip)
-                    log.error('[%s] %s %s %s %s %s', time_now, "EVENT", 
+                    log.error('[%s] %s %s %s %s %s', time_now, "EVENT",
                            "mongodb", "expire_sessions", data, "OK")
             return deleted_sessions
         except Exception as e:
-            log.error('[%s] %s %s %s %s', time_now, "EVENT", 
+            log.error('[%s] %s %s %s %s', time_now, "EVENT",
                       "mongodb", "expire_sessions", "EXCEPTION")
             log.error('%s', e)
             return e
 
 
-    def login(self,username,password):   
+    def login(self, username, password):
         """ Validating username and password. """
         client = self.connect()
         db = client.tjs
         collection = db.Users
-        login_time = datetime.now()
+        timestamp = datetime.now()
         try:
-            hash_pass = collection.find_one(
-                    {"UserName":username},
-                    {"Password":1,"_id":0})
+            hash_pass = collection.find_one({"UserName":username},
+                                            {"Password":1, "_id":0})
             if hash_pass is not None:
-                hash_pass = hash_pass["Password"]
-                unhashed_pass = bcrypt.hashpw(password.encode("utf-8"),hash_pass)
-                if hash_pass == unhashed_pass:
-                    log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
-                                   "mongodb", "login", username, "OK")
+                db_hash = hash_pass["Password"]
+                new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
+                if db_hash == new_hash:
+                    log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
+                                  "mongodb", "login", username, "OK")
                     return 0
                 else:
-                    log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
-                                   "mongodb", "login", username, "OK")
+                    log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
+                                  "mongodb", "login", username, "OK")
                     return 2
             else:
-                log.error('[%s] %s %s %s %s %s', login_time, "EVENT", 
-                               "mongodb" ,"login", username, "OK")
+                log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
+                              "mongodb" ,"login", username, "OK")
                 return 1
         except Exception as e:
-            log.error('[%s] %s %s %s %s', login_time, "EVENT", 
-                                  "mongodb", "login", "EXCEPTION")
+            log.error('[%s] %s %s %s %s', timestamp, "EVENT",
+                                 "mongodb", "login", "EXCEPTION")
             log.error('%s', e)
             return e
