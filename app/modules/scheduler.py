@@ -22,24 +22,24 @@ from datetime import datetime
 def expirer():
     """ Cleaning expired sessions """
     timestamp = datetime.now()
-    log.error('[%s] %s %s %s %s', timestamp, "EVENT", 
-                     "scheduler", "expirer", "RUNNING")
+    log.error('[%s] %s %s %s %s',
+      timestamp, "EVENT", "scheduler", "expirer", "RUNNING")
     db = mongodb.Connector()
-    sessions = db.expire_sessions()
-    if type(sessions) == list: # querying expired sessions
+    sessions = db.expire_sessions() # querying expired sessions
+    if type(sessions) == list:
         if len(sessions) > 0:
             fw = iptables.Worker()
             counter = fw.del_rules(sessions) # deleting rules
             if type(counter) != int:
-                log.error('[%s] %s %s %s %s', timestamp, "EVENT", 
-                                 "scheduler", "expirer", "FAIL_IPTABLES")
+                log.error('[%s] %s %s %s %s',
+                  timestamp, "EVENT", "scheduler", "expirer", "FAIL_IPTABLES")
     else:
-        log.error('[%s] %s %s %s %s', timestamp, "EVENT", 
-                         "scheduler", "expirer", "FAIL_MONGODB")
+        log.error('[%s] %s %s %s %s',
+          timestamp, "EVENT", "scheduler", "expirer", "FAIL_MONGODB")
 
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(expirer,'interval',seconds=60)
+sched.add_job(expirer, 'interval', seconds=60)
 sched.start()
 
 
