@@ -12,7 +12,7 @@ from app.modules import mongodb
 @app.route("/login", methods=['GET', 'POST'])
 def f_login():
     """ Processing request. """
-    ipaddress = request.headers['X-Real-IP']
+    client_ip = request.headers['X-Real-IP']
     if request.method == 'GET':
         return render_template("login.html")
     elif request.method == 'POST':
@@ -21,27 +21,26 @@ def f_login():
         db = mongodb.Connector()
         login = db.login(username, password)
         if login == 0:
-            login_record = db.add_session(username, ipaddress)
+            login_record = db.add_session(username, client_ip)
             if login_record == 0:
                 fw = iptables.Worker()
-                allow = fw.add_rule(ipaddress)
+                allow = fw.add_rule(client_ip)
                 if allow == 0:
                     return redirect(url_for('f_welcome', usr=username))
                 else:
-                    message = "Server Error: firewall"
-                    return render_template("login.html", login_failed=message)
+                    msg = "Server Error (firewall)"
+                    return render_template("login.html", login_msg=msg)
             else:
-                message = "Server Error: session"
-                return render_template("login.html", login_failed=message)
+                msg = "Server Error (session)"
+                return render_template("login.html", login_msg=msg)
         elif login == 1 or login == 2:
-            message = "Wrong Credentials!"
-            return render_template("login.html", login_failed=message)
+            msg = "Wrong Credentials!"
+            return render_template("login.html", login_msg=msg)
         else:
-            message = "Server Error: login"
-            return render_template("login.html", login_failed=message)
+            msg = "Server Error (login)"
+            return render_template("login.html", login_msg=msg)
     else:
-        # 405: Method Not Allowed
-        abort(405)
+        abort(405) # 405: Method Not Allowed
 
 @app.route("/welcome/<usr>")
 def f_welcome(usr):
