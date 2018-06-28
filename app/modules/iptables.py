@@ -34,64 +34,64 @@ class Worker:
     nic     = "eth2"
     jump    = "INTERNET"
 
-    def add_rule(self,ip):
+    def add_rule(self, ip):
         """ Allowing network traffic. """
         rule = [self.binnary, "-t",self.table, "-I", self.chain,
-                              "-i",self.nic, "-s", ip, "-j",self.jump]
+                     "-i", self.nic, "-s", ip, "-j", self.jump]
         try:
             result = sp.call(rule)
             ts = datetime.now()
             if result == 0:
                 log.error('[%s] %s %s %s %s %s', 
-                           ts, "EVENT", "iptables", "add_rule", ip, "OK")
+                  ts, "EVENT", "iptables", "add_rule", ip, "OK")
                 return 0
             else:
                 log.error('[%s] %s %s %s %s %s', 
-                           ts, "EVENT", "iptables", "add_rule", ip, "NOK")
+                  ts, "EVENT", "iptables", "add_rule", ip, "NOK")
                 return 1
         except Exception as e:
             ts = datetime.now()
             log.error('[%s] %s %s %s %s', 
-                       ts, "EVENT", "iptables", "add_rule", "EXCEPTION")
+              ts, "EVENT", "iptables", "add_rule", "EXCEPTION")
             log.error('[%s]', e)
             return e
 
 
-    def del_rules(self,ips):
+    def del_rules(self, ips):
         """ Revoking rule for network traffic. """
         try:
             rules = 0
             for ip in ips:
                 rule = [self.binnary, "-t", self.table, "-D", self.chain, 
-                                      "-i", self.nic, "-s", ip, "-j", self.jump]
+                              "-i", self.nic, "-s", ip, "-j", self.jump]
                 result = sp.call(rule)
                 ts = datetime.now()
                 if result == 0:
                     log.error('[%s] %s %s %s %s %s', 
-                               ts, "EVENT", "iptables", "del_rule", ip, "OK")
+                      ts, "EVENT", "iptables", "del_rule", ip, "OK")
                     rules += 1
                 else:
                     log.error('[%s] %s %s %s %s %s', 
-                               ts, "EVENT", "iptables", "del_rule", ip, "NOK")
+                      ts, "EVENT", "iptables", "del_rule", ip, "NOK")
 
                 result = self.del_conntrack(ip)
                 if result == 0:
                     log.error('[%s] %s %s %s %s %s', 
-                               ts, "EVENT", "iptables", "del_conntrack", ip, "OK")
+                      ts, "EVENT", "iptables", "del_conntrack", ip, "OK")
                 else:
                     log.error('[%s] %s %s %s %s %s', 
-                               ts, "EVENT", "iptables", "del_conntrack", ip, "NOK")
+                      ts, "EVENT", "iptables", "del_conntrack", ip, "NOK")
             return rules
         except Exception as e:
             ts = datetime.now()
             log.error('[%s] %s %s %s %s', 
-                       ts, "EVENT", "iptables", "del_rule", "EXCEPTION")
+              ts, "EVENT", "iptables", "del_rule", "EXCEPTION")
             log.error('[%s]', e)
             return e
 
 
-    def del_conntrack(self,ip):
+    def del_conntrack(self, ip):
         """ Destroys established connections from conntrack table. """
-        destroy_connection = ["/usr/sbin/conntrack", "-D", "--orig-src", ip] 
-        result = sp.call(destroy_connection)
+        destroy_conn = ["/usr/sbin/conntrack", "-D", "--orig-src", ip]
+        result = sp.call(destroy_conn)
         return result
