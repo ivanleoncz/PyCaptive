@@ -28,16 +28,16 @@ def f_login():
                 if allow == 0:
                     return redirect(url_for('f_welcome', usr=username))
                 else:
-                    message = "Server Error (rule)!"
+                    message = "Server Error: firewall"
                     return render_template("login.html", login_failed=message)
             else:
-                message = "Server Error (session)!"
+                message = "Server Error: session"
                 return render_template("login.html", login_failed=message)
         elif login == 1 or login == 2:
             message = "Wrong Credentials!"
             return render_template("login.html", login_failed=message)
         else:
-            message = "Server Error (login)!"
+            message = "Server Error: login"
             return render_template("login.html", login_failed=message)
     else:
         # 405: Method Not Allowed
