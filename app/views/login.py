@@ -42,8 +42,9 @@ def f_login():
     else:
         abort(405) # 405: Method Not Allowed
 
-@app.route("/welcome/<usr>")
-def f_welcome(usr):
+@app.route("/welcome")
+def f_welcome():
+    usr = request.args['usr']
     login_time  = datetime.now()
     expire_time = login_time + timedelta(hours=12)
     expire_time = expire_time.strftime('%H:%M')
