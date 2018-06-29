@@ -33,3 +33,4 @@ def after_request(response):
 
 
 from app.views import login
+from app.views import welcome
