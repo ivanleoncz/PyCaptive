@@ -100,11 +100,11 @@ class Connector:
                     return 0
                 else:
                     log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
-                                  "mongodb", "login", username, "OK")
+                                  "mongodb", "login", username, "NOK")
                     return 2
             else:
                 log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
-                              "mongodb" ,"login", username, "OK")
+                              "mongodb" ,"login", username, "NOK")
                 return 1
         except Exception as e:
             log.error('[%s] %s %s %s %s', timestamp, "EVENT",
