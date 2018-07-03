@@ -45,12 +45,12 @@ class Connector:
                 "IpAddress":ipaddress,
                 "LoginTime":login_time,
                 "ExpireTime":expire_time})
-            log.error('[%s] %s %s %s %s %s', login_time, "EVENT",
-                    "mongodb", "add_session", ipaddress, "OK")
+            log.error('[%s] %s %s %s %s',
+                       login_time, "mongodb", "add_session", ipaddress, "OK")
             return 0
         except Exception as e:
-            log.error('[%s] %s %s %s', login_time, "EVENT",
-                        "mongodb", "add_session:EXCEPTION")
+            log.error('[%s] %s %s %s',
+                       login_time, "mongodb", "add_session", "EXCEPTION")
             log.error('%s', e)
             return e
 
@@ -72,12 +72,12 @@ class Connector:
                 if session < time_now:
                     collection.delete_one({"ExpireTime":session})
                     deleted_sessions.append(ip)
-                    log.error('[%s] %s %s %s %s %s', time_now, "EVENT",
-                           "mongodb", "expire_sessions", data, "OK")
+                    log.error('[%s] %s %s %s %s',
+                            time_now, "mongodb", "expire_sessions", data, "OK")
             return deleted_sessions
         except Exception as e:
-            log.error('[%s] %s %s %s %s', time_now, "EVENT",
-                      "mongodb", "expire_sessions", "EXCEPTION")
+            log.error('[%s] %s %s %s',
+                       time_now, "mongodb", "expire_sessions", "EXCEPTION")
             log.error('%s', e)
             return e
 
@@ -87,7 +87,7 @@ class Connector:
         client = self.connect()
         db = client.tjs
         collection = db.Users
-        timestamp = datetime.now()
+        ts = datetime.now()
         try:
             hash_pass = collection.find_one({"UserName":username},
                                             {"Password":1, "_id":0})
@@ -95,19 +95,19 @@ class Connector:
                 db_hash = hash_pass["Password"]
                 new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
                 if db_hash == new_hash:
-                    log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
-                                  "mongodb", "login", username, "OK")
+                    log.error('[%s] %s %s %s %s',
+                               ts, "mongodb", "login", username, "OK")
                     return 0
                 else:
-                    log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
-                                  "mongodb", "login", username, "NOK")
+                    log.error('[%s] %s %s %s %s',
+                               ts, "mongodb", "login", username, "NOK")
                     return 2
             else:
-                log.error('[%s] %s %s %s %s %s', timestamp, "EVENT",
-                              "mongodb" ,"login", username, "NOK")
+                log.error('[%s] %s %s %s %s',
+                           ts, "mongodb" ,"login", username, "NOK")
                 return 1
         except Exception as e:
-            log.error('[%s] %s %s %s %s', timestamp, "EVENT",
-                                 "mongodb", "login", "EXCEPTION")
+            log.error('[%s] %s %s %s',
+                       ts, "mongodb", "login", "EXCEPTION")
             log.error('%s', e)
             return e
