@@ -42,17 +42,17 @@ class Worker:
             result = sp.call(rule)
             ts = datetime.now()
             if result == 0:
-                log.error('[%s] %s %s %s %s %s', 
-                  ts, "EVENT", "iptables", "add_rule", ip, "OK")
+                log.error('[%s] %s %s %s %s',
+                  ts, "iptables", "add_rule", ip, "OK")
                 return 0
             else:
-                log.error('[%s] %s %s %s %s %s', 
-                  ts, "EVENT", "iptables", "add_rule", ip, "NOK")
+                log.error('[%s] %s %s %s %s',
+                  ts, "iptables", "add_rule", ip, "NOK")
                 return 1
         except Exception as e:
             ts = datetime.now()
-            log.error('[%s] %s %s %s %s', 
-              ts, "EVENT", "iptables", "add_rule", "EXCEPTION")
+            log.error('[%s] %s %s %s %s',
+              ts, "iptables", "add_rule", ip, "EXCEPTION")
             log.error('[%s]', e)
             return e
 
@@ -67,25 +67,25 @@ class Worker:
                 result = sp.call(rule)
                 ts = datetime.now()
                 if result == 0:
-                    log.error('[%s] %s %s %s %s %s', 
-                      ts, "EVENT", "iptables", "del_rule", ip, "OK")
+                    log.error('[%s] %s %s %s %s',
+                      ts, "iptables", "del_rule", ip, "OK")
                     rules += 1
                 else:
-                    log.error('[%s] %s %s %s %s %s', 
-                      ts, "EVENT", "iptables", "del_rule", ip, "NOK")
+                    log.error('[%s] %s %s %s %s',
+                      ts, "iptables", "del_rule", ip, "NOK")
 
                 result = self.del_conntrack(ip)
                 if result == 0:
-                    log.error('[%s] %s %s %s %s %s', 
-                      ts, "EVENT", "iptables", "del_conntrack", ip, "OK")
+                    log.error('[%s] %s %s %s %s',
+                      ts, "iptables", "del_conntrack", ip, "OK")
                 else:
-                    log.error('[%s] %s %s %s %s %s', 
-                      ts, "EVENT", "iptables", "del_conntrack", ip, "NOK")
+                    log.error('[%s] %s %s %s %s',
+                      ts, "iptables", "del_conntrack", ip, "NOK")
             return rules
         except Exception as e:
             ts = datetime.now()
-            log.error('[%s] %s %s %s %s', 
-              ts, "EVENT", "iptables", "del_rule", "EXCEPTION")
+            log.error('[%s] %s %s %s',
+              ts, "iptables", "del_rule", "EXCEPTION")
             log.error('[%s]', e)
             return e
 
