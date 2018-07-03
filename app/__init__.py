@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """ Main application module. """
 
-from datetime import datetime
-from flask import Flask, request
+from flask import Flask
 from app.modules import logger
 
 log = logger.config()
@@ -14,17 +13,7 @@ app = Flask(__name__)
 
 @app.after_request
 def after_request(response):
-    """ Logging every request, except return code 500. """
-    if response.status_code != 500:
-        timestamp = datetime.now()
-        log.error('[%s] %s %s %s %s %s %s',
-                   timestamp,
-                   "REQUEST",
-                   request.method, 
-                   request.scheme, 
-                   request.full_path, 
-                   request.remote_addr, 
-                   response.status)
+    """ Setting response headers for every request. """
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
