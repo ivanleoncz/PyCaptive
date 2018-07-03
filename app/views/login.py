@@ -2,8 +2,9 @@
 """ Module for /login view/route."""
 
 from flask import abort, redirect, render_template, request, url_for
+from datetime import datetime
 
-from app import app
+from app import app, log
 from app.modules import iptables
 from app.modules import mongodb
 
@@ -13,6 +14,9 @@ def f_login():
     """ Processing request. """
     client_ip = request.headers['X-Real-IP']
     if request.method == 'GET':
+        ts = datetime.now()
+        log.error(log.error('[%s] %s %s %s %s',
+                             ts, "/login", "GET", client_ip, "OK"))
         return render_template("login.html")
     elif request.method == 'POST':
         username = request.form['username']
