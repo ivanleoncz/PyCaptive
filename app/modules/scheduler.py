@@ -22,8 +22,8 @@ from datetime import datetime
 def expirer():
     """ Cleaning expired sessions """
     ts = datetime.now()
-    log.error('[%s] %s %s %s %s',
-        ts, "EVENT", "scheduler", "expirer", "RUNNING")
+    log.error('[%s] %s %s %s',
+        ts, "scheduler", "expirer", "RUNNING")
     db = mongodb.Connector()
     sessions = db.expire_sessions() # querying expired sessions
     if type(sessions) == list:
