@@ -15,7 +15,7 @@ def f_login():
     client_ip = request.headers['X-Real-IP']
     if request.method == 'GET':
         ts = datetime.now()
-        log.error('[%s] %s %s %s %s', ts, "/login", "GET", client_ip, "OK"))
+        log.error('[%s] %s %s %s %s', ts, "/login", "GET", client_ip, "OK")
         return render_template("login.html")
     elif request.method == 'POST':
         username = request.form['username']
