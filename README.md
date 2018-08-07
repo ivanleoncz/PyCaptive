@@ -10,9 +10,10 @@ PyCaptive is an authentication service for Open WiFi Hotspots, working as a Capt
 - [See requirements.txt](https://github.com/ivanlmj/PyCaptive/blob/master/requirements.txt)
 
 ### Server Requirements
-- two NICs (100/1000Mbps)
+- Two NICs (100/1000Mbps)
 - NIX-Like Operating System (Debian, Ubuntu, etc.)
 - IPTABLES Firewall
-- Routing Configuration (traffic redirection between NICs)
+- Routing Configuration for traffic redirection between NICs (IPTABLES)
+- Traffic Redirection for Authenticated and Non-Authenticated Users (IPTABLES)
 
 For doubts, questions or suggestions: [@ivanleoncz](https://twitter.com/ivanleoncz)
