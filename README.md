@@ -9,13 +9,12 @@ Internet Access for Wi-Fi Hotspots based on Python.
 - Back-end: Python, Flask, MongoDB, IPTABLES
 
 ### Requirements
-- NIX-Like Operating System (Debian, Ubuntu...)
+- Server: 3.0Ghz; RAM 2Gb; HDD 32Gb; 2 NICs (100/1000Mbps); NIX-Like OS (Debian/Ubuntu)
 - Python v3.5
-- PIP3 Packages: [Flask, Gunicorn WSGI...](https://github.com/ivanlmj/PyCaptive/blob/master/requirements.txt)
+- PIP3 Packages ([Flask, Gunicorn WSGI...](https://github.com/ivanlmj/PyCaptive/blob/master/requirements.txt))
 - MongoDB v3.4
 - Nginx v1.6
 - IPTABLES v1.4
-- Two NICs (100/1000Mbps)
 - Routing Configuration for traffic between NICs (IPTABLES)
 - Traffic Redirection for Authenticated and Non-Authenticated Users (IPTABLES)
 
