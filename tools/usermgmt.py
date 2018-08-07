@@ -8,8 +8,9 @@ __author__ = "@ivanleoncz"
 
 import bcrypt
 import database
-import sys                                                                              
-    
+import subprocess as sp
+import sys
+
 def password_hash(salt):
     """ Returns password hash. """
     password  = getpass(prompt="\n* Password: ").encode('utf-8')
@@ -175,6 +176,45 @@ def update(username):
         print("\nUser/Users Not Found!\n")
 
 
+def expire_session(username):
+    """ Expire session (Database + Firewall). """
+    session = db.Sessions.find_one({"UserName":username})
+    if session is not None:
+        print("Session: ", session)
+        ip = session["IpAddress"]
+        oper = input("* Expire (y/n)? ")
+        if oper == "y":
+            expire  = db.Sessions.delete_one({"UserName":username})
+            binary  = "/sbin/iptables"
+            table   = "mangle"
+            chain   = "PREROUTING"
+            nic     = "eth2"
+            jump    = "INTERNET"
+            command = [binary, '-t', table, '-D', chain, '-i', nic,
+                                  '-s', ip, '-j', jump]
+            result = sp.call(command)
+            if result == 0:
+                print("INFO: Done!\n")
+            else:
+                print("ERROR: Fail to remove IPTABLES/Netfilter rule.\n")
+            else:
+                print("INFO: Bye!")
+        else:
+            print("INFO: Session Not Found!")
+
+
+def list_sessions(username=None):
+    """ List all active sessions. """
+    print("[Sessions]")
+    if username is None:
+        sessions = db.Sessions.find({}, {"_id":0})
+        for session in sessions:
+            print("->", session)
+    else:
+        session = db.Sessions.find({"UserName":username+".*"}, {"_id":0})
+        print("->", session)
+
+
 def helper():
     """ Provides help. """
     print(sys.argv[0],"\n")
@@ -184,6 +224,8 @@ def helper():
     print("    --update:       updates information for a user")
     print("    --create:       creates user")
     print("    --remove:       removes user")
+    print("    --expire:       expire session for a user")
+    print("    --sessions:     list active sessions")
     print("    --help:         this help")
 
 
@@ -212,6 +254,15 @@ if __name__ == "__main__":
         elif param == "--update":
             username = input("\n* Username: ")
             update(username)
+        elif param == "--expire":
+            username = input("\n* Username: ")
+            expire_session(username)
+        elif param == "--sessions":
+            username = input("\n* Username: ")
+            if username is '':
+                list_sessions(None)
+            else:
+                list_sessions()
         elif param == "--help":
             helper()
         else:
