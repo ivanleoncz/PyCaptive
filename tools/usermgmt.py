@@ -114,7 +114,7 @@ def remove(username):
     if user is not None:
         oper = input("Confirm deletion (y/n)?")
         if oper == "y":
-            data = db.Users.delete_many({"UserName":username})
+            data = db.Users.delete_one({"UserName":username})
             return "Done!"
         else:
             return "Aborted!"
@@ -184,7 +184,7 @@ def expire_session(username):
         ip = session["IpAddress"]
         oper = input("* Expire (y/n)? ")
         if oper == "y":
-            expire  = db.Sessions.delete_one({"UserName":username})
+            expire  = db.Sessions.delete_many({"UserName":username})
             binary  = "/sbin/iptables"
             table   = "mangle"
             chain   = "PREROUTING"
