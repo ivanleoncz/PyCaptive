@@ -197,21 +197,22 @@ def expire_session(username):
                 print("INFO: Done!\n")
             else:
                 print("ERROR: Fail to remove IPTABLES/Netfilter rule.\n")
-            else:
-                print("INFO: Bye!")
         else:
-            print("INFO: Session Not Found!")
+            print("INFO: Bye!")
+    else:
+        print("INFO: Session Not Found!")
 
 
 def list_sessions(username=None):
     """ List all active sessions. """
     print("[Sessions]")
+    sessions = None
     if username is None:
         sessions = db.Sessions.find({}, {"_id":0})
-        for session in sessions:
-            print("->", session)
     else:
-        session = db.Sessions.find({"UserName":username+".*"}, {"_id":0})
+        sessions = db.Sessions.find({"UserName":{"$regex":username+".*"}},
+                                                               {"_id":0})
+    for session in sessions:
         print("->", session)
 
 
@@ -260,9 +261,9 @@ if __name__ == "__main__":
         elif param == "--sessions":
             username = input("\n* Username: ")
             if username is '':
-                list_sessions(None)
-            else:
                 list_sessions()
+            else:
+                list_sessions(username)
         elif param == "--help":
             helper()
         else:
