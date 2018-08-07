@@ -194,19 +194,25 @@ if __name__ == "__main__":
         mongo = database.MongoDB()
         db = mongo.connect()
         param = sys.argv[1]
-        username = input("\n* Username: ")
-        if username is not None:
-            if param == "--credentials":
-                check_credentials(username)
-            elif param == "--search":
-                print(search(username, "summary"))
-            elif param == "--search-full":
-                search(username, "full")
-            elif param == "--create":
-                create(username)
-            elif param == "--remove":
-                print(remove(username))
-            elif param == "--update":
-                update(username)
-            else:
-                helper() 
+        if param == "--credentials":
+            username = input("\n* Username: ")
+            check_credentials(username)
+        elif param == "--search":
+            username = input("\n* Username: ")
+            print(search(username, "summary"))
+        elif param == "--search-full":
+            username = input("\n* Username: ")
+            search(username, "full")
+        elif param == "--create":
+            username = input("\n* Username: ")
+            create(username)
+        elif param == "--remove":
+            username = input("\n* Username: ")
+            print(remove(username))
+        elif param == "--update":
+            username = input("\n* Username: ")
+            update(username)
+        elif param == "--help":
+            helper()
+        else:
+            helper()
