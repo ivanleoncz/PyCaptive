@@ -114,7 +114,7 @@ def remove(username):
     if user is not None:
         oper = input("Confirm deletion (y/n)?")
         if oper == "y":
-            data = db.Users.delete_one({"UserName":username})
+            data = db.Users.delete_many({"UserName":username})
             return "Done!"
         else:
             return "Aborted!"
