@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-""" PyCaptive Standalone (Gunicorn). """
+""" PyCaptive: Standalone Mode (Gunicorn) """
 
 __author__ = "@ivanleoncz"
 
