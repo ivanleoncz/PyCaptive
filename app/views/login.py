@@ -12,8 +12,14 @@ from app.modules import mongodb
 @app.route("/login", methods=['GET', 'POST'])
 def f_login():
     """ Processing request. """
-    client_ip = request.headers['X-Real-IP']
+    client_ip = None
     if request.method == 'GET':
+        # Verifies if the request was transmited via Proxy,
+        # in order to adapt the Standalone execution.
+        if request.environ.get('HTTP_X_REAL_IP') is not None:
+            client_ip = request.environ.get('HTTP_X_REAL_IP')
+        else:
+            client_ip = request.environ.get('REMOTE_ADDR')
         ts = datetime.now()
         log.error('[%s] %s %s %s %s', ts, "/login", "GET", client_ip, "OK")
         return render_template("login.html")
