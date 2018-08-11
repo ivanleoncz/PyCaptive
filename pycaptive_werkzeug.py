@@ -18,8 +18,6 @@ if os.getuid() == 0:
             print("Interrupted!")
         except Exception as e:
             print("Exception:", e)
-    else:
-        print("\nCannot be imported!\n\nRun: sudo ./pycaptive_werkzeug.py\n")
 else:
     print("\n\033[1;31mERROR\033[1;m: Must have root privileges!")
     print("Run:\n\t$ sudo ./pycaptive_werkzeug.py")
