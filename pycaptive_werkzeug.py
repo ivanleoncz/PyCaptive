@@ -1,9 +1,6 @@
 #!/usr/bin/python3
 
-""" PyCaptive Standalone (Werkzeug). 
-
-NOTICE: do not use it on production environments.
-"""
+""" PyCaptive: Standalone Mode (Werkzeug) """
 
 __author__ = "@ivanleoncz"
 
