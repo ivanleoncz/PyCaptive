@@ -2,10 +2,13 @@
 
 """ PyCaptive: Standalone Mode (Gunicorn) """
 
+from app.custom_settings import HOST, PORT
+
 __author__ = "@ivanleoncz"
 
 import os
 
+host_port = HOST + ":" + str(PORT)
 
 if os.getuid() == 0:
     if __name__ == "__main__":
@@ -14,7 +17,7 @@ if os.getuid() == 0:
         print("\033[1;34mINFO\033[1;m: don't use it in production environents!\n")
         try:
             command = ["gunicorn", "--name", "gunicorn_master",
-                                   "--bind", "0.0.0.0:14900",
+                                   "--bind", host_port,
                                    "--user", "root",
                                    "--group", "root",
                                    "--workers", "4",

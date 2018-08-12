@@ -2,6 +2,8 @@
 
 """ PyCaptive: Standalone Mode (Werkzeug) """
 
+from app.custom_settings import HOST, PORT
+
 __author__ = "@ivanleoncz"
 
 import os
@@ -13,7 +15,7 @@ if os.getuid() == 0:
         print("\nPyCaptive is running: Standalone Mode  (Werkzeug)\n")
         print("\033[1;34mINFO\033[1;m: don't use it in production environents!\n")
         try:
-            app.run(host="0.0.0.0",port=14900)
+            app.run(host=HOST, port=PORT)
         except KeyboardInterrupt:
             print("Interrupted!")
         except Exception as e:
