@@ -9,7 +9,7 @@ log = logger.config()
 from app.modules import scheduler
 
 app = Flask(__name__)
-app.config.from_pyfile('settings.cfg')
+app.config.from_pyfile('flask_settings.cfg')
 
 @app.after_request
 def after_request(response):
