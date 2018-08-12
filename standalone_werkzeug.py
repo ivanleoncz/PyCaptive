@@ -13,6 +13,7 @@ if os.getuid() == 0:
         print("\nPyCaptive is running: Standalone Mode  (Werkzeug)\n")
         print("\033[1;34mINFO\033[1;m: don't use it in production environents!\n")
         try:
+            app.config.from_pyfile('pycaptive_config.cfg')
             app.run(host="0.0.0.0",port=14900)
         except KeyboardInterrupt:
             print("Interrupted!")
