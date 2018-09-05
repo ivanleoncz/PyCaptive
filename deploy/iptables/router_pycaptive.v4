@@ -13,8 +13,8 @@
 #
 #
 #      	P.S.: 
-#      	
-#      	- Adjust the interface names, netmasks, etc., according to your setup.
+#
+#       - DON'T FORGET, to adjust the interfaces, netmasks, etc., according to your setup.
 #
 #
 #    Notice: 
@@ -26,16 +26,20 @@
 #	
 #	    $ iptables-restore --test < router_pycaptive.v4
 #
+#	2. Also (and VERY IMPORTANT), perform a backup of the current firewall
+#	rules from your server:
 #
-#	2. The firewall rules implemented here, were based on a setup for a
+#	    $ iptables-save > backup_rules.v4
+#
+#	3. The firewall rules implemented here, were based on a setup for a
 #	GNU/Linux Router with a Transparent Proxy service, and the entire logic
 #	of this file, WAS NOT TESTED, yet.
 #
 #
-#    	3. Besides the logic implemented for PYCAPTIVE (*mangle and *nat tables),
+#    	4. Besides the logic implemented for PYCAPTIVE (*mangle and *nat tables),
 #    	this file includes the Firewall setup for having a GNU/Linux Router.
 #
-#    	4. Instead of acting as a Router between two local networks, this GNU/Linux 
+#    	5. Instead of acting as a Router between two local networks, this GNU/Linux 
 #    	Router setup is focused on a Server that provides Internet Access. So, 
 #    	there are some rules described here that are different from what is usually 
 #    	available on sites/forums.
@@ -161,6 +165,8 @@ COMMIT
 -A INPUT -p icmp -m conntrack --ctstate NEW,ESTABLISHED,RELATED --icmp-type 8 -j ACCEPT
 # ROUTING: Allowing Established Connections.
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+# LOCAL: Ensure that you have SSH access to your server.
+-A INPUT -i eth2 -p tcp --dport 22 -j ACCEPT
 #
 # ------------------------------------------------------------------------------
 # From here until "-A INPUT -j REJECT": allowed traffic for specific protocols.
