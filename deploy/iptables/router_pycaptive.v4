@@ -3,19 +3,6 @@
 #    Netfilter/IPTABLES rules for PyCaptive
 #
 #
-#    Definitions:
-#
-#	LAN -> eth2
-#      	- network: 192.168.0.0/24 - 255.255.255.0
-#      	- gateway: 192.168.0.1
-#
-#      	WAN -> eth1
-#
-#
-#      	P.S.: 
-#
-#       - DON'T FORGET, to adjust the interfaces, netmasks, etc., according to your setup.
-#
 #
 #    Notice: 
 #
@@ -60,7 +47,7 @@
 #    	I would appreciate your support (pull requests, issues, etc.), with 
 #    	a detailed explanation of the flaw(s).
 #
-#    	P.S.: 
+#    	P.S.:
 #
 #    	- Besides the Firewall setup, you need to set "net.ipv4.ip_forward=1" 
 #    	on /etc/sysctl.conf, for enabling network traffic between interfaces.
@@ -70,38 +57,56 @@
 #
 #	    $ lsmod
 #
-# ------------------------------------------------------------------------------
-#
-#    Netfilter/IPTABLES is the engine that works behind the idea of Authenticated Internet Access 
-#    that PyCaptive provides, along with the application itself, which is composed by the following stack:
-#
-#	- Python
-#	- Flask (Web Framework)
-#	- MongoDB (NoSQL)
-#	- Gunicorn (WSGI)
-#	- NGINX (Web Server)
 #
 #
-# ------------------------------------------------------------------------------
+#    Concept:
 #
-#    Here's the logic implemented for PYCAPTIVE, from table to table:
+#    	Netfilter/IPTABLES is the engine that works behind the idea of Authenticated Internet Access
+#    	that PyCaptive provides, along with the application itself, which is composed by the following stack:
 #
-#    *mangle:
+#	    - Python
+#	    - Flask (Web Framework)
+#	    - MongoDB (NoSQL)
+#	    - Gunicorn (WSGI)
+#	    - NGINX (Web Server)
 #
-#      	1. Ensure that INTERNET and PYCAPTIVE chains are created.
-#      	2. Traffic with port 80 as destination (TCP/UDP) is directed to PYCAPTIVE chain.
-#      	3. Traffic with port 443 as destination (TCP/UDP) is DROPPED.
-#      	4. Packets that traverse PYCAPTIVE chain, are directed to MARK chain, where each one receive "mark 1".
-#      	5. Packets that traverse INTERNET chain, are just ACCEPTED. (see 7. item).
 #
-#    *nat:
+#    	Here's the logic implemented for PYCAPTIVE, from table to table:
 #
-#      	6. Marked packets (*mangle table) are direted to NGINX -> GUNICORN -> PyCaptive.
+#    	*mangle:
 #
-#    *mangle:
+#      	    1. Ensure that INTERNET and PYCAPTIVE chains are created.
+#      	    2. Traffic with port 80 as destination (TCP/UDP) is directed to PYCAPTIVE chain.
+#      	    3. Traffic with port 443 as destination (TCP/UDP) is DROPPED.
+#      	    4. Packets that traverse PYCAPTIVE chain, are directed to MARK chain, where each one receive "mark 1".
+#      	    5. Packets that traverse INTERNET chain, are just ACCEPTED. (see 7. item).
 #
-#      	7. After PyCaptive authentication (*nat table), rules are added on top of 
-#      	*mangle table (per IP), with INTERNET chain as destination.
+#       *nat:
+#	    6. PyCaptive interface accessible after successful authentication, escaping "NOT MARKED packets" rules
+#      	    7. MARKED PACKETS: directed to NGINX <-> GUNICORN <-> PyCaptive.
+#
+#       *mangle:
+#
+#      	    8. After PyCaptive authentication (*nat table), rules are added
+#      	    on top of *mangle table (per IP), with INTERNET chain as destination.
+#
+#
+#
+#    Scenario:
+#
+#	LAN -> eth2
+#      	- network: 192.168.0.0/24 - 255.255.255.0
+#      	- gateway: 192.168.0.1
+#
+#      	WAN -> eth1
+#
+#      	P.S.:
+#
+#       - BE SURE to adjust interfaces, netmasks, etc., according to your scenario.
+#
+#
+#    Best regards,
+#    @ivaneleoncz (ivanlmj@gmail.com)
 #
 #
 ################################################################################
@@ -115,8 +120,8 @@
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
 #
-# PYCAPTIVE: 7. After PyCaptive authentication (*nat table), rules are added on top of 
-# *mangle table (per IP), with INTERNET chain as destination.
+# PYCAPTIVE: 8. After PyCaptive authentication (*nat table), rules are added
+# on top of *mangle table (per IP), with INTERNET chain as destination.
 # 
 # -A PREROUTING -i eth2 -s 192.168.0.22 -j INTERNET
 # -A PREROUTING -i eth2 -s 192.168.0.13 -j INTERNET
@@ -124,7 +129,7 @@
 # -A PREROUTING -i eth2 -s 192.168.0.64 -j INTERNET
 # ...
 #
-# PYCAPTIVE: 1. Ensure that, both INTERNET and PYCAPTIVE chains exist. 
+# PYCAPTIVE: 1. Ensures that, both INTERNET and PYCAPTIVE chains exist.
 -N INTERNET
 -N PYCAPTIVE
 # PYCAPTIVE: 2. Traffic with port 80 as destination (TCP/UDP): directed to PYCAPTIVE chain.
@@ -144,10 +149,12 @@ COMMIT
 ################################################################################
 *nat
 :PREROUTING ACCEPT [0:0]
-:INPUT ACCEPT [0:0]
+:INPUT ACCEP T [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
-# PYCAPTIVE: 6. Marked packets (*mangle table) are direted to NGINX -> GUNICORN -> PyCaptive.
+# PYCAPTIVE: 6. PyCaptive interface accessible after successful authentication, escaping "NOT MARKED packets" rules
+-A PREROUTING -i eth2 -s 192.168.0.0/24 -p tcp -d 192.168.0.1 --dport 80 -j DNAT --to-destination 192.168.0.1:14901
+# PYCAPTIVE: 7. MARKED PACKETS: directed to NGINX <-> GUNICORN <-> PyCaptive.
 -A PREROUTING -i eth2 -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination 192.168.0.1:14901
 -A PREROUTING -i eth2 -p udp -m udp -m mark --mark 1 -j DNAT --to-destination 192.168.0.1:14901
 # ROUTING: Masquerading traffic from internal non-valid IPs (LAN), to appear that the traffic was originated from the router.
