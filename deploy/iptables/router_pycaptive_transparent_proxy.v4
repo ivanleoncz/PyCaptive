@@ -2,9 +2,11 @@
 #
 #    Netfilter/IPTABLES rules for PyCaptive, with Transparent Proxy
 #
+#
+#
 #    Notice:
 #
-#    	The model observed here, follows the same principle described on
+#    	1. The model observed here, follows the same principle described on
 #    	router_pycaptive.v4 file, with the exception of:
 #
 #	    - TWO networks behind ONE interface
@@ -13,15 +15,15 @@
 #    	    - rules for enabling traffic for some specific services
 #    	    - logging configuration
 #
-#    	If the comments bellow are not sufficient for understanding the sequence
-#    	of rules that supports PyCaptive, please, refer to "router_pycaptive.v4"
-#    	for more complete documentation.
+#    	2. For additional content and more complete documentation,  please,
+#    	refer "router_pycaptive.v4".
 #
-#    	P.S.: the first production environment where PyCaptive started to
-#    	operate, was formed by this set of rules.
+#    	P.S.: the first Production Environment where PyCaptive started to
+#    	operate, was backed by this set of rules.
 #
 #
-#    Definitions:                                                               
+#
+#    Scenario:
 #                                                                               
 #       LAN -> eth2                                                             
 #       - network: 192.168.0.0/24 - 255.255.255.0 (PyCaptive)                              
@@ -31,14 +33,15 @@
 #       - gateway: 10.255.255.62                                                  
 #
 #       WAN -> eth1
-#                                                                   
-#                                                                                                                                                              
+#
 #       P.S.:                                                                   
 #                                                                               
-#       - DON'T FORGET, to adjust the interfaces, netmasks, etc., according to your setup.
+#       - BE SURE to adjust the interfaces, netmasks, etc., according to your scenario.
 # 
+#
 #    Best regards,
 #    @ivaneleoncz (ivanlmj@gmail.com)
+#
 #
 ############################################################################### 
 
