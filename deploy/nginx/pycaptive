@@ -1,9 +1,24 @@
 server {
-    listen 14900;
-    server_name 0.0.0.0;
+
+    listen 192.168.0.1:14091;
+    server_name ~^(www\.)?(?<domain>.+)$;
+    return 301 $scheme://192.168.0.1:14090/login;
+
+    access_log /var/log/nginx/redirect_PyCaptive.access.log;
+    error_log /var/log/nginx/redirect_PyCaptive.error.log;
+
+}
+
+server {
+
+    listen 192.168.0.1:14090;
 
     location / {
-	include proxy_params;
-	proxy_pass http://unix:/opt/PyCaptive/wsgi.sock;
+        include proxy_params;
+        proxy_pass http://unix:/opt/PyCaptive/wsgi.sock;
     }
+
+    access_log /var/log/nginx/PyCaptive.access.log;
+    error_log /var/log/nginx/PyCaptive.error.log;
+
 }
