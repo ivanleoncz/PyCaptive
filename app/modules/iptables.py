@@ -93,16 +93,5 @@ class Worker:
     def del_conntrack(self, ip):
         """ Destroys established connections from conntrack table. """
         destroy_conn = ["/usr/sbin/conntrack", "-D", "--orig-src", ip]
-        # stdout and stderr redirection must be implemented,
-        # in order to avoid unnecessary messages on log files.
-        # 
-        # Ex.:
-        #     sp.call(destroy_conn, stderr=sp.DEVNULL, stdout=DEVNULL)
-        # 
-        # Or redirection of the result to a file:
-        # 
-        # with open ("file.out", "w") as f:
-        #     sp.call([destroy_conn, stderr=sp.DEVNULL, stdout=f)
-        #
-        result = sp.call(destroy_conn)
+        result = sp.call(destroy_conn, stderr=sp.DEVNULL, stdout=sp.DEVNULL)
         return result
