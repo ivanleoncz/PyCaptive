@@ -1,0 +1,12 @@
+/var/log/pycaptive/*.log {
+	monthly
+	missingok
+	rotate 12
+	compress
+	delaycompress
+	notifempty
+	postrotate
+		supervisorctl reload
+	endscript
+}
+
