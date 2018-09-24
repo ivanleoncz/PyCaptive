@@ -9,7 +9,7 @@ import logging
 
 def config():
     """ Setting up log configuration. """
-    log_f = "/var/log/pycaptive.log"
+    log_f = "/var/log/pycaptive/pycaptive.log"
     conf = logging.getLogger(__name__)
     if not conf.handlers: # avoids multiple log messages
         conf.setLevel(logging.ERROR)
