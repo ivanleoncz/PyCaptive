@@ -40,6 +40,21 @@ function sudoers_setup {
 
 }
 
+function nginx_setup {
+
+    NGINX_DIR="/etc/nginx"
+
+    cp nginx/pycaptive "$NGINX_DIR/sites-available/"
+    ln -s "$NGINX_DIR/sites-available/pycaptive" "$NGINX_DIR/sites_enabled/pycaptive"
+}
+
+function supervisor_setup {
+    
+    SUPERVISOR_DIR="/etc/supervisor/conf.d"
+    
+    cp supervisor/pycaptive "$SUPERVISOR_DIR/conf.d/"
+}
+
 
 if [ "$UID" == 0 ]
 then
