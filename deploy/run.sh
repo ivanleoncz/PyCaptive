@@ -46,6 +46,7 @@ function nginx_setup {
 
     cp nginx/pycaptive "$NGINX_DIR/sites-available/"
     ln -s "$NGINX_DIR/sites-available/pycaptive" "$NGINX_DIR/sites_enabled/pycaptive"
+
 }
 
 function supervisor_setup {
@@ -53,6 +54,38 @@ function supervisor_setup {
     SUPERVISOR_DIR="/etc/supervisor/conf.d"
     
     cp supervisor/pycaptive "$SUPERVISOR_DIR/conf.d/"
+}
+
+function check_binnaries {
+
+    packages=`dpkg-query -l | grep ^'.i' | awk '{print $2}' | \
+              grep 'python3-pip\|nginx$\|iptables$\|conntrack$\|supervisor$\|mongo-org'`
+
+    package_counter=0
+    package_executable=0
+    for pkg in $packages; do
+	echo "Checking package: $pkg"
+        ((package_counter++))
+        for bin in `whereis $pkg`; do
+            if [[ $bin =~ "bin" ]]; then
+		echo "- binnary found: $bin"
+                if [ -x $bin ]; then
+		    echo "- executable: yes"
+                    ((package_executable++))
+		fi
+            fi
+        done
+    done
+
+    if [ $package_counter -q $package_executable ]; then
+        echo "Final status: OK"
+    else
+	echo "Final status: NOK"
+	echo -e "INFO: please, review installation for the following packages"
+	echo "iptables\nconntrack\|nginx\|python3-pip\|supervisor\|mongod"
+	exit
+    fi
+
 }
 
 
