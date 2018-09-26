@@ -44,6 +44,12 @@ $ cp /opt/PyCaptive/deploy/sudoers.d/pycaptive /etc/sudoers.d
 $ chmod 444 /etc/sudoers.d/pycaptive
 ```
 
+### Logrotate
+```
+$ cp /opt/PyCaptive/deploy/logrotate/pycaptive /etc/logrotate.d/
+$ chmod 444 /etc/logrotate.d/pycaptive
+```
+
 ### Nginx
 ```
 $ cp /opt/PyCaptive/deploy/nginx/pycaptive /etc/nginx/sites-available/
@@ -56,11 +62,6 @@ $ chmod 444 /etc/nginx/sites-enabled/pycaptive
 $ pip3 install -r /opt/PyCaptive/requirements.txt
 ```
 
-### Logrotate
-```
-$ cp /opt/PyCaptive/deploy/logrotate/pycaptive /etc/logrotate.d/
-$ chmod 444 /etc/logrotate.d/pycaptive
-```
 
 ### Supervisor
 ```
