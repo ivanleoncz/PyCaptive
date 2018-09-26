@@ -1,0 +1,2 @@
+pycaptive ALL=(root:root) NOPASSWD:/sbin/iptables
+pycaptive ALL=(root:root) NOPASSWD:/usr/sbin/conntrack
