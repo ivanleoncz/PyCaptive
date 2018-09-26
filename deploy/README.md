@@ -1,7 +1,7 @@
 # Notice
-> Due to the difference of packages and itsdirectories between distros, I highly
-> recommend the execution of each action below, step by step, so you can adjust
-> the paths for each binary.
+> Due to the difference presented between distros for these packages and their
+> directories/files, it is recommended to execute each action below, step by step,
+> so you can adjust the paths for each binary, depending on your distro.
 
 ### MongoDB Repo (https://docs.mongodb.com/v3.4/tutorial/install-mongodb-on-debian/)
 ```
