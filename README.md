@@ -17,4 +17,7 @@ Additionally, PyCaptive also performs the authentication role for Wired networks
 - Routing Configuration for traffic between NICs (IPTABLES)
 - Traffic Redirection for Authenticated and Non-Authenticated Users (IPTABLES)
 
+### Installation
+- [Here](https://github.com/ivanlmj/PyCaptive/blob/master/deploy/README.md)
+
 For doubts, questions or suggestions: [@ivanleoncz](https://twitter.com/ivanleoncz)
