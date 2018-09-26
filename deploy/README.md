@@ -3,6 +3,13 @@
 > directories/files, it is recommended to execute each action below, step by step,
 > so you can adjust the paths for each binary, depending on your distro.
 
+### Cloning PyCaptive
+
+```
+$ cd /opt
+$ git clone https://github.com/ivanlmj/PyCaptive.git
+```
+
 ### MongoDB Repo (https://docs.mongodb.com/v3.4/tutorial/install-mongodb-on-debian/)
 ```
 $ apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
