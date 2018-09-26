@@ -3,7 +3,9 @@
 
 Authenticated Internet Access for Open Wifi Hotspots.
 
-PyCaptive is an authentication service for Open WiFi Hotspots, working as a Captive Portal.That means: users who wish to have Internet Access through an Open Wifi Hotspot which is backed by PyCaptive, must authenticate to open a session, which is based on Username, IP Address and Expire Time (according with Login Time).
+PyCaptive is an authentication service for Open WiFi Hotspots, working as a Captive Portal.
+
+That means: users who wish to have Internet Access through an Open Wifi Hotspot which is backed by PyCaptive, must authenticate to open a session, which is based on Username, IP Address and Expire Time (according with Login Time).
 
 Additionally, PyCaptive also performs the authentication role for Wired networks and for network servers that have Transparent Proxy service configured, since that Proxies in Transparent mode, are not capable to provide authentication.
 
