@@ -1,7 +1,7 @@
 # Notice
-> Due to the difference presented between distros for these packages and their
-> directories/files, it is recommended to execute each action below, step by step,
-> so you can adjust the paths for each binary, depending on your distro.
+Due to the difference presented between distros for these packages and their directories/files,
+it is recommended to execute each action below, step by step, so you can adjust the paths for each binary,
+depending on your distro.
 
 ### Cloning PyCaptive
 
