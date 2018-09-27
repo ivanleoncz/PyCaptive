@@ -1,10 +1,8 @@
 
 <img align="left" width="200" height="160" src="https://raw.githubusercontent.com/ivanlmj/PyCaptive/master/app/static/pycaptive_logo.png">
-PyCaptive is a solution for Open WiFi Hotspots, working as a Captive Portal, providing Internet Access through its authentication service.
+<p>PyCaptive is a solution for Open WiFi Hotspots, working as a Captive Portal, providing Internet Access through its authentication service.
 
-<br>
-
-Additionally, PyCaptive can perform the authentication role for Wired networks and for network servers that have Transparent Proxy service configured, since that Proxies in Transparent mode, are not capable to provide authentication service.
+<p>Additionally, PyCaptive can perform the authentication role for Wired networks and for network servers that have Transparent Proxy service configured, since that Proxies in Transparent mode, are not capable to provide authentication service.
 
 <br>
 
