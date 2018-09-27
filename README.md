@@ -1,5 +1,5 @@
 
-![alt text](https://raw.githubusercontent.com/ivanlmj/PyCaptive/master/app/static/pycaptive_logo.png)
+<img align="left" width="100" height="100" src="https://raw.githubusercontent.com/ivanlmj/PyCaptive/master/app/static/pycaptive_logo.png">
 
 PyCaptive is a solution for Open WiFi Hotspots, working as a Captive Portal, providing Internet Access through its authentication service.
 
