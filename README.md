@@ -4,6 +4,7 @@
 
 <p>Additionally, PyCaptive can perform the authentication role for Wired networks and for network servers that have Transparent Proxy service configured, since that Proxies in Transparent mode, are not capable to provide authentication service.
 
+
 <br>
 
 ### Requirements
