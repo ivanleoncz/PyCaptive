@@ -1,7 +1,9 @@
-# Notice
-Due to the difference presented between distros for these packages and their directories/files,
-it is recommended to execute each action below, step by step, so you can adjust the paths for each binary,
-depending on your distro.
+The steps defined below are designed for Debian-like distros (Red Hat-like distros
+use different commands and files) and there might be differences from one distro
+to another (also differences among distro versions), regarding packages, directories
+and files. Due to this scenario, a step-by-step setup was defined below instead
+of a automated process, in order to avoid installation problems.
+
 
 ### Cloning PyCaptive
 
@@ -36,6 +38,11 @@ $ chown pycaptive:pycaptive /var/log/pycaptive
 $ echo "PyCaptive Deploy at: `/bin/date`" > /var/log/pycaptive/pycaptive.log
 $ chown pycaptive:pycaptive /var/log/pycaptive/pycaptive.log
 $ chmod 660 /var/log/pycaptive/pycaptive.log
+```
+
+### IP Forwarding (uncomment or add: net.ipv4.ip_forward = 1)
+```
+$ vim /etc/sysctl.conf
 ```
 
 ### IPTABLES
