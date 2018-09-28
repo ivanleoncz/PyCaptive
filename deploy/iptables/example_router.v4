@@ -5,19 +5,18 @@
 #
 #        Scenario:
 #
-#	   - GNU/Linux router, acting as a Gateway for an ISP Gateway,
-#          requiring authentication for HTTP/HTTPS traffic for a single
-#          network (configured via DHCP) from the two that are associated 
-#          with its LAN interface.
+#	   - GNU/Linux router, acting as DNS server and Gateway for an ISP Gateway,
+#	   requiring authentication for HTTP/HTTPS traffic originated from a single
+#	   network, configured via DHCP (other network configured statically).
 #
 #	 NICs:
 #
 #          LAN - eth2
 #          - network: 192.168.0.0/24 - 255.255.255.0
-#          - gateway: 192.168.0.1 (PyCaptive + DHCP + DNS)
+#          - gateway: 192.168.0.1 (DNS + DHCP + PyCaptive)
 #          -----------------------------------------
 #          - network: 10.255.255.0/26 - 255.255.255.192
-#          - gateway: 10.255.255.62 (DNS)
+#          - gateway: 10.255.255.62 (DNS + Static IP configuration)
 #
 #          WAN - eth1
 #          - configuration provided by ISP Gateway
