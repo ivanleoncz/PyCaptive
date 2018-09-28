@@ -6,17 +6,14 @@
 #        Scenario:
 #
 #	   - GNU/Linux router, acting as DNS server and Gateway for an ISP Gateway,
-#	   requiring authentication for HTTP/HTTPS traffic originated from a single
-#	   network, configured via DHCP (other network configured statically).
+#	   requiring authentication for HTTP/HTTPS traffic for all hosts (with some
+#	   exceptions) behind the LAN interface, configured via DHCP.
 #
 #	 NICs:
 #
 #          LAN - eth2
 #          - network: 192.168.0.0/24 - 255.255.255.0
 #          - gateway: 192.168.0.1 (DNS + DHCP + PyCaptive)
-#          -----------------------------------------
-#          - network: 10.255.255.0/26 - 255.255.255.192
-#          - gateway: 10.255.255.62 (DNS + Static IP configuration)
 #
 #          WAN - eth1
 #          - configuration provided by ISP Gateway
@@ -70,12 +67,12 @@
 -N PYCAPTIVE
 # PYCAPTIVE: 4. Traffic to port 80 (TCP/UDP): directed to PYCAPTIVE chain.
 # - some IPs (Router, APs, etc.) must bypass the authentication (--src-range)
--A PREROUTING -i eth2 -p tcp -m tcp --dport 80 -j PYCAPTIVE
--A PREROUTING -i eth2 -p udp -m udp --dport 80 -j PYCAPTIVE
+-A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p tcp -m tcp --dport 80 -j PYCAPTIVE
+-A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p udp -m udp --dport 80 -j PYCAPTIVE
 # PYCAPTIVE: 5. Traffic to port 443 (TCP/UDP): DROPPED.
 # - some IPs (Router, APs, etc.) must bypass the authentication (--src-range)
--A PREROUTING -i eth2 -p tcp -m tcp --dport 443 -j DROP
--A PREROUTING -i eth2 -p udp -m udp --dport 443 -j DROP
+-A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p tcp -m tcp --dport 443 -j DROP
+-A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p udp -m udp --dport 443 -j DROP
 # PYCAPTIVE: 6. Packets traversing PYCAPTIVE chain: directed and marked at MARK chain
 -A PYCAPTIVE -j MARK --set-mark 1
 # PYCAPTIVE: 7. Packets traversing INTERNET chain: ACCEPTED.
