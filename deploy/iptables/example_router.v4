@@ -4,6 +4,7 @@
 #
 #
 #        Scenario:
+#
 #	   - GNU/Linux router, acting as a Gateway for an ISP Gateway,
 #          requiring authentication for HTTP/HTTPS traffic for a single
 #          network (configured via DHCP) from the two that are associated 
@@ -13,10 +14,10 @@
 #
 #          LAN - eth2
 #          - network: 192.168.0.0/24 - 255.255.255.0
-#          - gateway: 192.168.0.1 (PyCaptive + DHCP)
+#          - gateway: 192.168.0.1 (PyCaptive + DHCP + DNS)
 #          -----------------------------------------
 #          - network: 10.255.255.0/26 - 255.255.255.192
-#          - gateway: 10.255.255.62
+#          - gateway: 10.255.255.62 (DNS)
 #
 #          WAN - eth1
 #          - configuration provided by ISP Gateway
@@ -26,6 +27,7 @@
 #
 #
 #    IPTABLES/Netfilter workflow for PyCaptive
+#
 #
 #        *mangle:
 #          1. Ensures that INTERNET and PYCAPTIVE chains are created.
