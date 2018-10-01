@@ -21,6 +21,13 @@ DNS_RNDC="953"
 PROXY="3128"
 NGINX_PYCAPTIVE="14091"
 
+check_nf_conntrack=`lsmod | awk '{print $1}' | grep --color "nf_conntrack$"`
+if [ -z `$check_nf_conntrack` ] ; then
+    echo "INFO: No Netfilter's connection tracking module was found."
+    echo "Aborted!"
+    exit 1
+fi
+
 echo
 echo "----------------------"
 echo " Configuration Review "
