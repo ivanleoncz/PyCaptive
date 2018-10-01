@@ -14,7 +14,7 @@ if os.getuid() == 0:
     if __name__ == "__main__":
         import subprocess as sp
         print("\nPyCaptive is running: Standalone Mode (Gunicorn)\n")
-        print("\033[1;34mINFO\033[1;m: don't use it in production environents!\n")
+        print("\033[1;34mINFO\033[1;m: don't use it on production environments!\n")
         try:
             command = ["gunicorn", "--name", "gunicorn_master",
                                    "--bind", host_port,
