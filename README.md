@@ -18,4 +18,6 @@
 ### Installation
 - [Here](https://github.com/ivanlmj/PyCaptive/blob/master/deploy/README.md)
 
-For doubts, questions or suggestions: [@ivanleoncz](https://twitter.com/ivanleoncz)
+For doubts, questions or suggestions: [here](https://github.com/ivanlmj/PyCaptive/issues)
+
+Best Regards,<br>@ivanleoncz
