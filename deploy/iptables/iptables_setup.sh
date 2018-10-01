@@ -5,6 +5,7 @@
 # MOD 1: ROUTER
 # MOD 2: ROUTER + TRANSPARENT PROXY
 MOD=1
+
 IPTABLES="/sbin/iptables"
 LAN_NETWORK="192.168.0.0/24"
 SRV_IPADDR="192.168.0.1"
@@ -35,6 +36,7 @@ echo "DNS Management: $DNS_RNDC"
 echo "DHCP Server: $DHCP_SERVER"
 echo "DHCP Client: $DHCP_CLIENT"
 echo "PYCAPTIVE: $NGINX_PYCAPTIVE"
+
 if [ $MOD -eq 2 ]; then
     echo "PROXY: $PROXY"
     echo "Configuration Mode: ROUTER + TRANSPARENT PROXY"
@@ -45,12 +47,13 @@ else
     exit 1
 fi
 
-echo -e "\n----------------------------------"
-read -p "Proceed with configuration (y/n)? " OPT
+echo
+echo "----------------------------------"
+read -p "Proceed with configuration (y/n) ? " OPT
+
 if [[ $OPT == "y" ]] ; then
-    echo "Processing..."
     iptables_setup
-elif [[ $OPT == "n" ]]; then
+elif [[ $OPT == "n" ]] ; then
     echo "Aborted!"
     exit 1
 else
