@@ -21,6 +21,7 @@ DNS_RNDC="953"
 PROXY="3128"
 NGINX_PYCAPTIVE="14091"
 
+echo
 echo "----------------------"
 echo " Configuration Review "
 echo "----------------------"
@@ -48,11 +49,18 @@ else
 fi
 
 echo
-echo "----------------------------------"
-read -p "Proceed with configuration (y/n) ? " OPT
+echo "-------------------------------------------------------------"
+echo " INFO: Before proceeding, backup your current firewall setup."
+echo "-------------------------------------------------------------"
+echo
+
+read -p "Proceed (y/n) ? " OPT
 
 if [[ $OPT == "y" ]] ; then
-    iptables_setup
+    cleaner
+    mangle_setup
+    nat_setup
+    filter_setup
 elif [[ $OPT == "n" ]] ; then
     echo "Aborted!"
     exit 1
