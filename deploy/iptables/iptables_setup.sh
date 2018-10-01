@@ -51,7 +51,7 @@ if [ $MOD -eq 2 ]; then
 elif [ $MOD -eq 1 ]; then
     echo "Configuration Mode: ROUTER"
 else
-    echo "Configuraion Mode: NOT RECOGNIZED."
+    echo "Configuration Mode: NOT RECOGNIZED."
     exit 1
 fi
 
