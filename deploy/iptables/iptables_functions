@@ -1,10 +1,7 @@
-function iptables_fake {
-    echo "FAKE !!!"
-}
+function cleaner {
 
-function iptables_setup {
+    echo "Cleaning up: counters, rules and chains."
 
-    # clearing counters, rules and custom chains
     $IPTABLES -Z
     $IPTABLES -F
     $IPTABLES -X
@@ -14,8 +11,14 @@ function iptables_setup {
     $IPTABLES -t nat -X
     $IPTABLES -t filter -F
     $IPTABLES -t filter -X
-    
-    # *mangle setup
+
+    echo "Done!"
+}
+
+function mangle_setup {
+
+    echo "Setting up: mangle table"
+
     $IPTABLES -t mangle -N INTERNET
     $IPTABLES -t mangle -N PYCAPTIVE
     $IPTABLES -t mangle -A PREROUTING -i $LAN -p tcp -m tcp --dport $HTTP -j PYCAPTIVE
@@ -25,7 +28,13 @@ function iptables_setup {
     $IPTABLES -t mangle -A PYCAPTIVE -j MARK --set-mark 1
     $IPTABLES -t mangle -A INTERNET -j ACCEPT
 
-    # *nat setup
+    echo "Done!"
+}
+
+function nat_setup {
+
+    echo "Setting up: nat table"
+
     $IPTABLES -t nat -A PREROUTING -i $LAN -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination $SRV_IPADDR:$NGINX_PYCAPTIVE
     $IPTABLES -t nat -A PREROUTING -i $LAN -p udp -m udp -m mark --mark 1 -j DNAT --to-destination $SRV_IPADDR:$NGINX_PYCAPTIVE
     $IPTABLES -t nat -A PREROUTING -i $LAN -s $LAN_NETWORK -p tcp -d $SRV_IPADDR --dport $HTTP -j DNAT --to-destination $SRV_IPADDR:$NGINX_PYCAPTIVE
@@ -40,7 +49,13 @@ function iptables_setup {
         $IPTABLES -t nat -A PREROUTING -i eth1 -p tcp --sport $HTTP -j REDIRECT --to-port $PROXY
     fi
 
-    # *filter setup
+    echo "Done!"
+}
+
+function filter_setup {
+
+    echo "Setting up: filter table"
+
     $IPTABLES -t filter -A INPUT -p icmp -m conntrack --ctstate NEW,ESTABLISHED,RELATED --icmp-type 8 -j ACCEPT
     $IPTABLES -t filter -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
     $IPTABLES -t filter -A INPUT -i lo -j ACCEPT
@@ -53,4 +68,6 @@ function iptables_setup {
     $IPTABLES -t filter -A INPUT -i $LAN -p tcp --dport $DNS_RNDC -j ACCEPT
     $IPTABLES -t filter -A INPUT -j REJECT
     $IPTABLES -t filter -A OUTPUT -j ACCEPT
+
+    echo "Done!"
 }
