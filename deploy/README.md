@@ -6,7 +6,6 @@ of a automated process, in order to avoid installation problems.
 
 
 ### Cloning PyCaptive
-
 ```
 $ cd /opt
 $ git clone https://github.com/ivanlmj/PyCaptive.git
@@ -24,10 +23,21 @@ $ apt-get update
 $ apt-get install python3-pip iptables conntrack nginx supervisor mongodb-org
 ```
 
+### Installing Python Packages
+```
+$ pip3 install -r /opt/PyCaptive/requirements.txt
+```
+
 ### PyCaptive Group and User
 ```
 $ groupadd pycaptive -g 14090
 $ useradd pycaptive -s /usr/sbin/nologin -c "PyCaptive Account" -u 14090 -g 14090
+```
+
+### Sudoers
+```
+$ cp /opt/PyCaptive/deploy/sudoers.d/pycaptive /etc/sudoers.d
+$ chmod 444 /etc/sudoers.d/pycaptive
 ```
 
 ### Log Directory
@@ -38,24 +48,6 @@ $ chown pycaptive:pycaptive /var/log/pycaptive
 $ echo "PyCaptive Deploy at: `/bin/date`" > /var/log/pycaptive/pycaptive.log
 $ chown pycaptive:pycaptive /var/log/pycaptive/pycaptive.log
 $ chmod 660 /var/log/pycaptive/pycaptive.log
-```
-
-### IP Forwarding (uncomment or add: net.ipv4.ip_forward = 1)
-```
-$ vim /etc/sysctl.conf
-```
-
-### IPTABLES
-```
-$ mkdir /etc/iptables
-$ bash /opt/Pycaptive/deploy/iptables/firewall_setup.sh
-$ cp /opt/PyCaptive/deploy/rules.v4 /etc/iptables/
-```
-
-### Sudoers
-```
-$ cp /opt/PyCaptive/deploy/sudoers.d/pycaptive /etc/sudoers.d
-$ chmod 444 /etc/sudoers.d/pycaptive
 ```
 
 ### Logrotate
@@ -69,16 +61,25 @@ $ chmod 444 /etc/logrotate.d/pycaptive
 $ cp /opt/PyCaptive/deploy/nginx/pycaptive /etc/nginx/sites-available/
 $ ln -s /etc/nginx/sites-available/pycaptive /etc/nginx/sites-enabled/pycaptive
 $ chmod 444 /etc/nginx/sites-enabled/pycaptive
+$ service nginx restart
 ```
-
-### Python Packages
-```
-$ pip3 install -r /opt/PyCaptive/requirements.txt
-```
-
 
 ### Supervisor
 ```
 $ cp /opt/PyCaptive/deploy/supervisor/pycaptive /etc/supervisor/conf.d/pycaptive
 $ supervisorctl restart
+```
+
+### SYSCTL (uncomment/add: net.ipv4.ip_forward=1)
+```
+$ vim /etc/sysctl.conf
+$ sysctl -p
+```
+
+### IPTABLES
+```
+$ mkdir /etc/iptables
+$ sudo iptables-save > /etc/iptables/before_pycaptive.v4.bkp
+$ bash /opt/Pycaptive/deploy/iptables/firewall_setup.sh
+$ sudo iptables-save > /etc/iptables/rules.v4
 ```
