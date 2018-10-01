@@ -5,18 +5,18 @@
 #
 #        Scenario:
 #
-#	   - GNU/Linux router, acting as DNS server and Gateway for an ISP Gateway,
-#	   requiring authentication for HTTP/HTTPS traffic for all hosts (with some
-#	   exceptions) behind the LAN interface, configured via DHCP.
+#          - GNU/Linux router, acting as DNS server, DHCP server and Gateway for
+#          all hosts behind the LAN interface. The WAN interface can be configured
+#          statically or via DHCP, connected directly to an ISP Gateway, preferably.
 #
 #	 NICs:
 #
-#          LAN - eth2
+#          LAN (eth2)
 #          - network: 192.168.0.0/24 - 255.255.255.0
 #          - gateway: 192.168.0.1 (DNS + DHCP + PyCaptive)
 #
-#          WAN - eth1
-#          - configuration provided by ISP Gateway
+#          WAN (eth1)
+#          - staticaly or via DHCP
 #
 #
 #---------------------------------------------------------------------------------------------
@@ -29,8 +29,8 @@
 #          1. Ensures that INTERNET and PYCAPTIVE chains are created.
 #          2. INTERNET: receives traffic from authorized IPs (bypassing PyCaptive).
 #          3. PYCAPTIVE: receives traffic from UNauthorized IPs.
-#          4. Traffic to port 80 (TCP/UDP): directed to PYCAPTIVE chain.
-#          5. Traffic to port 443 (TCP/UDP): DROPPED.
+#          4. Traffic to port 80 (TCP/UDP) from specific IP range: directed to PYCAPTIVE chain.
+#          5. Traffic to port 443 (TCP/UDP) from specific IP range: DROPPED.
 #          6. Packets traversing PYCAPTIVE chain: directed and marked at MARK chain
 #          7. Packets traversing INTERNET chain: ACCEPTED.
 #
@@ -65,11 +65,11 @@
 # PYCAPTIVE: 3. PYCAPTIVE: receives traffic from UNauthorized IPs.
 -N INTERNET
 -N PYCAPTIVE
-# PYCAPTIVE: 4. Traffic to port 80 (TCP/UDP): directed to PYCAPTIVE chain.
+# PYCAPTIVE: 4. Traffic to port 80 (TCP/UDP) from specific IP range: directed to PYCAPTIVE chain.
 # - some IPs (Router, APs, etc.) must bypass the authentication (--src-range)
 -A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p tcp -m tcp --dport 80 -j PYCAPTIVE
 -A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p udp -m udp --dport 80 -j PYCAPTIVE
-# PYCAPTIVE: 5. Traffic to port 443 (TCP/UDP): DROPPED.
+# PYCAPTIVE: 5. Traffic to port 443 (TCP/UDP) from specific IP range: DROPPED.
 # - some IPs (Router, APs, etc.) must bypass the authentication (--src-range)
 -A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p tcp -m tcp --dport 443 -j DROP
 -A PREROUTING -i eth2 -m iprange --src-range 192.168.0.10-192.168.0.254 -p udp -m udp --dport 443 -j DROP
