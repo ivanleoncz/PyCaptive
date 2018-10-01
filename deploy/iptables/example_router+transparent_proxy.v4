@@ -5,11 +5,11 @@
 #
 #        Scenario:
 #
-#          - GNU/Linux router, acting as DNS server, DHCP server and Gateway for
-#          all hosts behind the LAN interface. The WAN interface can be configured
-#          statically or via DHCP, connected directly to an ISP Gateway, preferably.
-#          In this example, another network is associated with the LAN interface,
-#          but its HTTP/HTTPS traffic is free from PYCAPTIVE authentication.
+#          - GNU/Linux router, acting as DNS server, DHCP server (for  single network)
+#          and Gateway for all hosts behind the LAN interface. The WAN interface can
+#          be configured statically or via DHCP, connected directly to an ISP Gateway,
+#          preferably. In this example, another network is associated with the LAN
+#          interface, but its HTTP/HTTPS traffic is free from PYCAPTIVE authentication.
 #
 #
 #	 NICs:
