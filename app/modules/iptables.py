@@ -6,7 +6,7 @@ sys.path.append("/opt/PyCaptive/app")
 
 from app import log
 from datetime import datetime
-from global_settings import IPTABLES, TABLE, LAN, CHAIN, JUMP
+from app.global_settings import IPTABLES, TABLE, LAN, CHAIN, JUMP
 
 __author__ = "@ivanleoncz"
 
