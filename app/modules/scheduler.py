@@ -18,6 +18,9 @@ from app.modules import iptables
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 
+# expressed in seconds
+INTERVAL_TIME=60
+
 
 def expirer():
     """ Cleaning expired sessions """
@@ -39,7 +42,5 @@ def expirer():
 
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(expirer, 'interval', seconds=60)
+sched.add_job(expirer, 'interval', seconds=INTERVAL_TIME)
 sched.start()
-
-
