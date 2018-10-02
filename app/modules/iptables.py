@@ -1,20 +1,11 @@
 #!/usr/bin/python3
-""" Allowing/prohibiting traffic based on user authentication/session.
+""" Allowing/prohibiting INTERNET access based on IP addresses.
 
-This module is responsible for granting/revoking access to network traffic
-via Firewall rules (IPTABLES/Netfilter), for the IP addresses from
-the devices used on successful authentication processes.
+This module is responsible for allowing/prohibiting INTERNET access by means
+of IPTABLES/Netfilter rules for IP addresses from the devices were PyCaptive
+users have successfully authenticated.
 
-NOTICE: use the class variables, in order to customize the paramaters used on
-the Firewall rules, depending on the setup that you have for your
-Firewall/Proxy. 
-
-For example, the setup considered here is:
-a GNU/Linux Router (with Squid3 Proxy in Transparent Mode), with some
-specific chains (IPTABLES), all processed on mangle table.
-
-Feel free to implement this module, according to your needs.
-
+NOTICE: adjust class variables, according to your setup.
 """
 
 from datetime import datetime
@@ -26,7 +17,7 @@ import subprocess as sp
 
 
 class Worker:
-    """ IPTABLES/Netfilter rules for allowing/prohibiting network traffic. """
+    """ IPTABLES/Netfilter rules for allowing/prohibiting INTERNET access. """
 
     binnary = "/sbin/iptables"
     table   = "mangle"
@@ -35,7 +26,7 @@ class Worker:
     jump    = "INTERNET"
 
     def add_rule(self, ip):
-        """ Allowing network traffic. """
+        """ Allowing INTERNET access. """
         rule = [self.binnary, "-t",self.table, "-I", self.chain,
                      "-i", self.nic, "-s", ip, "-j", self.jump]
         try:
@@ -58,7 +49,7 @@ class Worker:
 
 
     def del_rules(self, ips):
-        """ Revoking rule for network traffic. """
+        """ Revoking rule for INTERNET access. """
         try:
             rules = 0
             for ip in ips:
