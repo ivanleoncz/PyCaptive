@@ -1,15 +1,12 @@
 #!/usr/bin/python3
-""" Allowing/prohibiting INTERNET access based on IP addresses.
+""" Allowing/prohibiting INTERNET access based on IP addresses. """
 
-This module is responsible for allowing/prohibiting INTERNET access by means
-of IPTABLES/Netfilter rules for IP addresses from the devices were PyCaptive
-users have successfully authenticated.
+import sys
+sys.path.append("/opt/PyCaptive/app")
 
-NOTICE: adjust class variables, according to your setup.
-"""
-
-from datetime import datetime
 from app import log
+from datetime import datetime
+from global_settings import IPTABLES, TABLE, LAN, CHAIN, JUMP
 
 __author__ = "@ivanleoncz"
 
@@ -27,8 +24,8 @@ class Worker:
 
     def add_rule(self, ip):
         """ Allowing INTERNET access. """
-        rule = [self.binnary, "-t",self.table, "-I", self.chain,
-                     "-i", self.nic, "-s", ip, "-j", self.jump]
+        rule = [IPTABLES, "-t", TABLE, "-I", CHAIN, "-i", LAN,
+                "-s", ip, "-j", JUMP]
         try:
             result = sp.call(rule)
             ts = datetime.now()
@@ -53,8 +50,9 @@ class Worker:
         try:
             rules = 0
             for ip in ips:
-                rule = [self.binnary, "-t", self.table, "-D", self.chain, 
-                              "-i", self.nic, "-s", ip, "-j", self.jump]
+                # deleting rule
+                rule = [IPTABLES, "-t", TABLE, "-D", CHAIN, "-i", LAN,
+                        "-s", ip, "-j", JUMP]
                 result = sp.call(rule)
                 ts = datetime.now()
                 if result == 0:
@@ -64,7 +62,7 @@ class Worker:
                 else:
                     log.error('[%s] %s %s %s %s',
                       ts, "iptables", "del_rule", ip, "NOK")
-
+                # destroying connection
                 result = self.del_conntrack(ip)
                 if result == 0:
                     log.error('[%s] %s %s %s %s',
@@ -75,8 +73,7 @@ class Worker:
             return rules
         except Exception as e:
             ts = datetime.now()
-            log.error('[%s] %s %s %s',
-              ts, "iptables", "del_rule", "EXCEPTION")
+            log.error('[%s] %s %s %s', ts, "iptables", "del_rule", "EXCEPTION")
             log.error('[%s]', e)
             return e
 
