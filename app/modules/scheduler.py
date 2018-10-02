@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 """ APScheculer for monitoring expired sessions.  
 
-APScheduler is started when the module is imported, periodically (INTERVAL_TIME)
-performing a sweep on MongoDB, searching for expired sessions (IPs).
+APScheduler is started when the module is imported
+and it periodically performs (see INTERVAL_TIME)
+a sweep on MongoDB, searching for expired sessions (IPs).
 
-The result is passed to iptables module, which eliminates the rules
-associated with the IP addresses from the result.
+The result is passed to iptables module, which eliminates
+the rules associated with the IP addresses from the result.
 
 """
 
