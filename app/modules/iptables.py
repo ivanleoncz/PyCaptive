@@ -16,11 +16,6 @@ import subprocess as sp
 class Worker:
     """ IPTABLES/Netfilter rules for allowing/prohibiting INTERNET access. """
 
-    binnary = "/sbin/iptables"
-    table   = "mangle"
-    chain   = "PREROUTING"
-    nic     = "eth2"
-    jump    = "INTERNET"
 
     def add_rule(self, ip):
         """ Allowing INTERNET access. """
