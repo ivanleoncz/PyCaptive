@@ -2,7 +2,7 @@
 
 """ PyCaptive: Standalone Mode """
 
-from app.custom_settings import HOST, PORT
+from app.global_settings import HOST, PORT
 
 
 if __name__ == "__main__":
