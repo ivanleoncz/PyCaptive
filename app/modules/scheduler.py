@@ -1,15 +1,12 @@
 #!/usr/bin/python3
 """ APScheculer for monitoring expired sessions.  
 
-According to the time defined at the end of the module,
-the "expirer()" function runs, performing a query on the database,
-which delivers a list of expired sessions (IPs).
+APScheduler is started when the module is imported, periodically (INTERVAL_TIME)
+performing a sweep on MongoDB, searching for expired sessions (IPs).
 
-This list of sessions, is passed to iptables module, specifically to
-"del_rules()" method, which eliminates the IPTABLES rules and all
-the connections related with the IP address on conntrack table.
+The result is passed to iptables module, which eliminates the rules
+associated with the IP addresses from the result.
 
-INFO: APScheduler is started when the module is imported.
 """
 
 from app import log
@@ -23,7 +20,7 @@ INTERVAL_TIME=60
 
 
 def expirer():
-    """ Cleaning expired sessions """
+    """ Searching/cleaning expired sessions """
     ts = datetime.now()
     db = mongodb.Connector()
     sessions = db.expire_sessions() # querying expired sessions
