@@ -1,14 +1,5 @@
 #!/usr/bin/python3
-"""  MongoDB client configuration and actions. 
-
-After successful login, a session (add_session()) is added to MongoDB,
-with and "expire_time" variable defined for N minutes.
-
-The expired sessions are expired via APScheduler, which calculates if
-the "ExpireTime" returned via a query, are lower than the current time.
-
-If they are, the sesssions are expired from MongoDB.
-"""
+"""  MongoDB client configuration and actions. """
 
 from app import log
 from datetime import datetime, timedelta
@@ -19,7 +10,7 @@ __author__ = "@ivanleoncz"
 import bcrypt
 
 class Connector:
-    """ MongoDB jobs. """
+    """ MongoDB setup and actions. """
 
     def connect(self):
         """ Preparing MongoDB client. """
@@ -32,14 +23,13 @@ class Connector:
 
 
     def add_session(self, username, ipaddress):
-        """ Adding session record. """
+        """ Adding session. """
         client = self.connect()
         db = client.tjs
         collection = db.Sessions
         login_time = datetime.now()
+        expire_time = login_time + timedelta(hours=12)
         try:
-            # defines the amount of time that a sessions lasts
-            expire_time = login_time + timedelta(hours=12)
             collection.insert_one({
                 "UserName":username,
                 "IpAddress":ipaddress,
@@ -56,7 +46,7 @@ class Connector:
 
 
     def expire_sessions(self):
-        """  Deleting session record. """
+        """  Expires session. """
         client = self.connect()
         db = client.tjs
         collection = db.Sessions
@@ -83,7 +73,7 @@ class Connector:
 
 
     def login(self, username, password):
-        """ Validating username and password. """
+        """ Validating username and password for login. """
         client = self.connect()
         db = client.tjs
         collection = db.Users
