@@ -43,8 +43,8 @@ $ chmod 444 /etc/sudoers.d/pycaptive
 ### Log Directory
 ```
 $ mkdir /var/log/pycaptive
-$ chmod 770 /var/log/pycaptive
 $ chown pycaptive:pycaptive /var/log/pycaptive
+$ chmod 770 /var/log/pycaptive
 $ echo "PyCaptive Deploy at: `/bin/date`" > /var/log/pycaptive/pycaptive.log
 $ chown pycaptive:pycaptive /var/log/pycaptive/pycaptive.log
 $ chmod 660 /var/log/pycaptive/pycaptive.log
