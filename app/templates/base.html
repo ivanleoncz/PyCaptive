@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+
+    <title>
+      {% block title %}PyCaptive{% endblock title %}
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style type="text/css">
+
+      *     { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+
+      html, body  {
+	      height: 100%;
+	      width:100%;
+	      margin: 0;
+              background-color: #f2f2f2;
+      }
+
+      #header, #footer {
+	      height: 10%;
+	      width: 100%;
+	      background-color: #4d4d4d;
+      }
+
+      {% block css_content %}{% endblock %}
+
+      #footer { position: relative; }
+
+      #footer #powered {
+	  font-size: 12px;
+	  margin: 0;
+	  padding-top: 25px;
+	  padding-left: 20px;
+          color: #ffffff;
+	  position: fixed;
+      }
+
+      #footer #developer {
+	  font-size: 12px;
+          margin: 0;
+          right: 10px;
+          padding-top: 25px;
+          padding-right: 10px;
+          color: #ffffff;
+          position: fixed;
+      }
+
+      #footer #powered a,
+      #footer #developer a {
+          text-decoration: none;
+	  color: #ffffff;
+      }
+
+      #footer #powered a:hover,
+      #footer #developer a:hover {
+	  color: #ffcc00;
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <div id="header">
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <div id="footer">
+      <p id="powered"> Powered by <a href="https://www.python.org/about/">Python&reg;</a></p>
+      <p id="developer"> Developed by <a href="https://stackoverflow.com/users/5780109/ivanleoncz?tab=profile">@ivanleoncz</a></p>
+    </div>
+
+  </body>
+
+
+</html>
