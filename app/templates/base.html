@@ -11,19 +11,24 @@
 
     <style type="text/css">
 
-      *     { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+      * { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
 
       html, body  {
-	      height: 100%;
-	      width:100%;
-	      margin: 0;
-              background-color: #f2f2f2;
+	  height: 100%;
+	  width:100%;
+	  margin: 0;
+	  background-color: #f2f2f2;
       }
 
       #header, #footer {
-	      height: 10%;
-	      width: 100%;
-	      background-color: #4d4d4d;
+	  height: 10%;
+	  width: 100%;
+	  background-color: #4d4d4d;
+      }
+
+      #central {
+	  height: 80%;
+	  width: 100%;
       }
 
       {% block css_content %}{% endblock %}
@@ -69,7 +74,9 @@
     <div id="header">
     </div>
 
-    {% block content %}{% endblock %}
+    <div id="central">
+      {% block content %}{% endblock %}
+    </div>
 
     <div id="footer">
       <p id="powered"> Powered by <a href="https://www.python.org/about/">Python&reg;</a></p>
