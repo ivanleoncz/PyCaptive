@@ -6,52 +6,45 @@
 
 {% block css_content %}
 
-      #central {
-              height: 80%;
-              width: 100%;
-      }
-
       #central img {
-	  height: 200px;
-	  width: 260px;
-	  padding-top: 50px;
+          height: 200px;
+          width: 260px;
+          padding-top: 50px;
           padding-bottom: 10px;
           display: block;
           margin-left: auto;
           margin-right: auto;
       }
 
-      #central #post { text-align: center; }
+      #central #login { text-align: center; }
 
-      input[type="text"],
-      input[type="password"] {
+      #login input[type="text"],
+      #login input[type="password"] {
           text-align: center;
       }
 
-      input[type="submit"] { width: 240px; }
+      #login input[type="submit"] { width: 240px; }
 
-      input { margin-top: 7px; }
+      #login input { margin-top: 7px; }
 
-      h3 {
+      #login_status {
           text-align: center;
-	  color: #000000;
-	  font-size: 24;
+          color: #000000;
+          font-size: 24;
       }
 
 {% endblock %}
 
 {% block content %}
 
-    <div id="central">
-      <img src="/static/pycaptive_logo.png"> </img>
-      <div id="post">
-        <form action="/login" method="post">
-	  <input type="text" name="username" placeholder="Username"><br>
-          <input type="password" name="password" placeholder="Password"><br>
-	  <input type="submit" name="login" value="Login">
-        </form>
-      </div>
-      <h3> {{ login_msg }} </h3>
+    <img src="/static/pycaptive_logo.png"> </img>
+    <div id="login">
+      <form action="/login" method="post">
+        <input type="text" name="username" placeholder="Username"><br>
+        <input type="password" name="password" placeholder="Password"><br>
+	<input type="submit" name="login" value="Login">
+      </form>
     </div>
+    <h3 id="login_status"> {{ login_msg }} </h3>
 
 {% endblock %}
