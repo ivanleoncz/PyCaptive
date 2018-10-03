@@ -1,22 +1,34 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-	<head>
-		<title> Captive Portal </title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<style type="text/css">
-			*   { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
- 		 	h1  { text-align: center; margin-top: 120px; margin-bottom: 40px; color: #3399ff; font-size: 34px; }
-			img { display: block; margin: 0px auto; width: 135px; height: 150px;  }
-			h3  { text-align: center; margin-top: 10px; color: #ff0000; font-size: 24px; }
-			p   { text-align: center; text-color: #ffffff; }
-		</style>
-	</head>
+{% block title %}
+  PyCaptive - Welcome
+{% endblock %}
 
-	<body bgcolor="#f2f2f2">
-		<h1> Welcome! </h1>
-		<img src="/static/welcome.png">
-		<h3> Session expires in 12hs.</h3>
-	</body>
+{% block css_content %}
 
-</html>
+      #status {
+        width: 100%;
+        position: absolute;
+      }
+
+      #welcome  {
+        margin-top: 50px;
+        text-align: center;
+	color: #3399ff;
+	font-size: 34px;
+      }
+
+      #message  {
+        text-align: center;
+	color: #ff0000;
+	font-size: 24px;
+      }
+
+{% endblock %}
+
+{% block content %}
+    <div id="status">
+        <h1 id="welcome"> Welcome! </h1>
+        <h1 id="message"> Session expires in 12hs. </h3>
+    </div>
+{% endblock %}
