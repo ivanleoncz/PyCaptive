@@ -9,6 +9,7 @@ from app.modules import iptables
 from app.modules import mongodb
 
 
+@app.route("/")
 @app.route("/login", methods=['GET', 'POST'])
 def f_login():
     """ Processing request. """
