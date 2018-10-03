@@ -7,8 +7,10 @@ from app.global_settings import HOST, PORT
 
 if __name__ == "__main__":
     from app import app
+    print("\n --------------------------------------------")
     print("\n PyCaptive Standalone Mode\n")
     print(" \033[1;34mINFO\033[1;m: I was designed for test purposes only.\n")
+    print(" -------------------------------------------- \n")
     try:
         app.run(host=HOST, port=PORT)
     except KeyboardInterrupt:
