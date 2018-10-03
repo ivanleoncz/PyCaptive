@@ -3,13 +3,14 @@
 
   <head>
 
-    <title> Captive Portal </title>
+    <title> PyCaptive </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style type="text/css">
 
       *     { font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+
       html, body  {
 	      height: 100%;
 	      width:100%;
@@ -38,9 +39,24 @@
           margin-right: auto;
       }
 
-      #footer {
-          position: relative;
+      #central #post { text-align: center; }
+
+      input[type="text"],
+      input[type="password"] {
+          text-align: center;
       }
+
+      input[type="submit"] { width: 240px; }
+
+      input { margin-top: 7px; }
+
+      h3 {
+          text-align: center;
+	  color: #000000;
+	  font-size: 24;
+      }
+
+      #footer { position: relative; }
 
       #footer #powered {
 	  font-size: 12px;
@@ -71,23 +87,6 @@
       #footer #developer a:hover {
 	  color: #ffcc00;
       }
-
-      #post { text-align: center; }
-
-      #pycaptive {
-	  height: 35px;
-	  width: 35px;
-	  text-align: center;
-	  border: 1px solid grey;
-	  border-radius: 3px;
- 	  font-size: 14px;
-      }
-
-      input[type="text"], input[type="password"] { text-align: center; }
-      input[type="submit"] { width: 240px; }
-      input { margin-top: 7px;}
-
-      h3    { text-align: center; color: #000000; font-size: 24; }
 
     </style>
 
