@@ -14,21 +14,36 @@
       #welcome  {
         margin-top: 50px;
         text-align: center;
-	color: #3399ff;
-	font-size: 34px;
+        color: #3399ff;
+        font-size: 34px;
       }
 
       #message  {
         text-align: center;
-	color: #ff0000;
-	font-size: 24px;
+        color: #ff0000;
+        font-size: 24px;
       }
 
       fieldset {
-        width: 300px;
-	margin-left: auto;
-	margin-right: auto;
-	border-color: #4d4d4d;
+        width: 250px;
+        margin-top: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-radius: 15px;
+        background-color: #ffffff;
+      }
+
+      fieldset table {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      fieldset table td {
+        padding-top: 4px;
+        padding-bottom: 4px;
+        color: #4d4d4d;
       }
 
       .field {
@@ -37,6 +52,18 @@
 
       .data {
         padding-left: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: bold;
+      }
+
+      iframe {
+        display: block;
+        margin: auto;
+        margin-top: 30px;
+        height: 60px;
+        width: 450px;
+        border: 0;
       }
 
 {% endblock %}
@@ -44,22 +71,22 @@
 {% block content %}
     <div id="status">
         <h1 id="welcome"> Welcome! </h1>
-        <h1 id="message"> Session expires in 12hs. </h3>
         <fieldset>
           <table>
             <tr>
-    	      <td class="field">Username:</td>
+              <td class="field">Username:</td>
               <td class="data">@ivanleoncz</td>
             </tr>
             <tr>
-    	      <td class="field">Login Time:</td>
+              <td class="field">Login Time:</td>
               <td class="data">14:00:00</td>
             </tr>
             <tr>
-    	      <td class="field">Expire Time:</td>
+              <td class="field">Expire Time:</td>
               <td class="data">18:00:00</td>
             </tr>
           </table>
         </fieldset>
+        <iframe src="https://duckduckgo.com/search.html?width=240&duck=yes&prefill=Search with Safety"> </iframe>
     </div>
 {% endblock %}
