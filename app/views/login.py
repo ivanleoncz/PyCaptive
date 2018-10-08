@@ -52,7 +52,7 @@ def f_login():
             login_record = db.add_session(username, user_data)
             if login_record == 0:
                 fw = iptables.Worker()
-                allow = fw.add_rule(client_ip)
+                allow = fw.add_rule(user_data.get("ip"))
                 if allow == 0:
                     return redirect("/welcome")
                 else:
