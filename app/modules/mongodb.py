@@ -50,6 +50,20 @@ class Connector:
             return e
 
 
+    def check_session(self, username, ipaddress):
+        """ Checking existence of session, returning session data. """
+        client = self.connect()
+        db = client.tjs
+        collection = db.Sessions
+        session = collection.find_one(
+                {"IpAddress":ipaddress},
+                {"UserName":1, "IpAddress":1, "_id":0})
+        if session:
+            return session
+        else:
+            return False
+
+
     def expire_sessions(self):
         """  Expires session. """
         client = self.connect()
