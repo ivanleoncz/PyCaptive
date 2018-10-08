@@ -22,7 +22,7 @@ class Connector:
         return client
 
 
-    def add_session(self, username, ipaddress):
+    def add_session(self, username, user_data):
         """ Adding session. """
         client = self.connect()
         db = client.tjs
@@ -32,11 +32,16 @@ class Connector:
         try:
             collection.insert_one({
                 "UserName":username,
-                "IpAddress":ipaddress,
+                "IpAddress":user_data.get("ip"),
+                "OS":user_data.get("os"),
+                "Browser":user_data.get("browser"),
+                "Device":user_data.get("device"),
+                "Brand":user_data.get("brand"),
+                "Family":user_data.get("family"),
                 "LoginTime":login_time,
                 "ExpireTime":expire_time})
-            log.error('[%s] %s %s %s %s',
-                       login_time, "mongodb", "add_session", ipaddress, "OK")
+            log.error('[%s] %s %s %s %s %s',
+              login_time, "mongodb", "add_session", "OK", username, user_data)
             return 0
         except Exception as e:
             log.error('[%s] %s %s %s',
