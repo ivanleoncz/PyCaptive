@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """ Global logging configuration. """
 
 from logging.handlers import RotatingFileHandler

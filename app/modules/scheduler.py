@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """ APScheculer for monitoring expired sessions.  
 
 APScheduler is started when the module is imported

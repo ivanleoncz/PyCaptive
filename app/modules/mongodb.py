@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """  MongoDB client configuration and actions. """
 
 from app import log

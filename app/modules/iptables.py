@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """ Allowing/prohibiting INTERNET access based on IP addresses. """
 
 import sys
