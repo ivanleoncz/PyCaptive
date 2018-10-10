@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """ Module for /login view/route."""
 
 from flask import abort, redirect, render_template, request, url_for
