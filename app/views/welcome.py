@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-""" Module for /login view/route."""
+""" Module for /welcome view/route. """
 
 from flask import render_template
 
