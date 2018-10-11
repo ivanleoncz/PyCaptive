@@ -31,10 +31,10 @@ def f_login():
         db = mongodb.Connector()
         login = db.login(username, password)
         if login == 0:
-            login_record = db.add_session(username, user_data)
+            login_record = db.add_session(username, client_ip, user_data)
             if login_record == 0:
                 fw = iptables.Worker()
-                allow = fw.add_rule(user_data.get("ip"))
+                allow = fw.add_rule(client_ip)
                 if allow == 0:
                     return redirect("/welcome")
                 else:
@@ -70,5 +70,4 @@ def user_data_parser(request_ua):
     user_data["family"] = family(ua.device.family)
     user_data["os"] = ua.os.family
     user_data["browser"] = ua.browser.family
-    user_data["ip"] = client_ip
     return user_data
