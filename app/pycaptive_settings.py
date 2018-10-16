@@ -43,8 +43,8 @@ LOG_ROTATE_COUNT=52
 #
 # SESSION_DURATION defines for how long (hours) a UserName/IpAddress
 # will have Internet access. PyCaptive will be verifying from time
-# to time on its MongoDB database, the sessions who have reached the
-# SESSION_DURATION time, expiring these sessions, one by one.
+# to time (SCHEDULER module) on its MongoDB database, the sessions which
+# have reached the SESSION_DURATION time, expiring these sessions, one by one.
 #
 DB_USER="mongo"
 DB_PASS="mongo"
@@ -54,7 +54,7 @@ SESSION_DURATION=12
 
 # [SCHEDULER]
 #
-# Defines the time interval that PyCaptive will considering for
+# Defines the time interval that PyCaptive will consider for
 # verifying expired sessions on its MongoDB database.
 #
 # Unless you need something very specific, leave this variable as it is.
