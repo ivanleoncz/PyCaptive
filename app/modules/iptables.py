@@ -1,11 +1,9 @@
 """ Allowing/prohibiting INTERNET access based on IP addresses. """
 
-import sys
-sys.path.append("/opt/PyCaptive/app")
 
-from app import log
 from datetime import datetime
-from app.pycaptive_settings import IPTABLES, TABLE, LAN, CHAIN, JUMP
+
+from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP
 
 __author__ = "@ivanleoncz"
 
