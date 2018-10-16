@@ -7,6 +7,7 @@ from app.modules import logger
 log = logger.config()
 
 from app.modules import scheduler
+from pycaptive_settings import *
 
 app = Flask(__name__)
 app.config.from_pyfile('flask_settings.cfg')
