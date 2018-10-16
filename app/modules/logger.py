@@ -1,6 +1,6 @@
 """ Global logging configuration. """
 
-from logging.handlers import RotatingFileHandler
+from logging.handlers import TimedRotatingFileHandler
 
 __author__ = "@ivanleoncz"
 
@@ -12,6 +12,6 @@ def config():
     conf = logging.getLogger(__name__)
     if not conf.handlers: # avoids multiple log messages
         conf.setLevel(logging.ERROR)
-        handler = RotatingFileHandler(log_f, maxBytes=50000000, backupCount=5)
+        handler = TimedRotatingFileHandler(log_f, when='midnight', backupCount=52)
         conf.addHandler(handler)
     return conf
