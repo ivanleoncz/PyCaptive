@@ -1,6 +1,6 @@
 """  MongoDB client configuration and actions. """
 
-from app import log
+from app import log, DB_URI, SESSION_DURATION
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 
@@ -13,11 +13,7 @@ class Connector:
 
     def connect(self):
         """ Preparing MongoDB client. """
-        db_user = "mongo"
-        db_pass = "mongo"
-        db_addr = "127.0.0.1:27017"
-        uri = "mongodb://{0}:{1}@{2}".format(db_user, db_pass, db_addr)
-        client = MongoClient(uri, serverSelectionTimeoutMS=6000)
+        client = MongoClient(DB_URI, serverSelectionTimeoutMS=6000)
         return client
 
 
@@ -27,7 +23,7 @@ class Connector:
         db = client.tjs
         collection = db.Sessions
         login_time = datetime.now()
-        expire_time = login_time + timedelta(hours=12)
+        expire_time = login_time + timedelta(hours=SESSION_DURATION)
         try:
             collection.insert_one({
                 "UserName":username,
@@ -39,14 +35,12 @@ class Connector:
                 "Family":user_data.get("family"),
                 "LoginTime":login_time,
                 "ExpireTime":expire_time})
-            log.error('[%s] %s %s %s %s %s %s',
-              login_time, "mongodb", "add_session", "OK",
-              username, client_ip, user_data)
+            log.info('%s %s %s %s %s %s', "mongodb", "add_session", "OK",
+                                           username, client_ip, user_data)
             return 0
         except Exception as e:
-            log.error('[%s] %s %s %s',
-                       login_time, "mongodb", "add_session", "EXCEPTION")
-            log.error('%s', e)
+            log.critical('%s %s %s', "mongodb", "add_session", "EXCEPTION")
+            log.critical('%s', e)
             return e
 
 
@@ -81,13 +75,13 @@ class Connector:
                 if session < time_now:
                     collection.delete_one({"ExpireTime":session})
                     deleted_sessions.append(ip)
-                    log.error('[%s] %s %s %s %s',
-                            time_now, "mongodb", "expire_sessions", data, "OK")
+                    log.info('%s %s %s %s',
+                             "mongodb", "expire_sessions", "OK", data)
             return deleted_sessions
         except Exception as e:
-            log.error('[%s] %s %s %s',
-                       time_now, "mongodb", "expire_sessions", "EXCEPTION")
-            log.error('%s', e)
+            log.critical('%s %s %s',
+                         "mongodb", "expire_sessions", "EXCEPTION")
+            log.critical('%s', e)
             return e
 
 
@@ -104,19 +98,19 @@ class Connector:
                 db_hash = hash_pass["Password"]
                 new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
                 if db_hash == new_hash:
-                    log.error('[%s] %s %s %s %s',
-                               ts, "mongodb", "login", username, "OK")
+                    log.info('%s %s %s %s',
+                              "mongodb", "login", "OK, "username)
                     return 0
                 else:
-                    log.error('[%s] %s %s %s %s',
-                               ts, "mongodb", "login", username, "NOK")
+                    log.error('%s %s %s %s %s',
+                              "mongodb", "login", "NOK", username, "WRONG_PASS")
                     return 2
             else:
-                log.error('[%s] %s %s %s %s',
-                           ts, "mongodb" ,"login", username, "NOK")
+                log.error('%s %s %s %s %s',
+                          "mongodb" ,"login", "NOK", username, "NOT_FOUND")
                 return 1
         except Exception as e:
-            log.error('[%s] %s %s %s',
-                       ts, "mongodb", "login", "EXCEPTION")
-            log.error('%s', e)
+            log.critical('%s %s %s %s',
+                         "mongodb", "login", "EXCEPTION", username)
+            log.critical('%s', e)
             return e
