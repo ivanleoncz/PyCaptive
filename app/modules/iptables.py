@@ -1,8 +1,5 @@
 """ Allowing/prohibiting INTERNET access based on IP addresses. """
 
-
-from datetime import datetime
-
 from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP
 
 __author__ = "@ivanleoncz"
