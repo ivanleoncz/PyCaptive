@@ -28,11 +28,7 @@ class Connector:
             collection.insert_one({
                 "UserName":username,
                 "IpAddress":client_ip,
-                "OS":user_data.get("os"),
-                "Browser":user_data.get("browser"),
-                "Device":user_data.get("device"),
-                "Brand":user_data.get("brand"),
-                "Family":user_data.get("family"),
+                "UserData":user_data,
                 "LoginTime":login_time,
                 "ExpireTime":expire_time})
             log.info('%s %s %s %s %s %s', "mongodb", "add_session", "OK",
