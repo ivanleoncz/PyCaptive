@@ -18,16 +18,13 @@ class Worker:
         try:
             result = sp.call(rule)
             if result == 0:
-                log.info('%s %s %s %s',
-                         "iptables", "add_rule", "OK", ip)
+                log.info('%s %s %s %s', "iptables", "add_rule", "OK", ip)
                 return 0
             else:
-                log.error('%s %s %s %s',
-                          "iptables", "add_rule", "NOK", ip)
+                log.error('%s %s %s %s', "iptables", "add_rule", "NOK", ip)
                 return 1
         except Exception as e:
-            log.critical('%s %s %s %s',
-                         "iptables", "add_rule", "EXCEPTION", ip)
+            log.critical('%s %s %s %s', "iptables", "add_rule", "EXCEPTION", ip)
             log.critical('%s', e)
             return e
 
@@ -42,12 +39,10 @@ class Worker:
                         "-s", ip, "-j", JUMP]
                 result = sp.call(rule)
                 if result == 0:
-                    log.info('%s %s %s %s',
-                              "iptables", "del_rules", "OK", ip)
+                    log.info('%s %s %s %s', "iptables", "del_rules", "OK", ip)
                     rules += 1
                 else:
-                    log.error('%s %s %s %s',
-                              "iptables", "del_rules", "NOK", ip)
+                    log.error('%s %s %s %s', "iptables", "del_rules", "NOK", ip)
                 # destroying connection
                 result = self.del_conntrack(ip)
                 if result == 0:
