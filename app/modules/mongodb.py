@@ -45,7 +45,7 @@ class Connector:
 
 
     def check_session(self, username, ipaddress):
-        """ Checking existence of session, returning session data. """
+        """ Check session session data and returns it. """
         client = self.connect()
         db = client.tjs
         collection = db.Sessions
@@ -59,7 +59,7 @@ class Connector:
 
 
     def expire_sessions(self):
-        """  Expires session. """
+        """ Expires sessions. """
         client = self.connect()
         db = client.tjs
         collection = db.Sessions
@@ -79,8 +79,7 @@ class Connector:
                              "mongodb", "expire_sessions", "OK", data)
             return deleted_sessions
         except Exception as e:
-            log.critical('%s %s %s',
-                         "mongodb", "expire_sessions", "EXCEPTION")
+            log.critical('%s %s %s', "mongodb", "expire_sessions", "EXCEPTION")
             log.critical('%s', e)
             return e
 
@@ -98,8 +97,7 @@ class Connector:
                 db_hash = hash_pass["Password"]
                 new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
                 if db_hash == new_hash:
-                    log.info('%s %s %s %s',
-                              "mongodb", "login", "OK, "username)
+                    log.info('%s %s %s %s', "mongodb", "login", "OK, "username)
                     return 0
                 else:
                     log.error('%s %s %s %s %s',
