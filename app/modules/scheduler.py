@@ -14,6 +14,8 @@ from app import log, TIME_INTERVAL
 from app.modules import mongodb
 from app.modules import iptables
 
+__author__ = "@ivanleoncz"
+
 
 def expirer():
     """ Searching/cleaning expired sessions """
