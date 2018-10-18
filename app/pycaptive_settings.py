@@ -48,8 +48,9 @@ LOG_ROTATE_COUNT=52
 #
 DB_USER="mongo"
 DB_PASS="mongo"
-DB_ADDR="127.0.0.1:27017"
-DB_URI="mongodb://{0}:{1}@{2}".format(DB_USER, DB_PASS, DB_ADDR)
+DB_ADDR="127.0.0.1"
+DB_PORT="27017"
+DB_URI="mongodb://{0}:{1}@{2}:{3}".format(DB_USER, DB_PASS, DB_ADDR, DB_PORT)
 SESSION_DURATION=12
 
 # [SCHEDULER]
