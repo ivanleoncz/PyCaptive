@@ -1,8 +1,10 @@
 """  MongoDB client configuration and actions. """
 
-from app import log, DB_URI, SESSION_DURATION
 from datetime import datetime, timedelta
+
 from pymongo import MongoClient
+
+from app import log, DB_URI, SESSION_DURATION
 
 __author__ = "@ivanleoncz"
 

@@ -8,10 +8,11 @@ The result is passed to iptables module, which eliminates
 the rules associated with the IP addresses from the result.
 """
 
+from apscheduler.schedulers.background import BackgroundScheduler
+
 from app import log, TIME_INTERVAL
 from app.modules import mongodb
 from app.modules import iptables
-from apscheduler.schedulers.background import BackgroundScheduler
 
 
 def expirer():
