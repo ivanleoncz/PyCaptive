@@ -21,10 +21,10 @@ def f_login():
             client_ip = request.environ.get('HTTP_X_REAL_IP')
         else:
             client_ip = request.environ.get('REMOTE_ADDR')
-        ts = datetime.now()
-        log.error('[%s] %s %s %s %s', ts, "/login", "GET", client_ip, "OK")
+        log.info('%s %s %s', "/login", "GET", client_ip)
         return render_template("login.html")
     elif request.method == 'POST':
+        log.info('%s %s %s', "/login", "POST", client_ip)
         user_data = user_data_parser(request.headers.get('User-Agent'))
         username = request.form['username']
         password = request.form['password']
@@ -36,6 +36,7 @@ def f_login():
                 fw = iptables.Worker()
                 allow = fw.add_rule(client_ip)
                 if allow == 0:
+                    log.info('%s %s %s', "login", "OK", client_ip)
                     return redirect("/welcome")
                 else:
                     msg = "Server Error (firewall)"
