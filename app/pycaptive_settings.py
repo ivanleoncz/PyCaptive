@@ -55,7 +55,7 @@ SESSION_DURATION=12
 
 # [SCHEDULER]
 #
-# Defines the time interval (seconds )that PyCaptive will consider for
+# Defines the time interval (seconds) that PyCaptive will consider for
 # verifying expired sessions on its MongoDB database.
 #
 # Unless you need something very specific, leave this variable as it is.
