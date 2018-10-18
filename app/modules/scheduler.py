@@ -25,8 +25,11 @@ def expirer():
             fw = iptables.Worker()
             # deleting rules
             counter = fw.del_rules(sessions)
-            if type(counter) != int:
+            if type(counter) == int:
+                log.info('%s %s %s', "scheduler", "expirer", "OK")
+            else:
                 log.error('%s %s %s', "scheduler", "expirer", "FAIL_IPTABLES")
+
     else:
         log.error('%s %s %s', "scheduler", "expirer", "FAIL_MONGODB")
 
