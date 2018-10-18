@@ -1,7 +1,6 @@
 """ Module for /login view/route."""
 
 from flask import abort, redirect, render_template, request, url_for
-from datetime import datetime
 from user_agents import parse
 
 from app import app, log
