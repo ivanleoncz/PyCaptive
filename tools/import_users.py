@@ -39,7 +39,7 @@ def import_users(csv):
                     user_data["Password"]     = p_hash
                     user_data["Creation"]     = timestamp
                     user_data["Modification"] = timestamp
-                    insert = db.Users.insert_one(user_data)
+                    db.Users.insert_one(user_data)
                 print("Done!")
             else:
                 print("Bye!")

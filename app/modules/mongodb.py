@@ -93,7 +93,7 @@ class Connector:
                 db_hash = hash_pass["Password"]
                 new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
                 if db_hash == new_hash:
-                    log.info('%s %s %s %s', "mongodb", "login", "OK, "username)
+                    log.info('%s %s %s %s', "mongodb", "login", "OK", username)
                     return 0
                 else:
                     log.error('%s %s %s %s %s',
