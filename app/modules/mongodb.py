@@ -46,7 +46,7 @@ class Connector:
         db = self.client.tjs.Sesions
         data = db.find_one({"UserName":username, "IpAddress":ipaddress})
         if data:
-            return dumps(data, indent=4)
+            return dumps(data, indent=2)
         else:
             return False
 
@@ -57,7 +57,7 @@ class Connector:
         data = [record for record in data]
         self.client.close()
         if data:
-            return dumps(data, indent=4, default=json_util.default)
+            return dumps(data, indent=2, default=json_util.default)
         else:
             return False
 
