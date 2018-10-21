@@ -72,12 +72,12 @@ class Connector:
             sessions = db.find().distinct("ExpireTime")
             deleted_sessions = []
             for session in sessions:
-                data = collection.find_one(
+                data = db.find_one(
                         {"ExpireTime":session},
                         {"IpAddress":1, "UserName":1, "_id":0})
                 ip = data["IpAddress"]
                 if session < time_now:
-                    collection.delete_one({"ExpireTime":session})
+                    db.delete_one({"ExpireTime":session})
                     deleted_sessions.append(ip)
                     log.info('%s %s %s %s',
                              "mongodb", "expire_sessions", "OK", data)
