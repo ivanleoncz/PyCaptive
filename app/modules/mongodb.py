@@ -46,7 +46,7 @@ class Connector:
         db = self.client.tjs.Sesions
         data = db.find_one({"UserName":username, "IpAddress":ipaddress})
         if data:
-            return session
+            return dumps(data, indent=4)
         else:
             return False
 
