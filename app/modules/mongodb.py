@@ -1,6 +1,9 @@
 """  MongoDB client configuration and actions. """
 
+import bcrypt
+from bson import json_util
 from datetime import datetime, timedelta
+from json import dumps
 
 from pymongo import MongoClient
 
@@ -8,7 +11,6 @@ from app import log, DB_URI, SESSION_DURATION
 
 __author__ = "@ivanleoncz"
 
-import bcrypt
 
 class Connector:
     """ MongoDB setup and actions. """
@@ -45,6 +47,17 @@ class Connector:
         data = db.find_one({"UserName":username, "IpAddress":ipaddress})
         if data:
             return session
+        else:
+            return False
+
+
+    def dump_sessions(self):
+        db = self.client.blog.Sessions
+        data = db.find({})
+        data = [record for record in data]
+        self.client.close()
+        if data:
+            return dumps(data, indent=4, default=json_util.default)
         else:
             return False
 
