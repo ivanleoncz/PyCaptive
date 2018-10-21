@@ -32,6 +32,7 @@ class Connector:
                 "UserData":user_data,
                 "LoginTime":login_time,
                 "ExpireTime":expire_time})
+            self.client.close()
             log.info('%s %s %s %s %s %s', "mongodb", "add_session", "OK",
                                            username, client_ip, user_data)
             return 0
@@ -45,6 +46,7 @@ class Connector:
         """ Check session session data and returns it. """
         db = self.client.tjs.Sesions
         data = db.find_one({"UserName":username, "IpAddress":ipaddress})
+        self.client.close()
         if data:
             return dumps(data, indent=2)
         else:
@@ -79,6 +81,7 @@ class Connector:
                     deleted_sessions.append(ip)
                     log.info('%s %s %s %s',
                              "mongodb", "expire_sessions", "OK", data)
+            self.client.close()
             return deleted_sessions
         except Exception as e:
             log.critical('%s %s %s', "mongodb", "expire_sessions", "EXCEPTION")
@@ -93,6 +96,7 @@ class Connector:
         try:
             hash_pass = db.find_one({"UserName":username},
                                     {"Password":1, "_id":0})
+            self.client.close()
             if hash_pass is not None:
                 db_hash = hash_pass["Password"]
                 new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
