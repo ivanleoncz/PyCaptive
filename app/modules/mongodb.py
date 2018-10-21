@@ -13,21 +13,18 @@ import bcrypt
 class Connector:
     """ MongoDB setup and actions. """
 
-    def connect(self):
+    def __init__(self):
         """ Preparing MongoDB client. """
-        client = MongoClient(DB_URI, serverSelectionTimeoutMS=6000)
-        return client
+        self.client = MongoClient(DB_URI, serverSelectionTimeoutMS=6000)
 
 
     def add_session(self, username, client_ip, user_data):
         """ Adding session. """
-        client = self.connect()
-        db = client.tjs
-        collection = db.Sessions
+        db = self.client.tjs.Sessions
         login_time = datetime.now()
         expire_time = login_time + timedelta(hours=SESSION_DURATION)
         try:
-            collection.insert_one({
+            db.insert_one({
                 "UserName":username,
                 "IpAddress":client_ip,
                 "UserData":user_data,
@@ -44,10 +41,8 @@ class Connector:
 
     def check_session(self, username, ipaddress):
         """ Check session session data and returns it. """
-        client = self.connect()
-        db = client.tjs
-        collection = db.Sessions
-        data = collection.find_one({"UserName":username, "IpAddress":ipaddress})
+        db = self.client.tjs.Sesions
+        data = db.find_one({"UserName":username, "IpAddress":ipaddress})
         if data:
             return session
         else:
@@ -56,12 +51,10 @@ class Connector:
 
     def expire_sessions(self):
         """ Expires sessions. """
-        client = self.connect()
-        db = client.tjs
-        collection = db.Sessions
+        db = self.client.tjs.Sesions
         time_now = datetime.now()
         try:
-            sessions = collection.find().distinct("ExpireTime")
+            sessions = db.find().distinct("ExpireTime")
             deleted_sessions = []
             for session in sessions:
                 data = collection.find_one(
@@ -82,13 +75,11 @@ class Connector:
 
     def login(self, username, password):
         """ Validating username and password for login. """
-        client = self.connect()
-        db = client.tjs
-        collection = db.Users
+        db = self.client.tjs.Users
         ts = datetime.now()
         try:
-            hash_pass = collection.find_one({"UserName":username},
-                                            {"Password":1, "_id":0})
+            hash_pass = db.find_one({"UserName":username},
+                                    {"Password":1, "_id":0})
             if hash_pass is not None:
                 db_hash = hash_pass["Password"]
                 new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
