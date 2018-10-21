@@ -68,9 +68,9 @@ class Connector:
         """ Expires sessions. """
         db = self.client.tjs.Sesions
         time_now = datetime.now()
+        expired_sessions = []
         try:
             sessions = db.find().distinct("ExpireTime")
-            deleted_sessions = []
             for session in sessions:
                 data = db.find_one(
                         {"ExpireTime":session},
@@ -78,11 +78,11 @@ class Connector:
                 ip = data["IpAddress"]
                 if session < time_now:
                     db.delete_one({"ExpireTime":session})
-                    deleted_sessions.append(ip)
+                    expired_sessions.append(ip)
                     log.info('%s %s %s %s',
                              "mongodb", "expire_sessions", "OK", data)
             self.client.close()
-            return deleted_sessions
+            return expired_sessions
         except Exception as e:
             log.critical('%s %s %s', "mongodb", "expire_sessions", "EXCEPTION")
             log.critical('%s', e)
