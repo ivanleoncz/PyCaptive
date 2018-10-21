@@ -47,9 +47,9 @@ class Connector:
         client = self.connect()
         db = client.tjs
         collection = db.Sessions
-        session_data = collection.find_one( {"IpAddress":ipaddress} )
-        if session_data:
-            return session_data
+        data = collection.find_one({"UserName":username, "IpAddress":ipaddress})
+        if data:
+            return session
         else:
             return False
 
