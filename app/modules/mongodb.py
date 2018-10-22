@@ -22,7 +22,7 @@ class Connector:
 
     def add_session(self, username, client_ip, user_data):
         """ Adding session. """
-        db = self.client.tjs.Sessions
+        db = self.client.pycaptive.Sessions
         login_time = datetime.now()
         expire_time = login_time + timedelta(hours=SESSION_DURATION)
         try:
@@ -44,7 +44,7 @@ class Connector:
 
     def check_session(self, username, ipaddress):
         """ Check session session data and returns it. """
-        db = self.client.tjs.Sesions
+        db = self.client.pycaptive.Sessions
         data = db.find_one({"UserName":username, "IpAddress":ipaddress})
         self.client.close()
         if data:
@@ -54,7 +54,7 @@ class Connector:
 
 
     def dump_sessions(self):
-        db = self.client.blog.Sessions
+        db = self.client.pycaptive.Sessions
         data = db.find({})
         data = [record for record in data]
         self.client.close()
@@ -66,7 +66,7 @@ class Connector:
 
     def expire_sessions(self):
         """ Expires sessions. """
-        db = self.client.tjs.Sesions
+        db = self.client.pycaptive.Sessions
         time_now = datetime.now()
         expired_sessions = []
         try:
@@ -91,7 +91,7 @@ class Connector:
 
     def login(self, username, password):
         """ Validating username and password for login. """
-        db = self.client.tjs.Users
+        db = self.client.pycaptive.Users
         ts = datetime.now()
         try:
             hash_pass = db.find_one({"UserName":username},
