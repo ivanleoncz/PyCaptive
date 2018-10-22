@@ -34,10 +34,9 @@ class Worker:
             result = sp.call(rule)
             if result == 0:
                 log.info('%s %s %s %s', "iptables", "add_rule", "OK", ip)
-                return 0
             else:
                 log.error('%s %s %s %s', "iptables", "add_rule", "NOK", ip)
-                return 1
+            return result
         except Exception as e:
             log.critical('%s %s %s %s', "iptables", "add_rule", "EXCEPTION", ip)
             log.critical('%s', e)
