@@ -3,7 +3,7 @@
 from flask import abort, redirect, render_template, request, url_for
 from user_agents import parse
 
-from app import app, log
+from app import app, log, session
 from app.modules import iptables
 from app.modules import mongodb
 
@@ -32,12 +32,13 @@ def f_login():
         db = mongodb.Connector()
         login = db.login(username, password)
         if login == 0:
-            login_record = db.add_session(username, client_ip, user_data)
-            if login_record == 0:
+            session_id = db.add_session(username, client_ip, user_data)
+            if len(str(session_id)) == 24:
                 fw = iptables.Worker()
                 allow = fw.add_rule(client_ip)
                 if allow == 0:
                     log.info('%s %s %s', "login", "OK", client_ip)
+                    session["SessionID"] = session_id
                     return redirect("/welcome")
                 else:
                     msg = "Server Error (firewall)"
