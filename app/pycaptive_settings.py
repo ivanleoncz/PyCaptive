@@ -17,13 +17,15 @@ PORT=14090
 #
 # Unless you're performing a very specific customization, the only variable
 # that should be changed here is the LAN variable, according with the setup
-# of your network server.
+# of your network server, and COMMENT, which is added on each IPTABLES/Netfilter
+# rule for granting Internet Access to an specific IP address.
 #
 IPTABLES="/sbin/iptables"
 TABLE="mangle"
 CHAIN="PREROUTING"
 LAN="eth2"
 JUMP="INTERNET"
+COMMENT="Added via PyCaptive"
 
 # [LOGGER]
 #
