@@ -61,7 +61,7 @@ class Connector:
         data = db.find({"_id":ObjectId(session_id)})
         self.client.close()
         if data:
-            return dumps(data, indent=2)
+            return dumps(data, indent=2, default=json_util.default)
         else:
             return False
 
