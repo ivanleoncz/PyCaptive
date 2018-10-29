@@ -2,6 +2,7 @@
 
 import bcrypt
 from bson import json_util
+from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from json import dumps
 
@@ -25,8 +26,9 @@ class Connector:
         db = self.client.pycaptive.Sessions
         login_time = datetime.now()
         expire_time = login_time + timedelta(hours=SESSION_DURATION)
+        session_id = None
         try:
-            db.insert_one({
+            session_id = db.insert({
                 "UserName":username,
                 "IpAddress":client_ip,
                 "UserData":user_data,
@@ -35,17 +37,28 @@ class Connector:
             self.client.close()
             log.info('%s %s %s %s %s %s', "mongodb", "add_session", "OK",
                                            username, client_ip, user_data)
-            return 0
+            return session_id
         except Exception as e:
             log.critical('%s %s %s', "mongodb", "add_session", "EXCEPTION")
             log.critical('%s', e)
             return e
 
 
-    def check_session(self, username, ipaddress):
-        """ Check session session data and returns it. """
+    def check_session(self, session_id):
+        """
+        Check existence of a session, based on ObjectID.
+
+        Parameters
+        ----------
+        session_id : string
+            MongoDB ObjectID from add_session() (see /login route).
+
+        Return
+        ------
+            Session data (see add_session()).
+        """
         db = self.client.pycaptive.Sessions
-        data = db.find_one({"UserName":username, "IpAddress":ipaddress})
+        data = db.find({"_id":ObjectId(session_id)})
         self.client.close()
         if data:
             return dumps(data, indent=2)
