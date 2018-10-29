@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Main application module. """
 
-from flask import Flask
+from flask import Flask, session
 from app.pycaptive_settings import *
 from app.modules import logger
 
