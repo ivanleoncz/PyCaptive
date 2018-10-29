@@ -1,5 +1,5 @@
 
-from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP
+from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP, COMMENT
 
 __author__ = "@ivanleoncz"
 
@@ -29,7 +29,7 @@ class Worker:
 
         """
         rule = [IPTABLES, "-t", TABLE, "-I", CHAIN, "-i", LAN,
-                "-s", ip, "-j", JUMP]
+                "-s", ip, "-m", "comment", "--comment", COMMENT, "-j", JUMP]
         try:
             result = sp.call(rule)
             if result == 0:
@@ -66,7 +66,7 @@ class Worker:
             for ip in ips:
                 # deleting rule
                 rule = [IPTABLES, "-t", TABLE, "-D", CHAIN, "-i", LAN,
-                        "-s", ip, "-j", JUMP]
+                    "-s", ip, "-m", "comment", "--comment", COMMENT, "-j", JUMP]
                 result = sp.call(rule)
                 if result == 0:
                     log.info('%s %s %s %s', "iptables", "del_rules", "OK", ip)
