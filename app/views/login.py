@@ -1,9 +1,8 @@
 """ Module for /login view/route."""
 
-from flask import abort, redirect, render_template, request, url_for
 from user_agents import parse
 
-from app import app, log, session
+from app import app, abort, redirect, render_template, request, session, log
 from app.modules import iptables
 from app.modules import mongodb
 
@@ -14,14 +13,14 @@ __author__ = "@ivanleoncz"
 @app.route("/login", methods=['GET', 'POST'])
 def f_login():
     """ Processing request. """
+    # Verifies if the request was transmited via Proxy,
+    # in order to adapt the Standalone execution.
     client_ip = None
+    if request.environ.get('HTTP_X_REAL_IP') is not None:
+        client_ip = request.environ.get('HTTP_X_REAL_IP')
+    else:
+        client_ip = request.environ.get('REMOTE_ADDR')
     if request.method == 'GET':
-        # Verifies if the request was transmited via Proxy,
-        # in order to adapt the Standalone execution.
-        if request.environ.get('HTTP_X_REAL_IP') is not None:
-            client_ip = request.environ.get('HTTP_X_REAL_IP')
-        else:
-            client_ip = request.environ.get('REMOTE_ADDR')
         log.info('%s %s %s', "/login", "GET", client_ip)
         return render_template("login.html")
     elif request.method == 'POST':
@@ -38,7 +37,7 @@ def f_login():
                 allow = fw.add_rule(client_ip)
                 if allow == 0:
                     log.info('%s %s %s', "login", "OK", client_ip)
-                    session["SessionID"] = session_id
+                    session["SessionID"] = str(session_id)
                     return redirect("/welcome")
                 else:
                     msg = "Server Error (firewall)"
@@ -60,9 +59,9 @@ def user_data_parser(request_ua):
     ua = parse(request_ua)
     # checking device presence (True/False)
     devices = {}
-    devices["pc"] = ua.is_pc
-    devices["mobile"] = ua.is_mobile
-    devices["tablet"] = ua.is_tablet
+    devices["PC"] = ua.is_pc
+    devices["Smartphone"] = ua.is_mobile
+    devices["Tablet"] = ua.is_tablet
     # functions for determining Unknown brand or family for a device
     brand = lambda x: "Unknown" if x is None else ua.device.brand
     family = lambda x: "Unknown" if x is "Other" else ua.device.family
