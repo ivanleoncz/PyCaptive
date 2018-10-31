@@ -11,9 +11,12 @@
         position: absolute;
       }
 
-      #welcome  {
-        margin-top: 50px;
+      #welcome, #session_info  {
         text-align: center;
+      }
+
+      #welcome {
+        margin-top: 50px;
         color: #3399ff;
         font-size: 34px;
       }
@@ -26,12 +29,13 @@
 
       fieldset {
         width: 250px;
-        margin-top: 30px;
+        margin-top: 10px;
         margin-left: auto;
         margin-right: auto;
         padding-top: 15px;
         padding-bottom: 15px;
-        border-radius: 15px;
+	border: 1px solid grey;
+        border-radius: 10px;
         background-color: #ffffff;
       }
 
@@ -47,6 +51,7 @@
       }
 
       .field {
+        font-size: 10px;
         text-align: right;
       }
 
@@ -54,39 +59,80 @@
         padding-left: 10px;
         margin-left: auto;
         margin-right: auto;
+	font-size: 10px;
         font-weight: bold;
       }
 
-      iframe {
-        display: block;
-        margin: auto;
+      #session_info {
         margin-top: 30px;
-        height: 60px;
-        width: 450px;
-        border: 0;
+        color: red;
+        font-size: 30px;
       }
+
 
 {% endblock %}
 
 {% block content %}
     <div id="status">
-        <h1 id="welcome"> Welcome! </h1>
-        <fieldset>
+	<h1 id="welcome"> Welcome, {{ userdata["UserName"] }}! </h1>
+
+        <fieldset align="middle">
           <table>
+
             <tr>
-              <td class="field">Username:</td>
-              <td class="data">@ivanleoncz</td>
+	      <td class="field">Session ID:</td>
+	      <td class="data">{{ userdata["_id"] }}</td>
             </tr>
+
             <tr>
-              <td class="field">Login Time:</td>
-              <td class="data">14:00:00</td>
+	      <td class="field">Login Time:</td>
+	      <td class="data">{{ userdata["LoginTime"] }}</td>
             </tr>
+
             <tr>
-              <td class="field">Expire Time:</td>
-              <td class="data">18:00:00</td>
+	      <td class="field">Expire Time:</td>
+	      <td class="data">{{ userdata["ExpireTime"] }}</td>
             </tr>
+
+            <tr>
+	      <td class="field">IP Address:</td>
+	      <td class="data">{{ userdata["IpAddress"] }}</td>
+            </tr>
+
+            <tr>
+	      <td class="field">Device:</td>
+	      <td class="data">{{ userdata["UserData"]["device"] }}</td>
+            </tr>
+
+            <tr>
+	      <td class="field">Brand:</td>
+	      <td class="data">{{ userdata["UserData"]["brand"] }}</td>
+            </tr>
+
+            <tr>
+	      <td class="field">Family:</td>
+	      <td class="data">{{ userdata["UserData"]["family"] }}</td>
+            </tr>
+
+            <tr>
+	      <td class="field">OS:</td>
+	      <td class="data">{{ userdata["UserData"]["os"] }}</td>
+            </tr>
+
+            <tr>
+	      <td class="field">Browser:</td>
+	      <td class="data">{{ userdata["UserData"]["browser"] }}</td>
+            </tr>
+
           </table>
         </fieldset>
-        <iframe src="https://duckduckgo.com/search.html?width=240&duck=yes&prefill=Search with Safety"> </iframe>
+	<h1 id="session_info"> Session expires at {{ userdata["ExpireTime"] }}! </h1>
+
     </div>
+{% endblock %}
+
+{% block script_area %}
+  <script type="text/javascript">
+alert("Session expires in 12 hours: {{ userdata["ExpireTime"] }}");
+  </script>
 {% endblock %}
