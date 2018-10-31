@@ -1,8 +1,7 @@
 """ Module for /welcome view/route. """
 
-from flask import render_template
-
-from app import app, session
+from json import loads
+from app import app, redirect, render_template, session, log
 from app.modules import mongodb
 
 __author__ = "@ivanleoncz"
@@ -12,8 +11,10 @@ __author__ = "@ivanleoncz"
 def f_welcome():
     if "SessionID" in session:
         db = mongodb.Connector()
-        user_data = db.check_session(session.get("Session_id"))
+        ua = db.check_session(session.get("SessionID"))
+        ua["LoginTime"] = ua["LoginTime"].strftime("%H:%M:%S - (%d/%b/%Y)")
+        ua["ExpireTime"] = ua["ExpireTime"].strftime("%H:%M:%S - (%d/%b/%Y)")
         session.pop("SessionID", None)
-        return render_template("welcome.html", userdata=user_data)
+        return render_template("welcome.html", userdata=ua)
     else:
         return redirect("/login")
