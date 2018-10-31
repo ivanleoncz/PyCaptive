@@ -5,9 +5,7 @@ from bson import json_util
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from json import dumps
-
 from pymongo import MongoClient
-
 from app import log, DB_URI, SESSION_DURATION
 
 __author__ = "@ivanleoncz"
@@ -25,7 +23,7 @@ class Connector:
         """ Adding session. """
         db = self.client.pycaptive.Sessions
         login_time = datetime.now()
-        expire_time = login_time + timedelta(hours=SESSION_DURATION)
+        expire_time = login_time + timedelta(seconds=SESSION_DURATION)
         session_id = None
         try:
             session_id = db.insert({
@@ -57,11 +55,12 @@ class Connector:
         ------
             Session data (see add_session()).
         """
+        print("Checking session")
         db = self.client.pycaptive.Sessions
-        data = db.find({"_id":ObjectId(session_id)})
+        data = db.find_one({"_id":ObjectId(session_id)})
         self.client.close()
         if data:
-            return dumps(data, indent=2, default=json_util.default)
+            return data
         else:
             return False
 
