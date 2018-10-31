@@ -1,6 +1,5 @@
-""" Allowing/prohibiting INTERNET access based on IP addresses. """
 
-from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP
+from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP, COMMENT
 
 __author__ = "@ivanleoncz"
 
@@ -8,21 +7,36 @@ import subprocess as sp
 
 
 class Worker:
-    """ IPTABLES/Netfilter rules for allowing/prohibiting INTERNET access. """
-
+    """ A base class for IPTABLES/Netfilter jobs, supporting PyCaptive on
+        allowing/prohibiting Internet access for its clients, through their
+        IP addresses.
+    """
 
     def add_rule(self, ip):
-        """ Allowing INTERNET access. """
+        """
+        Allowing Internet access to an IP address
+
+        Parameters
+        ----------
+        ip : string
+             IP address provided via client request to PyCaptive.
+
+        Returns
+        -------
+        integer
+             if 0: rule successfully deleted
+             else: error while processing command
+
+        """
         rule = [IPTABLES, "-t", TABLE, "-I", CHAIN, "-i", LAN,
-                "-s", ip, "-j", JUMP]
+                "-s", ip, "-m", "comment", "--comment", COMMENT, "-j", JUMP]
         try:
             result = sp.call(rule)
             if result == 0:
                 log.info('%s %s %s %s', "iptables", "add_rule", "OK", ip)
-                return 0
             else:
                 log.error('%s %s %s %s', "iptables", "add_rule", "NOK", ip)
-                return 1
+            return result
         except Exception as e:
             log.critical('%s %s %s %s', "iptables", "add_rule", "EXCEPTION", ip)
             log.critical('%s', e)
@@ -30,13 +44,29 @@ class Worker:
 
 
     def del_rules(self, ips):
-        """ Revoking rule for INTERNET access. """
+        """
+        Deleting rules that grant Internet access to a list of IPs and
+        destroying connections established for such IPs.
+
+        See del_conntrack() for more info.
+
+        Parameters
+        ----------
+        ips : list
+              IP addressess provided via scheduler (APScheduler).
+
+        Returns
+        -------
+        integer
+              Number of deleted rules.
+
+        """
         try:
             rules = 0
             for ip in ips:
                 # deleting rule
                 rule = [IPTABLES, "-t", TABLE, "-D", CHAIN, "-i", LAN,
-                        "-s", ip, "-j", JUMP]
+                    "-s", ip, "-m", "comment", "--comment", COMMENT, "-j", JUMP]
                 result = sp.call(rule)
                 if result == 0:
                     log.info('%s %s %s %s', "iptables", "del_rules", "OK", ip)
@@ -59,7 +89,28 @@ class Worker:
 
 
     def del_conntrack(self, ip):
-        """ Destroys established connections from conntrack table. """
+        """
+        Destroys established connections from conntrack table for a specified
+        IP address.
+
+        This action is complementary to del_rules() method, in order to insure
+        that no connection is persisting between a PyCaptive client and a
+        remote IP address.
+
+        See del_rules() for more info.
+
+        Parameters
+        ----------
+        ip : string
+             IP address provided via del_rules() method.
+
+        Returns
+        -------
+        integer
+             if 0: rule successfully deleted
+             else: error while processing command
+
+        """
         destroy_conn = ["/usr/sbin/conntrack", "-D", "--orig-src", ip]
         result = sp.call(destroy_conn, stderr=sp.DEVNULL, stdout=sp.DEVNULL)
         if result == 0:

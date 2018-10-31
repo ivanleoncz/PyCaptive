@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 """ Main application module. """
 
-from flask import Flask
+from flask import Flask, session
+from app.pycaptive_settings import *
 from app.modules import logger
 
 log = logger.config()
 
 from app.modules import scheduler
-from pycaptive_settings import *
 
 app = Flask(__name__)
 app.config.from_pyfile('flask_settings.cfg')

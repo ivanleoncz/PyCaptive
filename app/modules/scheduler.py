@@ -1,11 +1,12 @@
 """ APScheculer for monitoring expired sessions.  
 
-Started when the module is imported and it periodically performs
-(see pycaptive_settings.py:TIME_INTERVAL) a sweep on MongoDB,
+Started when the module is imported, periodically performing
+a sweep on MongoDB (see pycaptive_settings.py:TIME_INTERVAL),
 searching for expired sessions (IPs).
 
 The result is passed to iptables module, which eliminates
-the rules associated with the IP addresses from the result.
+the rules associated with the IP addresses which are returned
+via APScheduler.
 """
 
 from apscheduler.schedulers.background import BackgroundScheduler
