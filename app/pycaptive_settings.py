@@ -6,19 +6,6 @@
 # For Flask Environment Variables, see flask_settings.py.
 #
 
-
-# [TEST]
-#
-# Variables configured when TEST flag is activated, are just designed for
-# testing PyCaptive behavior (specially when running as Standalone) and have
-# no effect over the Operating System:
-#
-# Internet Access: login -> add session -> add rule
-# Revoked Access:  scheduler -> check/del session -> del rule -> del connections
-#
-TEST=False
-
-
 # [STANDALONE]
 #
 # Only applied when running PyCaptive as Standalone.
@@ -40,11 +27,6 @@ CHAIN="PREROUTING"
 LAN="eth2"
 JUMP="INTERNET"
 COMMENT="Added via PyCaptive"
-
-if TEST is True:
-    LAN="lo"
-    JUMP="ACCEPT"
-    COMMENT="Added via PyCaptive [TEST]"
 
 
 # [LOGGER]
@@ -85,3 +67,30 @@ SESSION_DURATION=12
 # Unless you need something very specific, leave this variable as it is.
 #
 TIME_INTERVAL=60
+
+
+# [TEST]
+#
+# Variables configured when TEST flag is activated, are just designed for
+# testing PyCaptive behavior (specially when running as Standalone) and have
+# no effect over the Operating System:
+#
+# Internet Access: login -> add session -> add rule
+# Revoked Access:  scheduler -> check/del session -> del rule -> del connections
+#
+TEST=False
+
+if TEST is True:
+    # [STANDALONE]
+    HOST="127.0.0.1"
+    PORT="5000"
+    # [IPTABLES]
+    LAN="lo"
+    JUMP="ACCEPT"
+    COMMENT="Added via PyCaptive [TEST]"
+    # [LOGGER]
+    LOG_FILE="/tmp/pycaptive_standalone.log"
+    # [MONGODB]
+    SESSION_DURATION=12
+    # [SCHEDULER]
+    TIME_INTERVAL=30
