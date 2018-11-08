@@ -1,17 +1,31 @@
-# PyCaptive Settings
+#
+# PyCaptive Global Settings
 #
 # Configurations defined here are restricted to PyCaptive operation.
 #
 # For Flask Environment Variables, see flask_settings.py.
 #
-# INFO: some variables are self-explanatory.
 
-# <PyCaptive Standalone Mode>
 
+# [DEBUG]
+#
+# Variables configured when DEBUG mode is activated, are just designed for
+# testing PyCaptive behavior (specially when running as Standalone) and have
+# no effect over the Operating System:
+#
+# Internet Access: login -> add session -> add rule
+# Revoked Access:  scheduler -> del session -> del rule -> del connections
+#
+DEBUG=False
+
+
+# [STANDALONE]
+#
+# Only applied when running PyCaptive as Standalone.
+#
 HOST="0.0.0.0"
-PORT=14090
+PORT=14900
 
-# <Per Module Configuration>
 
 # [IPTABLES]
 #
@@ -27,6 +41,12 @@ LAN="eth2"
 JUMP="INTERNET"
 COMMENT="Added via PyCaptive"
 
+if DEBUG is True:
+    LAN="lo"
+    JUMP="ACCEPT"
+    COMMENT="Added via PyCaptive [DEBUG]"
+
+
 # [LOGGER]
 #
 # If LOG_ROTATE=True, logging.handlers.TimedRotatingFileHandler will be used
@@ -41,6 +61,7 @@ LOG_ROTATE=False
 LOG_ROTATE_WHEN='W6'
 LOG_ROTATE_COUNT=52
 
+
 # [MONGODB]
 #
 # SESSION_DURATION defines for how long (hours) a UserName/IpAddress
@@ -54,6 +75,7 @@ DB_ADDR="127.0.0.1"
 DB_PORT="27017"
 DB_URI="mongodb://{0}:{1}@{2}:{3}".format(DB_USER, DB_PASS, DB_ADDR, DB_PORT)
 SESSION_DURATION=12
+
 
 # [SCHEDULER]
 #
