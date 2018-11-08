@@ -1,3 +1,10 @@
+function backup {
+
+    echo "Backing up: all firewall rules."
+    $IPTABLES_SAVE > rules.v4.`date +%D-%H:%M:%S`.backup
+
+}
+
 function cleaner {
 
     echo "Cleaning up: counters, rules and chains."

@@ -43,27 +43,27 @@ echo "DNS: $DNS"
 echo "DNS Management: $DNS_RNDC"
 echo "DHCP Server: $DHCP_SERVER"
 echo "DHCP Client: $DHCP_CLIENT"
-echo "PYCAPTIVE: $NGINX_PYCAPTIVE"
+echo "NGINX (redir. PyCaptive): $NGINX_PYCAPTIVE"
 
-if [ $MOD -eq 2 ]; then
-    echo "PROXY: $PROXY"
-    echo "Configuration Mode: ROUTER + TRANSPARENT PROXY"
-elif [ $MOD -eq 1 ]; then
-    echo "Configuration Mode: ROUTER"
+if [ $MOD -eq 1 ]; then
+    echo -e "\nConfiguration Mode: ROUTER"
+elif [ $MOD -eq 2 ]; then
+    echo -e "\nConfiguration Mode: ROUTER + TRANSPARENT PROXY ($PROXY)"
 else
-    echo "Configuration Mode: NOT RECOGNIZED."
+    echo -e "\nConfiguration Mode: NOT RECOGNIZED."
     exit 1
 fi
 
 echo
-echo "-------------------------------------------------------------"
-echo " INFO: Before proceeding, backup your current firewall setup."
-echo "-------------------------------------------------------------"
+echo "--------------------------------------------------------------"
+echo " INFO: if proceeded, current Firewall setup will be backed up "
+echo "--------------------------------------------------------------"
 echo
 
 read -p "Proceed (y/n) ? " OPT
 
 if [[ $OPT == "y" ]] ; then
+    backup
     cleaner
     mangle_setup
     nat_setup
