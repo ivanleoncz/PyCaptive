@@ -3,8 +3,7 @@
 """ PyCaptive: Standalone Mode """
 
 if __name__ == "__main__":
-    from app import app
-    from app.pycaptive_settings import HOST, PORT
+    from app import app, HOST, PORT
     print("\n --------------------------------------------")
     print("\n PyCaptive Standalone Mode\n")
     print(" \033[1;34mINFO\033[1;m: I was designed for test purposes only.\n")
