@@ -6,13 +6,6 @@
 # For Flask Environment Variables, see flask_settings.py.
 #
 
-# [STANDALONE]
-#
-# Only applied when running PyCaptive as Standalone.
-#
-HOST="0.0.0.0"
-PORT=14900
-
 
 # [IPTABLES]
 #
@@ -72,8 +65,7 @@ SCHEDULER_INTERVAL=60
 # [TEST]
 #
 # Variables configured when TEST flag is activated, are just designed for
-# testing PyCaptive behavior (specially when running as Standalone) and have
-# no effect over the Operating System:
+# PyCaptive in Test Mode and have no effect over the Operating System:
 #
 # Internet Access: login -> add session -> add rule
 # Revoked Access:  scheduler -> check/del session -> del rule -> del connections
@@ -81,9 +73,6 @@ SCHEDULER_INTERVAL=60
 TEST=False
 
 if TEST is True:
-    # [STANDALONE]
-    HOST="127.0.0.1"
-    PORT="5000"
     # [IPTABLES]
     LAN="lo"
     JUMP="ACCEPT"
