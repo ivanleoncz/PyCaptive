@@ -46,7 +46,7 @@ function nat_setup {
     $IPTABLES -t nat -A POSTROUTING -o $WAN -j MASQUERADE
 
     if [ $MOD -eq 2 ] ; then
-        $IPTABLES -t nat -A PREROUTING -i eth1 -p tcp --sport $HTTP -j REDIRECT --to-port $PROXY
+        $IPTABLES -t nat -A PREROUTING -i $LAN -p tcp --sport $HTTP -j REDIRECT --to-port $PROXY
     fi
 
     echo "Done!"
