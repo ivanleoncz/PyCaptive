@@ -39,5 +39,5 @@ def expirer():
 
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(expirer, 'interval', seconds=TIME_INTERVAL)
+sched.add_job(expirer, 'interval', seconds=SCHEDULER_INTERVAL)
 sched.start()
