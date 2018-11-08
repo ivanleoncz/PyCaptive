@@ -7,16 +7,16 @@
 #
 
 
-# [DEBUG]
+# [TEST]
 #
-# Variables configured when DEBUG mode is activated, are just designed for
+# Variables configured when TEST flag is activated, are just designed for
 # testing PyCaptive behavior (specially when running as Standalone) and have
 # no effect over the Operating System:
 #
 # Internet Access: login -> add session -> add rule
-# Revoked Access:  scheduler -> del session -> del rule -> del connections
+# Revoked Access:  scheduler -> check/del session -> del rule -> del connections
 #
-DEBUG=False
+TEST=False
 
 
 # [STANDALONE]
@@ -41,10 +41,10 @@ LAN="eth2"
 JUMP="INTERNET"
 COMMENT="Added via PyCaptive"
 
-if DEBUG is True:
+if TEST is True:
     LAN="lo"
     JUMP="ACCEPT"
-    COMMENT="Added via PyCaptive [DEBUG]"
+    COMMENT="Added via PyCaptive [TEST]"
 
 
 # [LOGGER]
