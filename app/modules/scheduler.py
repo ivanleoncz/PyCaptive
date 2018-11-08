@@ -11,7 +11,7 @@ via APScheduler.
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app import log, TIME_INTERVAL
+from app import log, SCHEDULER_INTERVAL
 from app.modules import mongodb
 from app.modules import iptables
 
