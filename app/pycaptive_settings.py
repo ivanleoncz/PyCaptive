@@ -15,6 +15,7 @@
 # rule for granting Internet Access to an specific IP address.
 #
 IPTABLES="/sbin/iptables"
+CONNTRACK="/usr/sbin/conntrack"
 TABLE="mangle"
 CHAIN="PREROUTING"
 LAN="eth2"
