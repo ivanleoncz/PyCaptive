@@ -13,13 +13,13 @@ __author__ = "@ivanleoncz"
 @app.route("/login", methods=['GET', 'POST'])
 def f_login():
     """ Processing request. """
-    # Verifies if the request was transmited via Proxy,
-    # in order to adapt the Standalone execution.
+    # Verifies if the request was transmited via Proxy or not.
     client_ip = None
     if request.environ.get('HTTP_X_REAL_IP') is not None:
         client_ip = request.environ.get('HTTP_X_REAL_IP')
     else:
         client_ip = request.environ.get('REMOTE_ADDR')
+
     if request.method == 'GET':
         log.info('%s %s %s', "/login", "GET", client_ip)
         return render_template("login.html")
