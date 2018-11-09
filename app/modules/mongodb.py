@@ -55,7 +55,6 @@ class Connector:
         ------
             Session data (see add_session()).
         """
-        print("Checking session")
         db = self.client.pycaptive.Sessions
         data = db.find_one({"_id":ObjectId(session_id)})
         self.client.close()
