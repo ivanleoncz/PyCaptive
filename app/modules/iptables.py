@@ -1,5 +1,5 @@
 
-from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP, COMMENT
+from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP, COMMENT, CONNTRACK
 
 __author__ = "@ivanleoncz"
 
@@ -111,7 +111,7 @@ class Worker:
              else: error while processing command
 
         """
-        destroy_conn = ["/usr/sbin/conntrack", "-D", "--orig-src", ip]
+        destroy_conn = [CONNTRACK, "-D", "--orig-src", ip]
         result = sp.call(destroy_conn, stderr=sp.DEVNULL, stdout=sp.DEVNULL)
         if result == 0:
             log.info('%s %s %s %s', "iptables", "del_conntrack", "OK", ip)
