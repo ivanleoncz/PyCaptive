@@ -78,7 +78,7 @@ if TEST is True:
     JUMP="ACCEPT"
     COMMENT="Added via PyCaptive [TEST]"
     # [LOGGER]
-    LOG_FILE="/tmp/pycaptive_standalone.log"
+    LOG_FILE="/tmp/pycaptive_test_mode.log"
     # [MONGODB]
     SESSION_DURATION=300
     # [SCHEDULER]
