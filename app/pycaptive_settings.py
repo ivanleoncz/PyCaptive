@@ -6,6 +6,18 @@
 # For Flask Environment Variables, see flask_settings.py.
 #
 
+# [FUNCTIONS]
+#
+# Designed for obtaining specific data on some variables.
+#
+def get_nic_ip(nic):
+    """ Get IP address from a NIC."""
+    import subprocess as sp
+    result = sp.check_output(["ip", "addr", "show", nic])
+    result = result.split()
+    ipaddr = result[result.index('inet') + 1].split('/')[0]
+    return ipaddr
+
 
 # [IPTABLES]
 #
@@ -61,6 +73,13 @@ SESSION_DURATION=43200 # 12 hours
 # Unless you need something very specific, leave this variable as it is.
 #
 SCHEDULER_INTERVAL=60
+
+
+# [SYSTEM]
+#
+# Variables defined here are reserved to "checksys" module and its routines.
+#
+WEBSERVER_IP=get_nic_ip(LAN)
 
 
 # [TEST]
