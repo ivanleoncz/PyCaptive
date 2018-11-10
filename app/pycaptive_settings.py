@@ -96,7 +96,7 @@ if TEST is True:
     # [IPTABLES]
     LAN="lo"
     JUMP="ACCEPT"
-    COMMENT="Added via PyCaptive [TEST]"
+    COMMENT="Added via PyCaptive [Test Mode]"
     # [LOGGER]
     LOG_FILE="/tmp/pycaptive_test_mode.log"
     # [MONGODB]
