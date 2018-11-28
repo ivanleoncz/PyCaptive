@@ -1,10 +1,17 @@
 #
-# PyCaptive Global Settings
+#   PyCaptive Global Settings
 #
-# Configurations defined here are restricted to PyCaptive operation.
+#   ----------------------------------------------------------------------
 #
-# For Flask Environment Variables, see flask_settings.py.
+#   Configurations defined here are restricted to PyCaptive operation,
+#   for two contexts:
 #
+#       - PyCaptive Modules
+#       - Configuration Generator (config_generator.py)
+#
+#   For Flask Environment Variables, see flask_settings.py.
+#
+
 
 # [FUNCTIONS]
 #
@@ -14,9 +21,17 @@ def get_nic_ip(nic):
     """ Get IP address from a NIC."""
     import subprocess as sp
     result = sp.check_output(["ip", "addr", "show", nic])
-    result = result.split()
+    result = result.decode().split()
     ipaddr = result[result.index('inet') + 1].split('/')[0]
     return ipaddr
+
+
+# [GLOBAL]
+#
+# Variables defined here, have impact on both contexts.
+#
+# - defines the LAN NIC (network interface card) where PyCaptive will be running on
+NIC="eth2"
 
 
 # [IPTABLES]
@@ -26,13 +41,15 @@ def get_nic_ip(nic):
 # of your network server, and COMMENT, which is added on each IPTABLES/Netfilter
 # rule for granting Internet Access to an specific IP address.
 #
+# Notice: some variables, are algo used by config_generator.py
+#
 IPTABLES="/sbin/iptables"
+CONNTRACK="/usr/sbin/conntrack"
 TABLE="mangle"
 CHAIN="PREROUTING"
-LAN="eth2"
+LAN=NIC
 JUMP="INTERNET"
 COMMENT="Added via PyCaptive"
-CONNTRACK="/usr/sbin/conntrack"
 
 
 # [LOGGER]
@@ -75,20 +92,47 @@ SESSION_DURATION=43200 # 12 hours
 SCHEDULER_INTERVAL=60
 
 
-# [SYSTEM]
+# [CONFIG GENERATOR]
 #
-# Variables defined here are reserved to "checksys" module and its routines.
+# Variables defined here are reserved to "config_generator.py" and its routines
+# for generating configuration files (see deploy directory).
 #
-WEBSERVER_IP=get_nic_ip(LAN)
+# - MOD 1 : iptables (ROUTER + FIREWALL)
+# - MOD 2 : iptables (ROUTER + FIREWALL + TRANSPARENT PROXY)
+#
+conf_generator = {
+        "MOD":1,
+        "LAN":NIC,
+        "LAN_IP":get_nic_ip(NIC),
+        "WAN":"eth1",
+        "LAN_NETWORK":"192.168.0.0/24",
+        "HTTP":"80",
+        "HTTPS":"443",
+        "SSH":"22",
+        "DNS":"53",
+        "DNS_RNDC":"953",
+        "DHCP_SERVER":"67",
+        "DHCP_CLIENT":"68",
+        "PROXY":"3128",
+        "NGINX_REDIR_GUNICORN":"14901",
+        "GUNICORN":"14900"
+}
 
 
-# [TEST]
+# [TEST MODE]
 #
-# Variables configured when TEST flag is activated, are just designed for
-# PyCaptive in Test Mode and have no effect over the Operating System:
+# When TEST flag is True, some variables from this file are redefined, in order
+# to configure PyCaptive in its Test Mode (which does not include NGINX and
+# GUNIRCORN for its operation).
 #
-# Internet Access: login -> add session -> add rule
-# Revoked Access:  scheduler -> check/del session -> del rule -> del connections
+# The loopback interface (lo/127.0.0.1) is used, in order to avoid interactions
+# with the interfaces which are being used by the host in its normal network
+# traffic, creating inoffensive rules on this context, in order to simulate
+# PyCaptive's normal flow, regarding Authorizing and Revoking Internet access
+# for an specific IP address:
+#
+# Authorizing: login -> add session -> add rule
+# Revoking: scheduler -> check/delete session -> delete rule -> delete connections
 #
 TEST=False
 
@@ -100,6 +144,6 @@ if TEST is True:
     # [LOGGER]
     LOG_FILE="/tmp/pycaptive_test_mode.log"
     # [MONGODB]
-    SESSION_DURATION=300
+    SESSION_DURATION=300 # 5 minutes
     # [SCHEDULER]
-    SCHEDULER_INTERVAL=30
+    SCHEDULER_INTERVAL=60 # 1 minute
