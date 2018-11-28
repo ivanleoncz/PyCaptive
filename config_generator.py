@@ -1,4 +1,4 @@
-from app.pycaptive_settings import v_iptables as v
+from app.pycaptive_settings import conf_generator as v
 
 
 def iptables():
@@ -18,13 +18,13 @@ def iptables():
     #   m_mark_pycaptive  : packets received on PYCAPTIVE chain, will move on to NAT table, but with a mark/tag set (Kernel)
     #   m_accept_internet : packets received on INTERNET chain, will move on to NAT table, fully accepted -> see "m_comment"
     #
-    mangle_head="*mangle\n"
+    m_head="*mangle\n"
     m_counter_pre=":PREROUTING ACCEPT [0:0]\n"
     m_counter_input=":INPUT ACCEPT [0:0]\n"
     m_counter_forward="FORWARD ACCEPT [0:0]\n"
     m_counter_output=":OUTPUT ACCEPT [0:0]\n"
     m_counter_post=":POSTROUTING ACCEPT [0:0]\n"
-    m_comment="# access to clients is provided after successful login on PyCaptive, which adds rules on top of *mangle table, above these chains "
+    m_comment="# access to clients is provided after successful login on PyCaptive, which add rules on top of *mangle table, above these chains\n"
     m_chain_internet="-N INTERNET\n"
     m_chain_pycaptive="-N PYCAPTIVE\n"
     m_http_tcp="-A PREROUTING -i {0} -p tcp -m tcp --dport {1} -j PYCAPTIVE\n".format(v["LAN"], v["HTTP"])
@@ -45,15 +45,15 @@ def iptables():
     #   n_route_masquerade             : hides the IP addresses of LAN when accessing servers through the Internet (WAN IP address is presented instead)
     #   n_transparent_proxy_force_http : ensures that packets coming from web servers (WAN/Internet) should be redirected to Proxy port
     #
-    nat_head="*nat\n"
+    n_head="*nat\n"
     n_counter_pre=":PREROUTING ACCEPT [0:0]\n"
     n_counter_input=":INPUT ACCEPT [0:0]\n"
     n_counter_ouput=":OUTPUT ACCEPT [0:0]\n"
     n_counter_post=":POSTROUTING ACCEPT [0:0]\n"
-    n_ngx_tcp="-A PREROUTING -i {0} -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(v["LAN"], v["LAN_IP"], v["NGINX_PYCAPTIVE"])
-    n_ngx_udp="-A PREROUTING -i {0} -p udp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(v["LAN"], v["LAN_IP"], v["NGINX_PYCAPTIVE"])
+    n_ngx_tcp="-A PREROUTING -i {0} -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(v["LAN"], v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
+    n_ngx_udp="-A PREROUTING -i {0} -p udp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(v["LAN"], v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
     n_ngx_pycaptive="-A PREROUTING -i {0} -s {1} -p tcp -d {2} --dport {3} -j DNAT --to-destination {4}:{5}\n".format(v["LAN"], v["LAN_NETWORK"], v["LAN_IP"], v["HTTP"],
-                                                                                                                                v["LAN_IP"], v["NGINX_PYCAPTIVE"])
+                                                                                                                                v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
 
     n_transparent_proxy="-A PREROUTING -i {0} -s {1} -p tcp --dport {2} -j DNAT --to-destination {3}:{4}\n".format(v["LAN"], v["LAN_NETWORK"], v["HTTP"],
                                                                                                                                   v["LAN_IP"], v["PROXY"])
@@ -61,7 +61,7 @@ def iptables():
     n_route_masquerade="-A POSTROUTING -o {0} -j MASQUERADE\n".format(v["WAN"])
     n_transparent_proxy_force_http="-A PREROUTING -i {0} -p tcp --sport {1} -j REDIRECT --to-port {2}\n".format(v["WAN"], v["HTTP"], v["PROXY"])
 
-    # table: [FILTER]
+    # Table [FILTER]
     #
     # Concepts (rules):
     #
@@ -78,7 +78,7 @@ def iptables():
     #   f_input_block   : blocking all incoming connections not listed above (all interfaces)
     #   f_output_accept : accept all outcome traffic (all interfaces)
     #
-    filter_head="*filter\n"
+    f_head="*filter\n"
     f_counter_input=":INPUT ACCEPT [0:0]\n"
     f_counter_accept=":FORWARD ACCEPT [0:0]\n"
     f_counter_output=":OUTPUT ACCEPT [0:0]\n"
@@ -96,8 +96,9 @@ def iptables():
     f_output_accept="-A OUTPUT -j ACCEPT\n"
 
     with open(FILE, "w") as f:
-        # mangle
-        f.write(mangle_head)
+
+        # table [MANGLE]
+        f.write(m_head)
         f.write(m_counter_pre)
         f.write(m_counter_input)
         f.write(m_counter_forward)
@@ -112,8 +113,9 @@ def iptables():
         f.write(m_https_udp)
         f.write(m_mark_pycaptive)
         f.write(m_accept_internet)
-        # nat
-        f.write(nat_head)
+
+        # table [NAT]
+        f.write(n_head)
         f.write(n_counter_pre)
         f.write(n_counter_input)
         f.write(n_counter_ouput)
@@ -126,8 +128,9 @@ def iptables():
         f.write(n_route_masquerade)
         if v["MOD"] == 2:
             f.write(n_transparent_proxy_force_http)
-        # filter
-        f.write(filter_head)
+
+        # table [FILTER]
+        f.write(f_head)
         f.write(f_counter_input)
         f.write(f_counter_accept)
         f.write(f_counter_output)
@@ -147,10 +150,10 @@ def iptables():
 
 def supervisor():
 
-    FILE="deploy/supervisor/supervisor.conf"
+    FILE="deploy/supervisor/pycaptive.conf"
 
     supervisor_head="[program:pycaptive]\n"
-    command="gunicorn n gunicorn_master -u gunicorn -g gunicorn -b unix:/opt/PyCaptive/wsgi.sock -w 2 --pythonpath /opt/PyCaptive app:app\n"
+    command="command=gunicorn -n gunicorn_master -u gunicorn -g gunicorn -b unix:/opt/PyCaptive/wsgi.sock -w 2 --pythonpath /opt/PyCaptive app:app\n"
     process_name="process_name=pycaptive\n"
     autostart="autostart=true\n"
     autorestart="autorestart=true\n"
@@ -166,5 +169,49 @@ def supervisor():
         f.write(stderr_logfile)
         f.write(stderr_logfile)
 
+
+def nginx():
+
+    FILE="deploy/nginx/pycaptive"
+
+    redirect_header="server {\n\n"
+    redirect_listen="    listen {0}:{1};\n".format(v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
+    redirect_servername="    server_name ~^(www\.)?(?<domain>.+)$;\n"
+    redirect_return="    return 301 $scheme://{0}:{1}/login;\n\n".format(v["LAN_IP"], v["GUNICORN"])
+    redirect_access_log="    access_log /var/log/nginx/redirect_PyCaptive.access.log;\n"
+    redirect_error_log="    error_log /var/log/nginx/redirect_PyCaptive.error.log;\n\n"
+    redirect_footer="}\n\n"
+
+    gunicorn_header="server {\n\n"
+    gunicorn_listen="    listen {0}:{1};\n\n".format(v["LAN_IP"], v["GUNICORN"])
+    gunicorn_location_header="    location / {\n"
+    gunicorn_include="        include proxy_params;\n"
+    gunicorn_proxy_pass="        proxy_pass http://unix:/opt/PyCaptive/wsgi.sock;\n"
+    gunicorn_location_footer="    }\n\n"
+    gunicorn_access_log="    access_log /var/log/nginx/PyCaptive.access.log;\n"
+    gunicorn_error_log="    error_log /var/log/nginx/PyCaptive.error.log;\n\n"
+    gunicorn_footer="}"
+
+    with open(FILE, "w") as f:
+        f.write(redirect_header)
+        f.write(redirect_listen)
+        f.write(redirect_servername)
+        f.write(redirect_return)
+        f.write(redirect_access_log)
+        f.write(redirect_error_log)
+        f.write(redirect_footer)
+        f.write(gunicorn_header)
+        f.write(gunicorn_listen)
+        f.write(gunicorn_location_header)
+        f.write(gunicorn_include)
+        f.write(gunicorn_proxy_pass)
+        f.write(gunicorn_location_footer)
+        f.write(gunicorn_access_log)
+        f.write(gunicorn_error_log)
+        f.write(gunicorn_footer)
+
+
+# creating files
 iptables()
 supervisor()
+nginx()
