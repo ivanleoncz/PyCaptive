@@ -1,4 +1,4 @@
-from app.pycaptive_settings import conf_generator as v
+from app.pycaptive_settings import GLOBAL_CONF as v
 
 
 def iptables():
