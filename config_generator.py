@@ -211,7 +211,51 @@ def nginx():
         f.write(gunicorn_footer)
 
 
+def sudoers():
+
+    FILE="deploy/sudoers.d/pycaptive"
+
+    iptables="pycaptive ALL=(root:root) NOPASSWD:/sbin/iptables\n"
+    conntrack="pycaptive ALL=(root:root) NOPASSWD:/usr/sbin/conntrack\n"
+
+    with open(FILE, "w") as f:
+        f.write(iptables)
+        f.write(conntrack)
+
+
+def logrotate():
+
+    FILE="deploy/logrotate/pycaptive"
+
+    logrotate_header="/var/log/pycaptive/*.log {\n"
+    logrotate_interval="        monthly\n"
+    logrotate_file_missing="        missingok\n"
+    logrotate_retention="        rotate 12\n"
+    logrotate_compress="        compress\n"
+    logrotate_delaycompress="        delaycompress\n"
+    logrotate_norotate_if_empty_file="        notifempty\n"
+    logrotate_postrotate="        postrotate\n"
+    logrotate_supervisor_reload="                supervisorctl reload\n"
+    logrotate_endscript="        endscript\n"
+    logrotate_footer="}"
+
+    with open(FILE, "w") as f:
+        f.write(logrotate_header)
+        f.write(logrotate_interval)
+        f.write(logrotate_file_missing)
+        f.write(logrotate_retention)
+        f.write(logrotate_compress)
+        f.write(logrotate_delaycompress)
+        f.write(logrotate_norotate_if_empty_file)
+        f.write(logrotate_postrotate)
+        f.write(logrotate_supervisor_reload)
+        f.write(logrotate_endscript)
+        f.write(logrotate_footer)
+
+
 # creating files
 iptables()
 supervisor()
 nginx()
+sudoers()
+logrotate()
