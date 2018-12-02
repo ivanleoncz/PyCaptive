@@ -1,4 +1,4 @@
-from app.pycaptive_settings import GLOBAL_CONF as v
+from app.pycaptive_settings import config_generator_dict as v
 
 
 def iptables():
@@ -177,13 +177,13 @@ def nginx():
     redirect_header="server {\n\n"
     redirect_listen="    listen {0}:{1};\n".format(v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
     redirect_servername="    server_name ~^(www\.)?(?<domain>.+)$;\n"
-    redirect_return="    return 301 $scheme://{0}:{1}/login;\n\n".format(v["LAN_IP"], v["GUNICORN"])
+    redirect_return="    return 301 $scheme://{0}:{1}/login;\n\n".format(v["LAN_IP"], v["NGINX_GUNICORN"])
     redirect_access_log="    access_log /var/log/nginx/redirect_PyCaptive.access.log;\n"
     redirect_error_log="    error_log /var/log/nginx/redirect_PyCaptive.error.log;\n\n"
     redirect_footer="}\n\n"
 
     gunicorn_header="server {\n\n"
-    gunicorn_listen="    listen {0}:{1};\n\n".format(v["LAN_IP"], v["GUNICORN"])
+    gunicorn_listen="    listen {0}:{1};\n\n".format(v["LAN_IP"], v["NGINX_GUNICORN"])
     gunicorn_location_header="    location / {\n"
     gunicorn_include="        include proxy_params;\n"
     gunicorn_proxy_pass="        proxy_pass http://unix:/opt/PyCaptive/wsgi.sock;\n"
