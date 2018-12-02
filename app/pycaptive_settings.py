@@ -8,15 +8,12 @@
 #   For Flask Environment Variables, see flask_settings.py.
 
 
-### [Global Configuration] ###############################################
-
-
 ##########################################################################
 #
-#   - get_nic_ip(nic)
+#   Helper Functions
 #
-#     Obtains the IP address of the Network Interface Card defined on NIC.
-#
+##########################################################################
+
 def get_nic_ip(nic):
     """ Get IP address from a NIC."""
     import subprocess as sp
@@ -28,138 +25,139 @@ def get_nic_ip(nic):
 
 ##########################################################################
 #
-#   - NIC
+#   Configuration Variables
 #
-#     Defines LAN Network Interface Card, where PyCaptive will be running on.
+#     Responsible for defining values for the Configuration Dictionaries.
 #
-NIC="eth2"
-
-
 ##########################################################################
-#
-#   - GLOBAL_CONF
-#
-#     Used for the generation of configuration files (config_generator.py script)
-#     and for checking system components (check_sys.py module), as a matter of
-#     ensuring that PyCaptive (on its Test Mode or not), has all necessary
-#     components running (binnaries and services).
-#
-#     MOD key: generation of iptables set or rules
-#       - 1 (router + firewall)
-#       - 2 (router + firewall + transparent proxy)
-#
-GLOBAL_CONF = {
-        "MOD":1,
-        "LAN":NIC,
-        "LAN_IP":get_nic_ip(NIC),
-        "WAN":"eth1",
-        "LAN_NETWORK":"192.168.0.0/24",
-        "HTTP":"80",
-        "HTTPS":"443",
-        "SSH":"22",
-        "DNS":"53",
-        "DNS_RNDC":"953",
-        "DHCP_SERVER":"67",
-        "DHCP_CLIENT":"68",
-        "PROXY":"3128",
-        "NGINX_REDIR_GUNICORN":"14901",
-        "GUNICORN":"14900"
-}
 
-
-### [Modules] ############################################################
-
-
-##########################################################################
-#
-#   iptables
-#
-#     Unless you're performing a very specific customization, the only variable
-#     that should be changed here is the LAN variable, according with the setup
-#     of your network server, and COMMENT, which is added on each IPTABLES/Netfilter
-#     rule for granting Internet Access to an specific IP address.
-#
-IPTABLES="/sbin/iptables"
-CONNTRACK="/usr/sbin/conntrack"
-TABLE="mangle"
-CHAIN="PREROUTING"
-LAN=NIC
-JUMP="INTERNET"
-COMMENT="Added via PyCaptive"
-
-
-##########################################################################
-#
-#  logger
-#
-#    If LOG_ROTATE=True, logging.handlers.TimedRotatingFileHandler will be
-#    used for log rotation, instead of the default logrotate tool from the OS.
-#
-#    For more info: https://docs.python.org/3.5/library/logging.handlers.html
-#
-#    Example: rotates every Sunday (weekly), keeping logs for a whole year.
-#
-LOG_FILE="/var/log/pycaptive/pycaptive.log"
-LOG_ROTATE=False
+# activates custom configuration for Test Mode
+TEST_MODE=False
+# defines the network interface where PyCaptive will be working on
+LAN_NIC="eth2"
+LAN_IP=get_nic_ip(NETWORK_LAN_NIC)
+LAN_NETWORK="192.168.0.0/24"
+WAN_NIC="eth1"
+PORT_HTTP="80"
+PORT_HTTPS="443"
+PORT_SSH="22"
+PORT_DNS="53"
+PORT_DNS_RNDC="953"
+PORT_DHCP_SERVER="67"
+PORT_DHCP_CLIENT="68"
+PORT_PROXY="3128"
+PORT_NGINX_REDIR_GUNICORN="14901"
+PORT_NGINX_GUNICORN="14900"
+# generation of a specific set or rules for iptables
+#   1 (router + firewall)
+#   2 (router + firewall + transparent proxy)
+IPT_MODE=1
+IPT_IPTABLES="/sbin/iptables"
+IPT_CONNTRACK="/usr/sbin/conntrack"
+IPT_TABLE="mangle"
+IPT_CHAIN="PREROUTING"
+IPT_JUMP="INTERNET"
+IPT_COMMENT="Added via PyCaptive"
+# defines if logrtation will be performed by OS binary (logrotate)
+LOG_ROTATE_OS=True
+# every sunday (weekly)
 LOG_ROTATE_WHEN='W6'
+# number of file retention (52 weeks == year)
 LOG_ROTATE_COUNT=52
-
-
-##########################################################################
-#
-#  mongodb
-#
-#    SESSION_DURATION defines for how long (seconds) a UserName/IpAddress
-#    will have Internet access. PyCaptive will be verifying from time
-#    to time (SCHEDULER module) on its MongoDB database, the sessions which
-#    have reached the SESSION_DURATION time, expiring these sessions, one by one.
-#
+LOG_FILE="/var/log/pycaptive/pycaptive.log"
 DB_USER="mongo"
 DB_PASS="mongo"
 DB_ADDR="127.0.0.1"
 DB_PORT="27017"
 DB_URI="mongodb://{0}:{1}@{2}:{3}".format(DB_USER, DB_PASS, DB_ADDR, DB_PORT)
-SESSION_DURATION=43200 # 12 hours
-
-
-#########################################################################
-#
-#  scheduler
-#
-#    Defines the time interval (seconds) that PyCaptive will consider for
-#    verifying expired sessions on its MongoDB database.
-#
-#    Unless you need something very specific, leave this variable as it is.
-#
+# 12 hours of session (seconds)
+DB_SESSION_DURATION=43200
+# 1 minute of interval between checking/eliminating expired sessions (seconds)
 SCHEDULER_INTERVAL=60
 
 
-### [Test Mode] #########################################################
+##########################################################################
 #
+#   Configuration Dictionaries
 #
-#  When TEST flag is True, some variables from this file are redefined, in order
-#  to configure PyCaptive for its Test Mode (which does not include NGINX and
-#  GUNIRCORN for its operation).
-#
-#  The loopback interface (lo/127.0.0.1) is used, in order to avoid interactions
-#  with the interfaces which are being used by the host in its normal network
-#  traffic, creating inoffensive rules on this context, in order to simulate
-#  PyCaptive's normal flow, regarding Authorizing and Revoking Internet access
-#  for an specific IP address:
-#
-#  Authorizing: login -> add session -> add rule
-#  Revoking: scheduler -> check/delete session -> delete rule -> delete connections
-#
-TEST=False
+##########################################################################
 
-if TEST is True:
-    # [IPTABLES]
-    LAN="lo"
-    JUMP="ACCEPT"
-    COMMENT="Added via PyCaptive [Test Mode]"
-    # [LOGGER]
-    LOG_FILE="/tmp/pycaptive_test_mode.log"
-    # [MONGODB]
-    SESSION_DURATION=300 # 5 minutes
-    # [SCHEDULER]
-    SCHEDULER_INTERVAL=60 # 1 minute
+config_generator_dict = {
+        "MOD":IPT_MODE,
+        "LAN":LAN_NIC,
+        "LAN_IP":LAN_IP,
+        "WAN":WAN_NIC,
+        "LAN_NETWORK":LAN_NETWORK,
+        "HTTP":PORT_HTTP,
+        "HTTPS":PORT_HTTPS,
+        "SSH":PORT_SSH,
+        "DNS":PORT_DNS,
+        "DNS_RNDC":PORT_DNS_RNDC,
+        "DHCP_SERVER":PORT_DHCP_SERVER,
+        "DHCP_CLIENT":PORT_DHCP_CLIENT,
+        "PROXY":PORT_PROXY,
+        "NGINX_REDIR_GUNICORN":PORT_NGINX_REDIR_GUNICORN,
+        "NGINX_GUNICORN":PORT_NGINX_GUNICORN
+}
+
+
+checksys_dict = {
+        "IPTABLES":IPT_IPTABLES,
+        "CONNTRACK":IPT_CONNTRACK,
+        "NGINX_REDIR":(LAN_IP, PORT_NGINX_REDIR_GUNICORN)
+        "NGINX_GUNICORN":(LAN_IP, PORT_NGINX_GUNICORN)
+        "MONGODB":(DB_ADDR, DB_PORT)
+}
+
+
+iptables_dict = {
+    "IPTABLES":IPT_IPTABLES,
+    "CONNTRACK":IPT_CONNTRACK,
+    "TABLE":IPT_TABLE,
+    "CHAIN":IPT_CHAIN,
+    "LAN":LAN_NIC,
+    "JUMP":IPT_JUMP,
+    "COMMENT":IPT_COMMENT
+}
+
+
+mongodb_dict = {
+    "URI":DB_URI,
+    "SESSION_DURATION":DB_SESSION_DURATION
+}
+
+
+scheduler_dict = {
+    "INTERVAL":SCHEDULER_INTERVAL
+}
+
+
+logger_dict = {
+    "ROTATE_OS":LOG_ROTATE_OS,
+    "ROTATE_WHEN":LOG_ROTATE_WHEN,
+    "ROTATE_COUNT":LOG_ROTATE_COUNT,
+    "FILE":LOG_FILE
+}
+
+
+# ----------------------------------------------------------------------------
+#
+#     If TEST_MODE flag is set as True, the Configuration Dictionaries
+#     will be reprocessed, in order to adapt PyCaptive for this mode.
+#
+# ----------------------------------------------------------------------------
+
+if TEST_MODE is True:
+    # checksys
+    del checksys["NGINX_REDIR"]
+    del checksys["NGINX_GUNICORN"]
+    # iptables
+    iptables_dict["LAN"] = "lo"
+    iptables_dict["JUMP"] = "ACCEPT"
+    iptables_dict["COMMENT"] = "Added via PyCaptive [Test Mode]"
+    # logger
+    logger_dict["FILE"] = "/tmp/pycaptive_test_mode.log"
+    # mongodb
+    mongodb_dict["SESSION_DURATION"] = 300
+    # scheduler
+    scheduler_dict["INTERVAL"] = 60
