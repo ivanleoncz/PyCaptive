@@ -2,7 +2,7 @@
 
 from logging.handlers import TimedRotatingFileHandler as tr_fh
 
-from app import LOG_FILE, LOG_ROTATE, LOG_ROTATE_WHEN, LOG_ROTATE_COUNT
+from app import logger_dict as v
 
 __author__ = "@ivanleoncz"
 
@@ -19,12 +19,13 @@ def config():
         log_form = logging.Formatter('%(asctime)s [%(levelname)s]\t%(message)s')
         handler = None
         if LOG_ROTATE == True:
-            # configuring log rotation (see pycaptive_settings.py)
-            handler = tr_fh(LOG_FILE,
-                       when=LOG_ROTATE_WHEN, backupCount=LOG_ROTATE_COUNT)
+            # no log rotation will be performed, leaving to OS (logrotate)
+            handler = logging.FileHandler(v.get("LOG_FILE"))
         elif LOG_ROTATE == False:
-            # no log rotation will be performed, leaving to OS (logorotate)
-            handler = logging.FileHandler(LOG_FILE)
+            # configuring log rotation (see pycaptive_settings.py)
+            handler = tr_fh(v.get("LOG_FILE"),
+                       when=v.get("LOG_ROTATE_WHEN"),
+                backupCount=v.get("LOG_ROTATE_COUNT"))
         handler.setFormatter(log_form)
         conf.addHandler(handler)
 
