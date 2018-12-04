@@ -18,10 +18,10 @@ def config():
         conf.setLevel(logging.INFO)
         log_form = logging.Formatter('%(asctime)s [%(levelname)s]\t%(message)s')
         handler = None
-        if LOG_ROTATE == True:
+        if LOG_ROTATE:
             # no log rotation will be performed, leaving to OS (logrotate)
             handler = logging.FileHandler(v.get("LOG_FILE"))
-        elif LOG_ROTATE == False:
+        else:
             # configuring log rotation (see pycaptive_settings.py)
             handler = tr_fh(v.get("LOG_FILE"),
                        when=v.get("LOG_ROTATE_WHEN"),
