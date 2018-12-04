@@ -20,10 +20,15 @@
 	  background-color: #f2f2f2;
       }
 
-      #header, #footer {
+      #header {
 	  height: 10%;
 	  width: 100%;
 	  background-color: #4d4d4d;
+      }
+
+      #footer {
+	  height: 10%;
+	  width: 100%;
       }
 
       #central {
@@ -34,35 +39,39 @@
 
       {% block css_content %}{% endblock %}
 
-      #footer { position: relative; }
+      #footer {
+	  position: absolute;
+          bottom: 0px;
+      }
 
-      #footer #powered {
+      #powered {
 	  font-size: 12px;
 	  margin: 0;
 	  padding-top: 25px;
 	  padding-left: 20px;
-          color: #ffffff;
+          color: #000000;
 	  position: fixed;
       }
 
-      #footer #developer {
+      #developer {
 	  font-size: 12px;
           margin: 0;
           right: 10px;
           padding-top: 25px;
           padding-right: 10px;
-          color: #ffffff;
+          color: #000000;
           position: fixed;
       }
 
-      #footer #powered a,
-      #footer #developer a {
+      #powered a,
+      #developer a {
           text-decoration: none;
-	  color: #ffffff;
+	  color: #000000;
+          font-weight: bold;
       }
 
-      #footer #powered a:hover,
-      #footer #developer a:hover {
+      #powered a:hover,
+      #developer a:hover {
 	  color: #ffcc00;
       }
 
@@ -77,14 +86,16 @@
     </div>
 
     <div id="central">
-      {% block content %}{% endblock %}
+      {% block content %}
+      {% endblock %}
     </div>
 
     <div id="footer">
       <p id="powered"> Powered by <a href="https://www.python.org/about/">Python&reg;</a></p>
       <p id="developer"> Developed by <a href="https://stackoverflow.com/users/5780109/ivanleoncz?tab=profile">@ivanleoncz</a></p>
     </div>
-
+    {% block script_area %}
+    {% endblock %}
   </body>
 
 

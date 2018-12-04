@@ -1,8 +1,12 @@
 #!/usr/bin/python3
 """ Main application module. """
 
-from flask import Flask, session
-from app.pycaptive_settings import *
+from flask import Flask, abort, redirect, request, render_template, session
+from app.pycaptive_settings import checksys_dict
+from app.pycaptive_settings import iptables_dict
+from app.pycaptive_settings import mongodb_dict
+from app.pycaptive_settings import scheduler_dict
+from app.pycaptive_settings import logger_dict
 from app.modules import logger
 
 log = logger.config()
