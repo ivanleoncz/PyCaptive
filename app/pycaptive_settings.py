@@ -77,9 +77,9 @@ LOG_FILE="/var/log/pycaptive/pycaptive.log"
 #
 DB_USER="mongo"
 DB_PASS="mongo"
-DB_ADDR="127.0.0.1"
+DB_IP="127.0.0.1"
 DB_PORT="27017"
-DB_URI="mongodb://{0}:{1}@{2}:{3}".format(DB_USER, DB_PASS, DB_ADDR, DB_PORT)
+DB_URI="mongodb://{0}:{1}@{2}:{3}".format(DB_USER, DB_PASS, DB_IP, DB_PORT)
 #     12 hours of session (seconds)
 DB_SESSION_DURATION=43200
 #     1 minute of interval between checking/eliminating expired sessions (sec.)
@@ -113,35 +113,37 @@ config_generator_dict = {
 checksys_dict = {
         "IPTABLES":IPT_IPTABLES,
         "CONNTRACK":IPT_CONNTRACK,
-        "NGINX_REDIR":(LAN_IP, PORT_NGINX_REDIR_GUNICORN),
-        "NGINX_GUNICORN":(LAN_IP, PORT_NGINX_GUNICORN),
-        "MONGODB":(DB_ADDR, DB_PORT)
+        "NGINX_IP":LAN_IP,
+        "NGINX_REDIR":PORT_NGINX_REDIR_GUNICORN,
+        "NGINX_GUNICORN":PORT_NGINX_GUNICORN,
+        "MONGODB_IP":DB_IP,
+        "MONGODB_PORT":DB_PORT
 }
 
 iptables_dict = {
-    "IPTABLES":IPT_IPTABLES,
-    "CONNTRACK":IPT_CONNTRACK,
-    "TABLE":IPT_TABLE,
-    "CHAIN":IPT_CHAIN,
-    "LAN":LAN_NIC,
-    "JUMP":IPT_JUMP,
-    "COMMENT":IPT_COMMENT
+        "IPTABLES":IPT_IPTABLES,
+        "CONNTRACK":IPT_CONNTRACK,
+        "TABLE":IPT_TABLE,
+        "CHAIN":IPT_CHAIN,
+        "LAN":LAN_NIC,
+        "JUMP":IPT_JUMP,
+        "COMMENT":IPT_COMMENT
 }
 
 mongodb_dict = {
-    "DB_URI":DB_URI,
-    "SESSION_DURATION":DB_SESSION_DURATION
+        "DB_URI":DB_URI,
+        "SESSION_DURATION":DB_SESSION_DURATION
 }
 
 scheduler_dict = {
-    "INTERVAL":SCHEDULER_INTERVAL
+        "INTERVAL":SCHEDULER_INTERVAL
 }
 
 logger_dict = {
-    "LOG_ROTATE_OS":LOG_ROTATE_OS,
-    "LOG_ROTATE_WHEN":LOG_ROTATE_WHEN,
-    "LOG_ROTATE_COUNT":LOG_ROTATE_COUNT,
-    "LOG_FILE":LOG_FILE
+        "LOG_ROTATE_OS":LOG_ROTATE_OS,
+        "LOG_ROTATE_WHEN":LOG_ROTATE_WHEN,
+        "LOG_ROTATE_COUNT":LOG_ROTATE_COUNT,
+        "LOG_FILE":LOG_FILE
 }
 
 
