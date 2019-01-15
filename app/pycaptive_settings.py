@@ -9,7 +9,7 @@
 
 
 # functions for general tasks
-from modules import helper 
+from .modules import helper
 
 
 ##########################################################################
