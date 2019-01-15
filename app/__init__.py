@@ -2,19 +2,14 @@
 """ Main application module. """
 
 from flask import Flask, abort, redirect, request, render_template, session
-from app.pycaptive_settings import checksys_dict
-from app.pycaptive_settings import iptables_dict
-from app.pycaptive_settings import mongodb_dict
-from app.pycaptive_settings import scheduler_dict
-from app.pycaptive_settings import logger_dict
 from app.modules import logger
+
+app = Flask(__name__)
+app.config.from_envvar('PYCAPTIVE_SETTINGS', silent=True)
 
 log = logger.config()
 
 from app.modules import scheduler
-
-app = Flask(__name__)
-app.config.from_pyfile('flask_settings.cfg')
 
 @app.after_request
 def after_request(response):
