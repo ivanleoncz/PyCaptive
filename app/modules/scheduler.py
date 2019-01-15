@@ -11,9 +11,11 @@ via APScheduler.
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app import log, SCHEDULER_INTERVAL
+from app import log
+from app import scheduler_dict as d
 from app.modules import mongodb
 from app.modules import iptables
+
 
 __author__ = "@ivanleoncz"
 
@@ -39,5 +41,5 @@ def expirer():
 
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(expirer, 'interval', seconds=SCHEDULER_INTERVAL)
+sched.add_job(expirer, 'interval', seconds=d.get("INTERVAL"))
 sched.start()
