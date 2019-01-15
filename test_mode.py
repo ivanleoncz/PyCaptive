@@ -15,7 +15,7 @@ if __name__ == "__main__":
             print("Interrupted!")
         except Exception as e:
             msg = "Exception: " + e
-            print(colored(msg, "red")
+            print(colored(msg, "red"))
     else:
         msg = " INFO: must set TEST flag as True (see pycaptive_settings.py)\n"
         print(colored(msg, "red"))
