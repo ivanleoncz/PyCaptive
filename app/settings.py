@@ -99,26 +99,7 @@ LOGGING = {
 #
 ##########################################################################
 
-config_generator_dict = {
-    "MOD":IPT_MODE,
-    "LAN":LAN_NIC,
-    "LAN_IP":LAN_IP,
-    "WAN":WAN_NIC,
-    "LAN_NETWORK":LAN_NETWORK,
-    "HTTP":PORT_HTTP,
-    "HTTPS":PORT_HTTPS,
-    "SSH":PORT_SSH,
-    "DNS":PORT_DNS,
-    "DNS_RNDC":PORT_DNS_RNDC,
-    "DHCP_SERVER":PORT_DHCP_SERVER,
-    "DHCP_CLIENT":PORT_DHCP_CLIENT,
-    "PROXY":PORT_PROXY,
-    "NGINX_REDIR_GUNICORN":PORT_NGINX_REDIR_GUNICORN,
-    "NGINX_GUNICORN":PORT_NGINX_GUNICORN
-}
-
-
-checksys_dict = {
+CHECKSYS_DICT = {
     "IPTABLES":IPT_IPTABLES,
     "CONNTRACK":IPT_CONNTRACK,
     "NGINX_REDIR":(LAN_IP, PORT_NGINX_REDIR_GUNICORN),
@@ -126,8 +107,7 @@ checksys_dict = {
     "MONGODB":(DB_ADDR, DB_PORT),
 }
 
-
-iptables_dict = {
+IPTABLES_DICT = {
     "IPTABLES":IPT_IPTABLES,
     "CONNTRACK":IPT_CONNTRACK,
     "TABLE":IPT_TABLE,
@@ -137,25 +117,14 @@ iptables_dict = {
     "COMMENT":IPT_COMMENT
 }
 
-
-mongodb_dict = {
+MONGODB_DICT = {
     "URI":DB_URI,
     "SESSION_DURATION":DB_SESSION_DURATION
 }
 
-
 SCHEDULER_DICT = {
     "INTERVAL":SCHEDULER_INTERVAL
 }
-
-
-logger_dict = {
-    "ROTATE_OS":LOG_ROTATE_OS,
-    "ROTATE_WHEN":LOG_ROTATE_WHEN,
-    "ROTATE_COUNT":LOG_ROTATE_COUNT,
-    "FILE":LOG_FILE
-}
-
 
 # ----------------------------------------------------------------------------
 #
@@ -169,12 +138,11 @@ if TEST_MODE is True:
     del checksys["NGINX_REDIR"]
     del checksys["NGINX_GUNICORN"]
     # iptables
-    iptables_dict["LAN"] = "lo"
-    iptables_dict["JUMP"] = "ACCEPT"
-    iptables_dict["COMMENT"] = "Added via PyCaptive [Test Mode]"
+    IPTABLES_DICT["LAN"] = "lo"
+    IPTABLES_DICT["JUMP"] = "ACCEPT"
+    IPTABLES_DICT["COMMENT"] = "Added via PyCaptive [Test Mode]"
     # logger
-    logger_dict["FILE"] = "/tmp/pycaptive_test_mode.log"
     # mongodb
-    mongodb_dict["SESSION_DURATION"] = 300
+    MONGODB_DICT["SESSION_DURATION"] = 300
     # scheduler
     SCHEDULER_DICT["INTERVAL"] = 60

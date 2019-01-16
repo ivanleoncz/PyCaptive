@@ -7,25 +7,25 @@ from app import app
 class Components():
 
     def __init__(self):
-        self._binaries = (app.config['checksys_dict']["IPTABLES"], app.config['checksys_dict']["CONNTRACK"])
+        self._binaries = (app.config['CHECKSYS_DICT']["IPTABLES"], app.config['CHECKSYS_DICT']["CONNTRACK"])
         self._services = None
 
         if app.config['TEST_MODE']:
             self._services = {
                                "mongodb":(
-                                 app.config['checksys_dict']["MONGODB_IP"], app.config['checksys_dict']["MONGODB_PORT"]
+                                 app.config['CHECKSYS_DICT']["MONGODB_IP"], app.config['CHECKSYS_DICT']["MONGODB_PORT"]
                                )
                              }
         else:
             self._services = {
                                "nginx_redir_gunicorn":(
-                                 app.config['checksys_dict']["NGINX_IP"], app.config['checksys_dict']["NGINX_REDIR"]
+                                 app.config['CHECKSYS_DICT']["NGINX_IP"], app.config['CHECKSYS_DICT']["NGINX_REDIR"]
                                ),
                                "nginx_gunicorn":(
-                                 app.config['checksys_dict']["NGINX_IP"], app.config['checksys_dict']["NGINX_GUNICORN"]
+                                 app.config['CHECKSYS_DICT']["NGINX_IP"], app.config['CHECKSYS_DICT']["NGINX_GUNICORN"]
                                ),
                                "mongodb":(
-                                 app.config['checksys_dict']["MONDODB_IP"], app.config['checksys_dict']["MONGODB_PORT"]
+                                 app.config['CHECKSYS_DICT']["MONDODB_IP"], app.config['CHECKSYS_DICT']["MONGODB_PORT"]
                                )
                              }
 

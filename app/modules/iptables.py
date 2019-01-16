@@ -28,13 +28,13 @@ class Worker:
 
         """
         rule = [
-                app.config['iptables_dict']["IPTABLES"],
-                "-t", app.config['iptables_dict']["TABLE"],
-                "-I", app.config['iptables_dict']["CHAIN"],
-                "-i", app.config['iptables_dict']["LAN"],
+                app.config['IPTABLES_DICT']["IPTABLES"],
+                "-t", app.config['IPTABLES_DICT']["TABLE"],
+                "-I", app.config['IPTABLES_DICT']["CHAIN"],
+                "-i", app.config['IPTABLES_DICT']["LAN"],
                 "-s", ip,
-                "-m", "comment", "--comment", app.config['iptables_dict']["COMMENT"],
-                "-j", app.config['iptables_dict']["JUMP"]
+                "-m", "comment", "--comment", app.config['IPTABLES_DICT']["COMMENT"],
+                "-j", app.config['IPTABLES_DICT']["JUMP"]
                 ]
         try:
             result = sp.call(rule)
@@ -72,13 +72,13 @@ class Worker:
             for ip in ips:
                 # deleting rule
                 rule = [
-                        app.config['iptables_dict']["IPTABLES"],
-                        "-t", app.config['iptables_dict']["TABLE"],
-                        "-D", app.config['iptables_dict']["CHAIN"],
-                        "-i", app.config['iptables_dict']["LAN"],
+                        app.config['IPTABLES_DICT']["IPTABLES"],
+                        "-t", app.config['IPTABLES_DICT']["TABLE"],
+                        "-D", app.config['IPTABLES_DICT']["CHAIN"],
+                        "-i", app.config['IPTABLES_DICT']["LAN"],
                         "-s", ip,
-                        "-m", "comment", "--comment", app.config['iptables_dict']["COMMENT"],
-                        "-j", app.config['iptables_dict']["JUMP"]
+                        "-m", "comment", "--comment", app.config['IPTABLES_DICT']["COMMENT"],
+                        "-j", app.config['IPTABLES_DICT']["JUMP"]
                         ]
                 result = sp.call(rule)
                 if result == 0:
@@ -124,7 +124,7 @@ class Worker:
              else: error while processing command
 
         """
-        destroy_conn = [app.config['iptables_dict']["CONNTRACK"], "-D", "--orig-src", ip]
+        destroy_conn = [app.config['IPTABLES_DICT']["CONNTRACK"], "-D", "--orig-src", ip]
         result = sp.call(destroy_conn, stderr=sp.DEVNULL, stdout=sp.DEVNULL)
         if result == 0:
             log.info('%s %s %s %s', "iptables", "del_conntrack", "OK", ip)

@@ -19,14 +19,14 @@ class Connector:
 
     def __init__(self):
         """ Preparing MongoDB client. """
-        self.client = MongoClient(app.config['mongodb_dict']["DB_URI"], serverSelectionTimeoutMS=6000)
+        self.client = MongoClient(app.config['MONGODB_DICT']["DB_URI"], serverSelectionTimeoutMS=6000)
 
 
     def add_session(self, username, client_ip, user_data):
         """ Adding session. """
         db = self.client.pycaptive.Sessions
         login_time = datetime.now()
-        expire_time = login_time + timedelta(seconds=app.config['mongodb_dict']["SESSION_DURATION"])
+        expire_time = login_time + timedelta(seconds=app.config['MONGODB_DICT']["SESSION_DURATION"])
         session_id = None
         try:
             session_id = db.insert({
