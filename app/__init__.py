@@ -1,14 +1,19 @@
 #!/usr/bin/python3
 """ Main application module. """
-
+from flask.logging import default_handler
 from flask import Flask, abort, redirect, request, render_template, session
-from app.modules import logger
+import logging.config
 
+# setup flask
 app = Flask(__name__)
+app.config.from_object('app.settings')
 app.config.from_envvar('PYCAPTIVE_SETTINGS', silent=True)
 
-log = logger.config()
+# setup logging
+app.logger.removeHandler(default_handler)
+logging.config.dictConfig(app.config['LOGGING'])
 
+# scheduler
 from app.modules import scheduler
 
 @app.after_request

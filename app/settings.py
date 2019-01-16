@@ -29,7 +29,7 @@ SECRET_KEY='write a unique secret key'
 TEST_MODE=False
 # defines the network interface where PyCaptive will be working on
 LAN_NIC="eth2"
-LAN_IP=get_nic_ip(NETWORK_LAN_NIC)
+LAN_IP='127.0.0.1'  # get_nic_ip(NETWORK_LAN_NIC)
 LAN_NETWORK="192.168.0.0/24"
 WAN_NIC="eth1"
 PORT_HTTP="80"
@@ -69,6 +69,29 @@ DB_SESSION_DURATION=43200
 # 1 minute of interval between checking/eliminating expired sessions (seconds)
 SCHEDULER_INTERVAL=60
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '[%(levelname)s] %(message)s - %(name)s:%(lineno)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        },
+    },
+    'loggers': {
+        'app': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'filters': [],
+        },
+    },
+}
 
 ##########################################################################
 #
@@ -77,30 +100,30 @@ SCHEDULER_INTERVAL=60
 ##########################################################################
 
 config_generator_dict = {
-        "MOD":IPT_MODE,
-        "LAN":LAN_NIC,
-        "LAN_IP":LAN_IP,
-        "WAN":WAN_NIC,
-        "LAN_NETWORK":LAN_NETWORK,
-        "HTTP":PORT_HTTP,
-        "HTTPS":PORT_HTTPS,
-        "SSH":PORT_SSH,
-        "DNS":PORT_DNS,
-        "DNS_RNDC":PORT_DNS_RNDC,
-        "DHCP_SERVER":PORT_DHCP_SERVER,
-        "DHCP_CLIENT":PORT_DHCP_CLIENT,
-        "PROXY":PORT_PROXY,
-        "NGINX_REDIR_GUNICORN":PORT_NGINX_REDIR_GUNICORN,
-        "NGINX_GUNICORN":PORT_NGINX_GUNICORN
+    "MOD":IPT_MODE,
+    "LAN":LAN_NIC,
+    "LAN_IP":LAN_IP,
+    "WAN":WAN_NIC,
+    "LAN_NETWORK":LAN_NETWORK,
+    "HTTP":PORT_HTTP,
+    "HTTPS":PORT_HTTPS,
+    "SSH":PORT_SSH,
+    "DNS":PORT_DNS,
+    "DNS_RNDC":PORT_DNS_RNDC,
+    "DHCP_SERVER":PORT_DHCP_SERVER,
+    "DHCP_CLIENT":PORT_DHCP_CLIENT,
+    "PROXY":PORT_PROXY,
+    "NGINX_REDIR_GUNICORN":PORT_NGINX_REDIR_GUNICORN,
+    "NGINX_GUNICORN":PORT_NGINX_GUNICORN
 }
 
 
 checksys_dict = {
-        "IPTABLES":IPT_IPTABLES,
-        "CONNTRACK":IPT_CONNTRACK,
-        "NGINX_REDIR":(LAN_IP, PORT_NGINX_REDIR_GUNICORN)
-        "NGINX_GUNICORN":(LAN_IP, PORT_NGINX_GUNICORN)
-        "MONGODB":(DB_ADDR, DB_PORT)
+    "IPTABLES":IPT_IPTABLES,
+    "CONNTRACK":IPT_CONNTRACK,
+    "NGINX_REDIR":(LAN_IP, PORT_NGINX_REDIR_GUNICORN),
+    "NGINX_GUNICORN":(LAN_IP, PORT_NGINX_GUNICORN),
+    "MONGODB":(DB_ADDR, DB_PORT),
 }
 
 
@@ -121,7 +144,7 @@ mongodb_dict = {
 }
 
 
-scheduler_dict = {
+SCHEDULER_DICT = {
     "INTERVAL":SCHEDULER_INTERVAL
 }
 
@@ -154,4 +177,4 @@ if TEST_MODE is True:
     # mongodb
     mongodb_dict["SESSION_DURATION"] = 300
     # scheduler
-    scheduler_dict["INTERVAL"] = 60
+    SCHEDULER_DICT["INTERVAL"] = 60

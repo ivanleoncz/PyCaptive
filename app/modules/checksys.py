@@ -2,36 +2,32 @@
 import socket
 import subprocess as sp
 import sys
-from app import TEST_MODE
-from app import checksys_dict as d
-
+from app import app
 
 class Components():
 
-
     def __init__(self):
-        self._binaries = (d.get("IPTABLES"), d.get("CONNTRACK"))
+        self._binaries = (app.config['checksys_dict']["IPTABLES"], app.config['checksys_dict']["CONNTRACK"])
         self._services = None
 
-        if TEST_MODE:
+        if app.config['TEST_MODE']:
             self._services = {
                                "mongodb":(
-                                 d.get("MONGODB_IP"), d.get("MONGODB_PORT")
+                                 app.config['checksys_dict']["MONGODB_IP"], app.config['checksys_dict']["MONGODB_PORT"]
                                )
                              }
         else:
             self._services = {
                                "nginx_redir_gunicorn":(
-                                 d.get("NGINX_IP"), d.get("NGINX_REDIR")
+                                 app.config['checksys_dict']["NGINX_IP"], app.config['checksys_dict']["NGINX_REDIR"]
                                ),
                                "nginx_gunicorn":(
-                                 d.get("NGINX_IP"), d.get("NGINX_GUNICORN")
+                                 app.config['checksys_dict']["NGINX_IP"], app.config['checksys_dict']["NGINX_GUNICORN"]
                                ),
                                "mongodb":(
-                                 d.get("MONDODB_IP"), d.get("MONGODB_PORT")
+                                 app.config['checksys_dict']["MONDODB_IP"], app.config['checksys_dict']["MONGODB_PORT"]
                                )
                              }
-
 
     def binaries(self):
         """ Check existence of binaries. """
@@ -44,7 +40,6 @@ class Components():
             else:
                 results[result_bin] = 1
         return results
-
 
     def services(self):
         """ Check status of network services. """

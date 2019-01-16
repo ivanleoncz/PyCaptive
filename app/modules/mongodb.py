@@ -6,8 +6,10 @@ from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from json import dumps
 from pymongo import MongoClient
-from app import log
-from app import mongodb_dict as d
+from app import app
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 __author__ = "@ivanleoncz"
 
@@ -17,14 +19,14 @@ class Connector:
 
     def __init__(self):
         """ Preparing MongoDB client. """
-        self.client = MongoClient(d.get("DB_URI"), serverSelectionTimeoutMS=6000)
+        self.client = MongoClient(app.config['mongodb_dict']["DB_URI"], serverSelectionTimeoutMS=6000)
 
 
     def add_session(self, username, client_ip, user_data):
         """ Adding session. """
         db = self.client.pycaptive.Sessions
         login_time = datetime.now()
-        expire_time = login_time + timedelta(seconds=d.get("SESSION_DURATION"))
+        expire_time = login_time + timedelta(seconds=app.config['mongodb_dict']["SESSION_DURATION"])
         session_id = None
         try:
             session_id = db.insert({
@@ -34,12 +36,12 @@ class Connector:
                 "LoginTime":login_time,
                 "ExpireTime":expire_time})
             self.client.close()
-            log.info('%s %s %s %s %s %s', "mongodb", "add_session", "OK",
+            LOGGER.info('%s %s %s %s %s %s', "mongodb", "add_session", "OK",
                                            username, client_ip, user_data)
             return session_id
         except Exception as e:
-            log.critical('%s %s %s', "mongodb", "add_session", "EXCEPTION")
-            log.critical('%s', e)
+            LOGGER.critical('%s %s %s', "mongodb", "add_session", "EXCEPTION")
+            LOGGER.critical('%s', e)
             return e
 
 
@@ -91,13 +93,13 @@ class Connector:
                 if session < time_now:
                     db.delete_one({"ExpireTime":session})
                     expired_sessions.append(ip)
-                    log.info('%s %s %s %s',
+                    LOGGER.info('%s %s %s %s',
                              "mongodb", "expire_sessions", "OK", data)
             self.client.close()
             return expired_sessions
         except Exception as e:
-            log.critical('%s %s %s', "mongodb", "expire_sessions", "EXCEPTION")
-            log.critical('%s', e)
+            LOGGER.critical('%s %s %s', "mongodb", "expire_sessions", "EXCEPTION")
+            LOGGER.critical('%s', e)
             return e
 
 
@@ -113,18 +115,18 @@ class Connector:
                 db_hash = hash_pass["Password"]
                 new_hash = bcrypt.hashpw(password.encode("utf-8"), db_hash)
                 if db_hash == new_hash:
-                    log.info('%s %s %s %s', "mongodb", "login", "OK", username)
+                    LOGGER.info('%s %s %s %s', "mongodb", "login", "OK", username)
                     return 0
                 else:
-                    log.error('%s %s %s %s %s',
+                    LOGGER.error('%s %s %s %s %s',
                               "mongodb", "login", "NOK", username, "WRONG_PASS")
                     return 2
             else:
-                log.error('%s %s %s %s %s',
+                LOGGER.error('%s %s %s %s %s',
                           "mongodb" ,"login", "NOK", username, "NOT_FOUND")
                 return 1
         except Exception as e:
-            log.critical('%s %s %s %s',
+            LOGGER.critical('%s %s %s %s',
                          "mongodb", "login", "EXCEPTION", username)
-            log.critical('%s', e)
+            LOGGER.critical('%s', e)
             return e

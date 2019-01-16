@@ -1,6 +1,4 @@
-
-
-from app import iptables_dict as d
+from app import app
 
 __author__ = "@ivanleoncz"
 
@@ -30,13 +28,13 @@ class Worker:
 
         """
         rule = [
-                d.get("IPTABLES"),
-                "-t", d.get("TABLE"),
-                "-I", d.get("CHAIN"),
-                "-i", d.get("LAN"),
+                app.config['iptables_dict']["IPTABLES"],
+                "-t", app.config['iptables_dict']["TABLE"],
+                "-I", app.config['iptables_dict']["CHAIN"],
+                "-i", app.config['iptables_dict']["LAN"],
                 "-s", ip,
-                "-m", "comment", "--comment", d.get("COMMENT"),
-                "-j", d.get("JUMP")
+                "-m", "comment", "--comment", app.config['iptables_dict']["COMMENT"],
+                "-j", app.config['iptables_dict']["JUMP"]
                 ]
         try:
             result = sp.call(rule)
@@ -74,13 +72,13 @@ class Worker:
             for ip in ips:
                 # deleting rule
                 rule = [
-                        d.get("IPTABLES"),
-                        "-t", d.get("TABLE"),
-                        "-D", d.get("CHAIN"),
-                        "-i", d.get("LAN"),
+                        app.config['iptables_dict']["IPTABLES"],
+                        "-t", app.config['iptables_dict']["TABLE"],
+                        "-D", app.config['iptables_dict']["CHAIN"],
+                        "-i", app.config['iptables_dict']["LAN"],
                         "-s", ip,
-                        "-m", "comment", "--comment", d.get("COMMENT"),
-                        "-j", d.get("JUMP")
+                        "-m", "comment", "--comment", app.config['iptables_dict']["COMMENT"],
+                        "-j", app.config['iptables_dict']["JUMP"]
                         ]
                 result = sp.call(rule)
                 if result == 0:
@@ -126,7 +124,7 @@ class Worker:
              else: error while processing command
 
         """
-        destroy_conn = [d.get("CONNTRACK"), "-D", "--orig-src", ip]
+        destroy_conn = [app.config['iptables_dict']["CONNTRACK"], "-D", "--orig-src", ip]
         result = sp.call(destroy_conn, stderr=sp.DEVNULL, stdout=sp.DEVNULL)
         if result == 0:
             log.info('%s %s %s %s', "iptables", "del_conntrack", "OK", ip)

@@ -1,7 +1,7 @@
 """ Module for /welcome view/route. """
 
 from json import loads
-from app import app, redirect, render_template, session, log
+from app import app, redirect, render_template, session
 from app.modules import mongodb
 
 __author__ = "@ivanleoncz"

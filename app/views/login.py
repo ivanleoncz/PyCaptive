@@ -2,9 +2,12 @@
 
 from user_agents import parse
 
-from app import app, abort, redirect, render_template, request, session, log
+from app import app, abort, redirect, render_template, request, session
 from app.modules import iptables
 from app.modules import mongodb
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 __author__ = "@ivanleoncz"
 
@@ -21,10 +24,10 @@ def f_login():
         client_ip = request.environ.get('REMOTE_ADDR')
 
     if request.method == 'GET':
-        log.info('%s %s %s', "/login", "GET", client_ip)
+        LOGGER.info('%s %s %s', "/login", "GET", client_ip)
         return render_template("login.html")
     elif request.method == 'POST':
-        log.info('%s %s %s', "/login", "POST", client_ip)
+        LOGGER.info('%s %s %s', "/login", "POST", client_ip)
         user_data = user_data_parser(request.headers.get('User-Agent'))
         username = request.form['username']
         password = request.form['password']
@@ -36,7 +39,7 @@ def f_login():
                 fw = iptables.Worker()
                 allow = fw.add_rule(client_ip)
                 if allow == 0:
-                    log.info('%s %s %s', "login", "OK", client_ip)
+                    LOGGER.info('%s %s %s', "login", "OK", client_ip)
                     session["SessionID"] = str(session_id)
                     return redirect("/welcome")
                 else:
