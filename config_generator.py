@@ -254,8 +254,15 @@ def logrotate():
 
 
 # creating files
+print("Building configuration files...")
+print("- iptables")
 iptables()
+print("- supervisor")
 supervisor()
+print("- nginx")
 nginx()
+print("- sudoers")
 sudoers()
+print("- logrotate")
 logrotate()
+print("Done!")

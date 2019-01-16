@@ -3,18 +3,19 @@
 """ PyCaptive: Test Mode """
 
 if __name__ == "__main__":
-    from app import app, TEST
+    from app import app, TEST_MODE
     from termcolor import colored
     print("\n PyCaptive Test Mode \n")
-    if TEST is True:
-        msg = " INFO: for Flask debug, see app/flask_settings.cfg\n"
-        print(colored( msg, "green"))
+    if TEST_MODE is True:
         try:
+            msg = " INFO: running PyCaptive (Test Mode)\n"
+            print(colored(msg, "green"))
             app.run(host="0.0.0.0", port=5000)
         except KeyboardInterrupt:
             print("Interrupted!")
         except Exception as e:
-            print("Exception:", e)
+            msg = "Exception: " + e
+            print(colored(msg, "red"))
     else:
-        msg = " INFO: must set TEST flag on app/pycaptive_settings.py as True\n"
-        print(colored(msg, "yellow"))
+        msg = " INFO: must set TEST flag as True (see pycaptive_settings.py)\n"
+        print(colored(msg, "red"))

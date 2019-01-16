@@ -1,5 +1,6 @@
 
-from app import log, IPTABLES, TABLE, LAN, CHAIN, JUMP, COMMENT, CONNTRACK
+
+from app import iptables_dict as d
 
 __author__ = "@ivanleoncz"
 
@@ -28,8 +29,15 @@ class Worker:
              else: error while processing command
 
         """
-        rule = [IPTABLES, "-t", TABLE, "-I", CHAIN, "-i", LAN,
-                "-s", ip, "-m", "comment", "--comment", COMMENT, "-j", JUMP]
+        rule = [
+                d.get("IPTABLES"),
+                "-t", d.get("TABLE"),
+                "-I", d.get("CHAIN"),
+                "-i", d.get("LAN"),
+                "-s", ip,
+                "-m", "comment", "--comment", d.get("COMMENT"),
+                "-j", d.get("JUMP")
+                ]
         try:
             result = sp.call(rule)
             if result == 0:
@@ -65,8 +73,15 @@ class Worker:
             rules = 0
             for ip in ips:
                 # deleting rule
-                rule = [IPTABLES, "-t", TABLE, "-D", CHAIN, "-i", LAN,
-                    "-s", ip, "-m", "comment", "--comment", COMMENT, "-j", JUMP]
+                rule = [
+                        d.get("IPTABLES"),
+                        "-t", d.get("TABLE"),
+                        "-D", d.get("CHAIN"),
+                        "-i", d.get("LAN"),
+                        "-s", ip,
+                        "-m", "comment", "--comment", d.get("COMMENT"),
+                        "-j", d.get("JUMP")
+                        ]
                 result = sp.call(rule)
                 if result == 0:
                     log.info('%s %s %s %s', "iptables", "del_rules", "OK", ip)
@@ -111,7 +126,7 @@ class Worker:
              else: error while processing command
 
         """
-        destroy_conn = [CONNTRACK, "-D", "--orig-src", ip]
+        destroy_conn = [d.get("CONNTRACK"), "-D", "--orig-src", ip]
         result = sp.call(destroy_conn, stderr=sp.DEVNULL, stdout=sp.DEVNULL)
         if result == 0:
             log.info('%s %s %s %s', "iptables", "del_conntrack", "OK", ip)
