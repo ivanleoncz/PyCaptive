@@ -18,11 +18,11 @@ def config():
         conf.setLevel(logging.INFO)
         log_form = logging.Formatter('%(asctime)s [%(levelname)s]\t%(message)s')
         handler = None
-        if d.get("LOG_ROTATE_OS") == True:
-            # log rotation performed by the OS service
+        if d.get("LOG_ROTATE_OS"):
+            # no log rotation will be performed, leaving to OS (logrotate)
             handler = logging.FileHandler(d.get("LOG_FILE"))
         else:
-            # log rotation perfomed via logging (see pycaptive_settings.py)
+            # configuring log rotation (see pycaptive_settings.py)
             handler = tr_fh(d.get("LOG_FILE"),
                        when=d.get("LOG_ROTATE_WHEN"),
                 backupCount=d.get("LOG_ROTATE_COUNT"))

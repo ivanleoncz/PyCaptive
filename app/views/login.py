@@ -67,7 +67,7 @@ def user_data_parser(request_ua):
     family = lambda x: "Unknown" if x is "Other" else ua.device.family
     # building user_data (device detection via list comprehension )
     user_data = {}
-    user_data["device"] = [k for k,v in devices.items() if v == True][0]
+    user_data["device"] = [k for k,v in devices.items() if v][0]
     user_data["brand"] = brand(ua.device.brand)
     user_data["family"] = family(ua.device.family)
     user_data["os"] = ua.os.family
