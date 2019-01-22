@@ -2,24 +2,35 @@
 import socket
 import subprocess as sp
 import sys
-from app import TEST, IPTABLES, CONNTRACK, DB_ADDR, DB_PORT
-from app import GLOBAL_CONF as v
+from app import TEST_MODE
+from app import checksys_dict as d
 
 
 class Components():
 
 
     def __init__(self):
-        self._binaries = (IPTABLES, CONNTRACK)
+        self._binaries = (d.get("IPTABLES"), d.get("CONNTRACK"))
         self._services = None
 
-        if TEST:
-            self._services = {"mongodb": (DB_ADDR, DB_PORT)}
+        if TEST_MODE:
+            self._services = {
+                               "mongodb":(
+                                 d.get("MONGODB_IP"), d.get("MONGODB_PORT")
+                               )
+                             }
         else:
             self._services = {
-                             "nginx": (v["LAN_IP"], v["NGINX_REDIR_GUNICORN"]),
-                             "mongodb": (DB_ADDR, DB_PORT)
-            }
+                               "nginx_redir_gunicorn":(
+                                 d.get("NGINX_IP"), d.get("NGINX_REDIR")
+                               ),
+                               "nginx_gunicorn":(
+                                 d.get("NGINX_IP"), d.get("NGINX_GUNICORN")
+                               ),
+                               "mongodb":(
+                                 d.get("MONDODB_IP"), d.get("MONGODB_PORT")
+                               )
+                             }
 
 
     def binaries(self):

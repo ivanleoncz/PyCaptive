@@ -2,6 +2,7 @@
 """ Main application module. """
 
 from flask import Flask, abort, redirect, request, render_template, session
+from app.pycaptive_settings import TEST_MODE
 from app.pycaptive_settings import checksys_dict
 from app.pycaptive_settings import iptables_dict
 from app.pycaptive_settings import mongodb_dict

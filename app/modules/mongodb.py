@@ -6,7 +6,8 @@ from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from json import dumps
 from pymongo import MongoClient
-from app import log, DB_URI, SESSION_DURATION
+from app import log
+from app import mongodb_dict as d
 
 __author__ = "@ivanleoncz"
 
@@ -16,14 +17,14 @@ class Connector:
 
     def __init__(self):
         """ Preparing MongoDB client. """
-        self.client = MongoClient(DB_URI, serverSelectionTimeoutMS=6000)
+        self.client = MongoClient(d.get("DB_URI"), serverSelectionTimeoutMS=6000)
 
 
     def add_session(self, username, client_ip, user_data):
         """ Adding session. """
         db = self.client.pycaptive.Sessions
         login_time = datetime.now()
-        expire_time = login_time + timedelta(seconds=SESSION_DURATION)
+        expire_time = login_time + timedelta(seconds=d.get("SESSION_DURATION"))
         session_id = None
         try:
             session_id = db.insert({
