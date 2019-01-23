@@ -6,6 +6,7 @@ import logging.config
 
 # setup flask
 app = Flask(__name__)
+
 app.config.from_object('app.settings')
 app.config.from_envvar('PYCAPTIVE_SETTINGS', silent=True)
 
