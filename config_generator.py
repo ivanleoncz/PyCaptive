@@ -1,4 +1,4 @@
-from app.pycaptive_settings import config_generator_dict as v
+from app import app
 
 
 def iptables():
@@ -27,10 +27,10 @@ def iptables():
     m_comment="# access to clients is provided after successful login on PyCaptive, which add rules on top of *mangle table, above these chains\n"
     m_chain_internet="-N INTERNET\n"
     m_chain_pycaptive="-N PYCAPTIVE\n"
-    m_http_tcp="-A PREROUTING -i {0} -p tcp -m tcp --dport {1} -j PYCAPTIVE\n".format(v["LAN"], v["HTTP"])
-    m_http_udp="-A PREROUTING -i {0} -p tcp -m ucp --dport {1} -j PYCAPTIVE\n".format(v["LAN"], v["HTTP"])
-    m_https_tcp="-A PREROUTING -i {0} -p tcp -m tcp --dport {1} -j DROP\n".format(v["LAN"], v["HTTPS"])
-    m_https_udp="-A PREROUTING -i {0} -p tcp -m udp --dport {1} -j DROP\n".format(v["LAN"], v["HTTPS"])
+    m_http_tcp="-A PREROUTING -i {0} -p tcp -m tcp --dport {1} -j PYCAPTIVE\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["HTTP"])
+    m_http_udp="-A PREROUTING -i {0} -p tcp -m ucp --dport {1} -j PYCAPTIVE\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["HTTP"])
+    m_https_tcp="-A PREROUTING -i {0} -p tcp -m tcp --dport {1} -j DROP\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["HTTPS"])
+    m_https_udp="-A PREROUTING -i {0} -p tcp -m udp --dport {1} -j DROP\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["HTTPS"])
     m_mark_pycaptive="-A PYCAPTIVE -j MARK --set-mark 1\n"
     m_accept_internet="-A INTERNET -j ACCEPT\n"
     
@@ -50,16 +50,16 @@ def iptables():
     n_counter_input=":INPUT ACCEPT [0:0]\n"
     n_counter_ouput=":OUTPUT ACCEPT [0:0]\n"
     n_counter_post=":POSTROUTING ACCEPT [0:0]\n"
-    n_ngx_tcp="-A PREROUTING -i {0} -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(v["LAN"], v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
-    n_ngx_udp="-A PREROUTING -i {0} -p udp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(v["LAN"], v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
-    n_ngx_pycaptive="-A PREROUTING -i {0} -s {1} -p tcp -d {2} --dport {3} -j DNAT --to-destination {4}:{5}\n".format(v["LAN"], v["LAN_NETWORK"], v["LAN_IP"], v["HTTP"],
-                                                                                                                                v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
+    n_ngx_tcp="-A PREROUTING -i {0} -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
+    n_ngx_udp="-A PREROUTING -i {0} -p udp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
+    n_ngx_pycaptive="-A PREROUTING -i {0} -s {1} -p tcp -d {2} --dport {3} -j DNAT --to-destination {4}:{5}\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["LAN_NETWORK"], app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["HTTP"],
+                                                                                                                                app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
 
-    n_transparent_proxy="-A PREROUTING -i {0} -s {1} -p tcp --dport {2} -j DNAT --to-destination {3}:{4}\n".format(v["LAN"], v["LAN_NETWORK"], v["HTTP"],
-                                                                                                                                  v["LAN_IP"], v["PROXY"])
+    n_transparent_proxy="-A PREROUTING -i {0} -s {1} -p tcp --dport {2} -j DNAT --to-destination {3}:{4}\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["LAN_NETWORK"], app.config['CONFIG_GENERATOR_DICT']["HTTP"],
+                                                                                                                                  app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["PROXY"])
 
-    n_route_masquerade="-A POSTROUTING -o {0} -j MASQUERADE\n".format(v["WAN"])
-    n_transparent_proxy_force_http="-A PREROUTING -i {0} -p tcp --sport {1} -j REDIRECT --to-port {2}\n".format(v["WAN"], v["HTTP"], v["PROXY"])
+    n_route_masquerade="-A POSTROUTING -o {0} -j MASQUERADE\n".format(app.config['CONFIG_GENERATOR_DICT']["WAN"])
+    n_transparent_proxy_force_http="-A PREROUTING -i {0} -p tcp --sport {1} -j REDIRECT --to-port {2}\n".format(app.config['CONFIG_GENERATOR_DICT']["WAN"], app.config['CONFIG_GENERATOR_DICT']["HTTP"], app.config['CONFIG_GENERATOR_DICT']["PROXY"])
 
     # Table [FILTER]
     #
@@ -85,13 +85,13 @@ def iptables():
     f_icmp="-A INPUT -p icmp -m conntrack --ctstate NEW,ESTABLISHED,RELATED --icmp-type 8 -j ACCEPT\n"
     f_established="-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n"
     f_loopback="-A INPUT -i lo -j ACCEPT\n"
-    f_ssh="-A INPUT -i {0} -p tcp --dport {1} -j ACCEPT\n".format(v["LAN"], v["SSH"])
-    f_dns_udp="-A INPUT -i {0} -p udp --dport {1} -j ACCEPT\n".format(v["LAN"], v["DNS"])
-    f_dns_tcp="-A INPUT -i {0} -p tcp --dport {1} -j ACCEPT\n".format(v["LAN"], v["DNS"])
-    f_dhcp_client="-A INPUT -i {0} -p udp --dport {1} --sport {2} -j ACCEPT\n".format(v["LAN"], v["DHCP_SERVER"], v["DHCP_CLIENT"])
-    f_dhcp_server="-A INPUT -i {0} -p udp --dport {1} --sport {2} -j ACCEPT\n".format(v["LAN"], v["DHCP_CLIENT"], v["DHCP_SERVER"])
-    f_bind_rndc_udp="-A INPUT -i {0} -p udp --dport {1} -j ACCEPT\n".format(v["LAN"], v["DNS_RNDC"])
-    f_bind_rndc_tcp="-A INPUT -i {0} -p tcp --dport {1} -j ACCEPT\n".format(v["LAN"], v["DNS_RNDC"])
+    f_ssh="-A INPUT -i {0} -p tcp --dport {1} -j ACCEPT\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["SSH"])
+    f_dns_udp="-A INPUT -i {0} -p udp --dport {1} -j ACCEPT\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["DNS"])
+    f_dns_tcp="-A INPUT -i {0} -p tcp --dport {1} -j ACCEPT\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["DNS"])
+    f_dhcp_client="-A INPUT -i {0} -p udp --dport {1} --sport {2} -j ACCEPT\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["DHCP_SERVER"], app.config['CONFIG_GENERATOR_DICT']["DHCP_CLIENT"])
+    f_dhcp_server="-A INPUT -i {0} -p udp --dport {1} --sport {2} -j ACCEPT\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["DHCP_CLIENT"], app.config['CONFIG_GENERATOR_DICT']["DHCP_SERVER"])
+    f_bind_rndc_udp="-A INPUT -i {0} -p udp --dport {1} -j ACCEPT\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["DNS_RNDC"])
+    f_bind_rndc_tcp="-A INPUT -i {0} -p tcp --dport {1} -j ACCEPT\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN"], app.config['CONFIG_GENERATOR_DICT']["DNS_RNDC"])
     f_input_block="-A INPUT -j REJECT\n"
     f_output_accept="-A OUTPUT -j ACCEPT\n"
 
@@ -123,10 +123,10 @@ def iptables():
         f.write(n_ngx_tcp)
         f.write(n_ngx_udp)
         f.write(n_ngx_pycaptive)
-        if v["MOD"] == 2:
+        if app.config['CONFIG_GENERATOR_DICT']["MOD"] == 2:
             f.write(n_transparent_proxy)
         f.write(n_route_masquerade)
-        if v["MOD"] == 2:
+        if app.config['CONFIG_GENERATOR_DICT']["MOD"] == 2:
             f.write(n_transparent_proxy_force_http)
 
         # table [FILTER]
@@ -175,15 +175,15 @@ def nginx():
     FILE="deploy/nginx/pycaptive"
 
     redirect_header="server {\n\n"
-    redirect_listen="    listen {0}:{1};\n".format(v["LAN_IP"], v["NGINX_REDIR_GUNICORN"])
+    redirect_listen="    listen {0}:{1};\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
     redirect_servername="    server_name ~^(www\.)?(?<domain>.+)$;\n"
-    redirect_return="    return 301 $scheme://{0}:{1}/login;\n\n".format(v["LAN_IP"], v["NGINX_GUNICORN"])
+    redirect_return="    return 301 $scheme://{0}:{1}/login;\n\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["NGINX_GUNICORN"])
     redirect_access_log="    access_log /var/log/nginx/redirect_PyCaptive.access.log;\n"
     redirect_error_log="    error_log /var/log/nginx/redirect_PyCaptive.error.log;\n\n"
     redirect_footer="}\n\n"
 
     gunicorn_header="server {\n\n"
-    gunicorn_listen="    listen {0}:{1};\n\n".format(v["LAN_IP"], v["NGINX_GUNICORN"])
+    gunicorn_listen="    listen {0}:{1};\n\n".format(app.config['CONFIG_GENERATOR_DICT']["LAN_IP"], app.config['CONFIG_GENERATOR_DICT']["NGINX_GUNICORN"])
     gunicorn_location_header="    location / {\n"
     gunicorn_include="        include proxy_params;\n"
     gunicorn_proxy_pass="        proxy_pass http://unix:/opt/PyCaptive/wsgi.sock;\n"

@@ -11,11 +11,12 @@ via APScheduler.
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app import log
-from app import scheduler_dict as d
 from app.modules import mongodb
 from app.modules import iptables
+from app import app
+import logging
 
+LOGGER = logging.getLogger(__name__)
 
 __author__ = "@ivanleoncz"
 
@@ -32,14 +33,14 @@ def expirer():
             # deleting rules
             counter = fw.del_rules(sessions)
             if type(counter) == int:
-                log.info('%s %s %s', "scheduler", "expirer", "OK")
+                LOGGER.info('%s %s %s', "scheduler", "expirer", "OK")
             else:
-                log.error('%s %s %s', "scheduler", "expirer", "FAIL_IPTABLES")
+                LOGGER.error('%s %s %s', "scheduler", "expirer", "FAIL_IPTABLES")
 
     else:
-        log.error('%s %s %s', "scheduler", "expirer", "FAIL_MONGODB")
+        LOGGER.error('%s %s %s', "scheduler", "expirer", "FAIL_MONGODB")
 
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(expirer, 'interval', seconds=d.get("INTERVAL"))
+sched.add_job(expirer, 'interval', seconds=app.config['SCHEDULER_DICT']["INTERVAL"])
 sched.start()
