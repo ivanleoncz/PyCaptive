@@ -4,7 +4,7 @@ def iptables():
 
     FILE="deploy/iptables/rules.v4"
 
-    print("Building IPTABLES rules: ", FILE)
+    print("- IPTABLES: ", FILE)
 
     # Table [MANGLE]
     #
@@ -215,7 +215,7 @@ def nginx():
 
     FILE="deploy/nginx/pycaptive"
 
-    print("Building NGINX site file: ", FILE)
+    print("- NGINX: ", FILE)
 
     ngx1="server {\n\n"
     ngx2="  listen {0}:{1};\n".format(
@@ -261,7 +261,7 @@ def sudoers():
 
     FILE="deploy/sudoers.d/pycaptive"
 
-    print("Building SUDOERS config file: ", FILE)
+    print("- SUDOERS: ", FILE)
 
     sdr1="pycaptive ALL=(root:root) NOPASSWD:/sbin/iptables\n"
     sdr2="pycaptive ALL=(root:root) NOPASSWD:/usr/sbin/conntrack\n"
@@ -275,7 +275,7 @@ def supervisor():
 
     FILE="deploy/supervisor/pycaptive.conf"
 
-    print("Building Supervisor config file: ", FILE)
+    print("- SUPERVISOR: ", FILE)
 
     s1="[program:pycaptive]\n"
     s2="command=gunicorn -n gnc_master -u gunicorn -g gunicorn -b unix:/opt/PyCaptive/wsgi.sock -w 2 --pythonpath /opt/PyCaptive app:app\n"
@@ -298,7 +298,7 @@ def logrotate():
 
     FILE="deploy/logrotate/pycaptive"
 
-    print("Building LOGROTATE config file: ", FILE)
+    print("- LOGROTATE: ", FILE)
 
     log1="/var/log/pycaptive/*.log {\n"
     log2="        monthly\n"
@@ -326,9 +326,9 @@ def logrotate():
         f.write(log11)
 
 
-# creating files
+print("Building configuration files: ")
 iptables()
-supervisor()
 nginx()
 sudoers()
+supervisor()
 logrotate()
