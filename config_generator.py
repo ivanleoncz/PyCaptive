@@ -71,7 +71,7 @@ def iptables():
                         app.config['CONFIG_GENERATOR_DICT']["LAN_IP"],
                         app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
 
-    n2="-A PREROUTING -i {0} -p udp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(
+    n2="-A PREROUTING -i {0} -p udp -m udp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(
                         app.config['CONFIG_GENERATOR_DICT']["LAN"],
                         app.config['CONFIG_GENERATOR_DICT']["LAN_IP"],
                         app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
