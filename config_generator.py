@@ -31,24 +31,20 @@ def iptables():
     m2="-N PYCAPTIVE\n"
 
     m3="-A PREROUTING -i {0} -p tcp -m tcp --dport {1} -j PYCAPTIVE\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["HTTP"])
+                        app.config["LAN_NIC"], app.config["PORT_HTTP"])
 
     m4="-A PREROUTING -i {0} -p tcp -m ucp --dport {1} -j PYCAPTIVE\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["HTTP"])
+                        app.config["LAN_NIC"], app.config["PORT_HTTP"])
 
     m5="-A PREROUTING -i {0} -p tcp -m tcp --dport {1} -j DROP\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["HTTPS"])
+                        app.config["LAN_NIC"], app.config["PORT_HTTPS"])
 
     m6="-A PREROUTING -i {0} -p tcp -m udp --dport {1} -j DROP\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["HTTPS"])
+                        app.config["LAN_NIC"], app.config["PORT_HTTPS"])
 
     m7="-A PYCAPTIVE -j MARK --set-mark 1\n"
     m8="-A INTERNET -j ACCEPT\n"
-    
+
     # Table [NAT]
     #
     #   Packet Flow:
@@ -67,37 +63,23 @@ def iptables():
     n_counter_post=":POSTROUTING ACCEPT [0:0]\n"
 
     n1="-A PREROUTING -i {0} -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["LAN_IP"],
-                        app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
+                    app.config["LAN_NIC"], app.config["LAN_IP"], app.config["PORT_NGINX_REDIR_GUNICORN"])
 
     n2="-A PREROUTING -i {0} -p udp -m udp -m mark --mark 1 -j DNAT --to-destination {1}:{2}\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["LAN_IP"],
-                        app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
+                    app.config["LAN_NIC"], app.config["LAN_IP"], app.config["NGINX_REDIR_GUNICORN"])
 
     n3="-A PREROUTING -i {0} -s {1} -p tcp -d {2} --dport {3} -j DNAT --to-destination {4}:{5}\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["LAN_NETWORK"],
-                        app.config['CONFIG_GENERATOR_DICT']["LAN_IP"],
-                        app.config['CONFIG_GENERATOR_DICT']["HTTP"],
-                        app.config['CONFIG_GENERATOR_DICT']["LAN_IP"],
-                        app.config['CONFIG_GENERATOR_DICT']["NGINX_REDIR_GUNICORN"])
+                    app.config["LAN_NIC"], app.config["LAN_NETWORK"], app.config["LAN_IP"],
+                    app.config["PORT_HTTP"], app.config["LAN_IP"], app.config["PORT_NGINX_REDIR_GUNICORN"])
 
     n4="-A PREROUTING -i {0} -s {1} -p tcp --dport {2} -j DNAT --to-destination {3}:{4}\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["LAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["LAN_NETWORK"],
-                        app.config['CONFIG_GENERATOR_DICT']["HTTP"],
-                        app.config['CONFIG_GENERATOR_DICT']["LAN_IP"],
-                        app.config['CONFIG_GENERATOR_DICT']["PROXY"])
+                    app.config["LAN_NIC"], app.config["LAN_NETWORK"], app.config["PORT_HTTP"],
+                    app.config["LAN_IP"], app.config["PORT_PROXY"])
 
-    n5="-A POSTROUTING -o {0} -j MASQUERADE\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["WAN"])
+    n5="-A POSTROUTING -o {0} -j MASQUERADE\n".format(app.config["WAN_NIC"])
 
     n6="-A PREROUTING -i {0} -p tcp --sport {1} -j REDIRECT --to-port {2}\n".format(
-                        app.config['CONFIG_GENERATOR_DICT']["WAN"],
-                        app.config['CONFIG_GENERATOR_DICT']["HTTP"],
-                        app.config['CONFIG_GENERATOR_DICT']["PROXY"])
+                    app.config["WAN_NIC"], app.config["PORT_HTTP"], app.config["PORT_PROXY"])
 
     # Table [FILTER]
     #
