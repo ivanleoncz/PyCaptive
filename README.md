@@ -20,7 +20,7 @@
 - Routing Configuration for traffic between NICs (IPTABLES)
 - Traffic Redirection for Authenticated and Non-Authenticated Users (IPTABLES)
 
-### Status (under improvements)
+### Status (under improvements - DON'T USE IT)
 - Refactoring code for a better installation and configuration process.
 
 
