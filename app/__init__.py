@@ -1,20 +1,16 @@
 #!/usr/bin/python3
 """ Main application module. """
-from flask.logging import default_handler
 from flask import Flask, abort, redirect, request, render_template, session
-import logging.config
 
-# setup flask
+# Flask Setup
 app = Flask(__name__)
+app.config['DEBUG'] = False
+app.config['SECRET_KEY'] = os.urandom(24)
 
-app.config.from_object('app.settings')
-app.config.from_envvar('PYCAPTIVE_SETTINGS', silent=True)
+# TODO: Logging Setup (???)
 
-# setup logging
-app.logger.removeHandler(default_handler)
-logging.config.dictConfig(app.config['LOGGING'])
 
-# scheduler
+# Scheduler
 from app.modules import scheduler
 
 @app.after_request
