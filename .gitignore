@@ -3,3 +3,4 @@
 *.csv
 *.export
 Pipfile*
+configurations/
