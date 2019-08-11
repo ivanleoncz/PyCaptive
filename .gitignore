@@ -4,3 +4,4 @@
 *.export
 Pipfile*
 configurations/
+pycaptive_venv/
