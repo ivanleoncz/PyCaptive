@@ -1,0 +1,93 @@
+# BEGIN
+
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+
+# [Information]
+# --------------------------------------------------------------------------------------------------------------
+# * Successful logins, generate rules here, on top of *mangle table, one per IP address.
+# * These rules, guarantee internet access for these IPs, by redirecting their traffic to $INTERNET_CHAIN chain.
+# * They bypass the default logic that is defined by $PYCAPTIVE_CHAIN chain
+# --------------------------------------------------------------------------------------------------------------
+
+# Creates $PYCAPTIVE_CHAIN
+-N $PYCAPTIVE_CHAIN
+# Creates $INTERNET_CHAIN
+-N $INTERNET_CHAIN
+
+# REDIRECT TCP/UDP traffic with port 80 as target, to $PYCAPTIVE_CHAIN chain
+-A PREROUTING -i $LAN_NIC -p tcp -m tcp --dport 80 -j $PYCAPTIVE_CHAIN
+-A PREROUTING -i $LAN_NIC -p udp -m ucp --dport 80 -j $PYCAPTIVE_CHAIN
+# DROP TCP/UDP traffic with port 443 as target
+-A PREROUTING -i $LAN_NIC -p tcp -m tcp --dport 443 -j DROP
+-A PREROUTING -i $LAN_NIC -p udp -m udp --dport 443 -j DROP
+# MARK packets that arrive to $PYCAPTIVE_CHAIN chain (processing continues on *nat table)
+-A $PYCAPTIVE -i $LAN_NIC -j MARK --set-mark 1
+# ACCEPT packets that arrive to $INTERNET_CHAIN chain (see Information section at *mangle table)
+-A $INTERNET_CHAIN -i $LAN_NIC -j ACCEPT
+
+
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+
+# * REDIRECT TCP/UDP 'marked' traffic  with port 80 as target, to NGINX (Redirect Gunicorn/PyCaptive)
+-A PREROUTING -i $LAN_NIC -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination $LAN_IP:$NGINX_REDIR_PORT
+-A PREROUTING -i $LAN_NIC -p udp -m udp -m mark --mark 1 -j DNAT --to-destination $LAN_IP:$NGINX_REDIR_PORT
+# * Ensures that PyCaptive page is still accessible for authenticated IPs (admin page, yet to be implemented).
+-A PREROUTING -i $LAN_NIC -s $LAN_NET -p tcp -d $LAN_IP --dport 80 -j DNAT --to-destination $LAN_IP:$NGINX_REDIR_PORT
+# * MASQUERADES client IP with WAN IP address, for remote Web Servers.
+-A POSTROUTING -o $WAN_NIC -j MASQUERADE
+
+
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# [Input]
+
+# ---ALL---
+#
+# * ICMP
+-A INPUT -m conntrack --ctstate NEW,ESTABLISHED,RELATED -p icmp --icmp-type 8 -j ACCEPT
+# * Traffic RELATED and ESTABLISHED (conntrack)
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# ---Loopback--
+#
+# * ALLOW ALL TRAFFIC
+-A INPUT -i lo -j ACCEPT
+
+# ---LAN---
+#
+# * SSH
+-A INPUT -i $LAN_NIC -p tcp --dport 22 -j ACCEPT
+# * DNS
+-A INPUT -i $LAN_NIC -p udp --dport 53 -j ACCEPT
+-A INPUT -i $LAN_NIC -p tcp --dport 53 -j ACCEPT
+# * DHCP - client/server
+-A INPUT -i $LAN_NIC -p udp --dport 67 --sport 68 -j ACCEPT
+-A INPUT -i $LAN_NIC -p udp --dport 68 --sport 67 -j ACCEPT
+# * Remote Control of BIND DNS Server via RNDC (UDP)
+-A INPUT -i $LAN_NIC -p udp --dport 953 -j ACCEPT
+-A INPUT -i $LAN_NIC -p tcp --dport 953 -j ACCEPT
+
+# ---LAN/WAN---
+#
+# * REJECT ALL TRAFFIC, THAT'S NOT LISTED ABOVE
+-A INPUT -i $LAN_NIC -j REJECT
+-A INPUT -i $WAN_NIC -j REJECT
+
+# [Output]
+#
+#  ---ALL---
+-A OUTPUT -j ACCEPT
+
+# END

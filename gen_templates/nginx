@@ -1,0 +1,20 @@
+server {
+	listen $LAN_IP:$NGINX_REDIR_PORT;
+	server_name ~^(www\.)?(?<domain>.+)$;
+	return 301 $scheme://$LAN_IP:$PYCAPTIVE_PORT/login;
+
+	access_log /var/log/nginx/redirect_pycaptive.access.log;
+	error_log /var/log/nginx/redirect_pycaptive.error.log;
+}
+
+server {
+	listen $LAN_IP:$PYCAPTIVE_PORT;
+
+	location /login {
+		include proxy_params;
+ 		proxy_pass http://unix:/run/pycaptive/pycaptive.sock;
+ 	}
+
+ 	access_log /var/log/nginx/pycaptive.access.log;
+ 	error_log /var/log/nginx/pycaptive.error.log;
+}
