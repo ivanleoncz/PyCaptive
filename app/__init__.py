@@ -19,7 +19,7 @@ if not ini:
 # is performed when loading the application and all other requirements involved
 # on PyCaptive, when gen_config_files.py is called by install.sh, since that
 # no extra package (requirements.txt) is needed during the installation process.
-if "gen_config_files" not in in str(sys.modules['__main__']):
+if "gen_config_files" not in str(sys.modules['__main__']):
 
     # Flask Setup
     app = Flask(__name__)
