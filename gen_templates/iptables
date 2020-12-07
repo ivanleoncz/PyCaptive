@@ -26,7 +26,7 @@ FORWARD ACCEPT [0:0]
 -A PREROUTING -i $LAN_NIC -p tcp -m tcp --dport 443 -j DROP
 -A PREROUTING -i $LAN_NIC -p udp -m udp --dport 443 -j DROP
 # MARK packets that arrive to $PYCAPTIVE_CHAIN chain (processing continues on *nat table)
--A $PYCAPTIVE -i $LAN_NIC -j MARK --set-mark 1
+-A $PYCAPTIVE_CHAIN -i $LAN_NIC -j MARK --set-mark 1
 # ACCEPT packets that arrive to $INTERNET_CHAIN chain (see Information section at *mangle table)
 -A $INTERNET_CHAIN -i $LAN_NIC -j ACCEPT
 
@@ -41,7 +41,7 @@ FORWARD ACCEPT [0:0]
 -A PREROUTING -i $LAN_NIC -p tcp -m tcp -m mark --mark 1 -j DNAT --to-destination $LAN_IP:$NGINX_REDIR_PORT
 -A PREROUTING -i $LAN_NIC -p udp -m udp -m mark --mark 1 -j DNAT --to-destination $LAN_IP:$NGINX_REDIR_PORT
 # * Ensures that PyCaptive page is still accessible for authenticated IPs (admin page, yet to be implemented).
--A PREROUTING -i $LAN_NIC -s $LAN_NET -p tcp -d $LAN_IP --dport 80 -j DNAT --to-destination $LAN_IP:$NGINX_REDIR_PORT
+-A PREROUTING -i $LAN_NIC -s $LAN_NETWORK -p tcp -d $LAN_IP --dport 80 -j DNAT --to-destination $LAN_IP:$NGINX_REDIR_PORT
 # * MASQUERADES client IP with WAN IP address, for remote Web Servers.
 -A POSTROUTING -o $WAN_NIC -j MASQUERADE
 

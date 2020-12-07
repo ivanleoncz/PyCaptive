@@ -1,7 +1,7 @@
 server {
 	listen $LAN_IP:$NGINX_REDIR_PORT;
-	server_name ~^(www\.)?(?<domain>.+)$;
-	return 301 $scheme://$LAN_IP:$PYCAPTIVE_PORT/login;
+	server_name ~^(www\.)?(?<domain>.+)$$;
+	return 301 $$scheme://$LAN_IP:$PYCAPTIVE_PORT/login;
 
 	access_log /var/log/nginx/redirect_pycaptive.access.log;
 	error_log /var/log/nginx/redirect_pycaptive.error.log;
